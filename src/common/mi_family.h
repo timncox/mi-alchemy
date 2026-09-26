@@ -18,11 +18,11 @@
  *
  * Home slots (0-based; `hostlink list` numbers from 1). The Smack / Mark /
  * Belt / Relay family owns 12-15 and documents 0-11 as free for presets
- * saved by hand. This repository takes 7-11 out of that range:
+ * saved by hand. This repository takes 6-11 out of that range:
  *
- *   Warps 7   Clouds 8   Elements 9   Marbles 10   Plaits 11
+ *   Meld 6   Warps 7   Clouds 8   Elements 9   Marbles 10   Plaits 11
  *
- * so 0-6 are what is left for hand-saved presets across the whole card.
+ * so 0-5 are what is left for hand-saved presets across the whole card.
  */
 #pragma once
 

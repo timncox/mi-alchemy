@@ -1,12 +1,14 @@
 # mi-alchemy
 
 Mutable Instruments **Clouds**, **Elements**, **Marbles**, **Plaits** and
-**Warps** (Emilie Gillet, MIT) as firmwares for the Hermetic Modular
+**Warps** (Emilie Gillet, MIT), plus **Meld** (Warps with stock Warps as a
+tenth mode and a coincidence clock and envelope CVs, from `~/tim-os/meld`), as firmwares for the Hermetic Modular
 **Alchemy Lab V2**, on the Alchemy SDK. The DSP is vendored from
 [pichenettes/eurorack](https://github.com/pichenettes/eurorack) at 08460a6,
 and for Warps from Matthias Puech's
 [Parasites](https://github.com/mqtthiqs/parasites) at 32fa66f. It is
-unmodified except two marked fixes (`vendor/VENDOR.md`). Each
+unmodified except two marked fixes; Meld's stock-Warps copy is a mechanical
+namespace rename (`vendor/VENDOR.md`). Each
 firmware's shim does what the original's `cv_scaler`/`ui` code did, on six
 pots, three buttons and ten jacks.
 
@@ -17,8 +19,9 @@ pots, three buttons and ten jacks.
 | Marbles | 32 kHz / 16 | 10 | 399 KB | [src/marbles/DESIGN.md](src/marbles/DESIGN.md) |
 | Plaits | 48 kHz / 24 (2×12) | 11 | 451 KB (engine at -Os) | [src/plaits/DESIGN.md](src/plaits/DESIGN.md) |
 | Warps (Parasites) | 96 kHz / 60 | 7 | 393 KB | [src/warps/DESIGN.md](src/warps/DESIGN.md) |
+| Meld | 96 kHz / 60 | 6 | 457 KB (engines at -O2) | [src/meld/DESIGN.md](src/meld/DESIGN.md) |
 
-All five are siblings of smack/mark/belt/relay-alchemy. They include the
+All six are siblings of smack/mark/belt/relay-alchemy. They include the
 same SD-card firmware picker (Settings page 1), keep their working state in
 their own QSPI preset slot, autosave 5 s after the last change, catch pots
 after a firmware switch, and show last session's CPU peak on the P1 ring at
@@ -28,10 +31,10 @@ boot.
 
     git submodule update --init && git -C lib/libDaisy submodule update --init --recursive
     make libdaisy        once
-    make FW=clouds       build-clouds/clouds_alchemy.bin   (FW = clouds | elements | marbles | plaits | warps)
-    make every           all five
+    make FW=clouds       build-clouds/clouds_alchemy.bin   (FW = clouds | elements | marbles | plaits | warps | meld)
+    make every           all six
     make size            image sizes against the 480 KB SRAM region
-    make test            native suites for all five engines (host compiler, ASan/UBSan)
+    make test            native suites for all six (host compiler, ASan/UBSan)
     make stage           copy bins (+ elements.smp) to ../daisy-sdk/alchemy-lab/
 
 **Never build with a module attached in DFU.** Flashing is a manual step:
@@ -39,7 +42,7 @@ use the SD picker, or `make FW=x program-live DFU_SERIAL=<serial>`.
 
 ## Card layout
 
-    /alchemy/clouds_alchemy.bin  elements_alchemy.bin  marbles_alchemy.bin  plaits_alchemy.bin  warps_alchemy.bin
+    /alchemy/clouds_alchemy.bin  elements_alchemy.bin  marbles_alchemy.bin  plaits_alchemy.bin  warps_alchemy.bin  meld_alchemy.bin
     /mi/elements.smp             Elements' exciter samples (build-elements/elements.smp)
 
 Without `/mi/elements.smp`, Elements still runs. Its strike samples and
@@ -49,8 +52,8 @@ boot.
 ## Home slots across the card
 
 Smack 12, Mark 13, Belt 14 and Relay 15 were already taken. This repository
-takes **7–11** (Warps 7, Clouds 8, Elements 9, Marbles 10, Plaits 11), which
-leaves 0–6 for presets saved by hand.
+takes **6–11** (Meld 6, Warps 7, Clouds 8, Elements 9, Marbles 10, Plaits 11),
+which leaves 0–5 for presets saved by hand.
 
 ## v0.1 scope
 

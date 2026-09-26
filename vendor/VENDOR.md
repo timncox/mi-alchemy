@@ -32,6 +32,22 @@ eurorack stmlib above (e3bd7c9) unchanged; Parasites' own pinned stmlib
 (mqtthiqs/stmlib 8ab2aae) is not vendored, and test/test_warps.cpp passes
 against this one.
 
+`warps_stock/` is stock Mutable Warps, used by Meld's tenth mode, from
+pichenettes/eurorack `warps/` (last touched at **3c23d0306d**, 2019-04-02,
+identical at 08460a6): `dsp/*.h`, `dsp/*.cc`, `resources.h`, `resources.cc`.
+MIT. **Not byte-identical, by construction:** both it and Parasites declare
+`namespace warps` and include `"warps/dsp/..."`, so this copy is produced by
+`tools/vendor_stock_warps.py` (copied from `~/tim-os/meld`, only its default
+output path changed). The tool renames the namespace to `warps_stock`, the
+include prefix to `warps_stock/`, header guards to `WARPS_STOCK_...`, the
+`LUT_*`/`WAV_*` index macros to `STOCK_LUT_*`/`STOCK_WAV_*` (the two trees
+give them different values, and Meld's firmware sees both headers), and
+marks the debug-pin include as the shared stub (`src/shim/warps/`). Nothing
+else. Verified 2026-09-26: rerunning the tool on this repository's eurorack
+checkout reproduces `vendor/warps_stock/` exactly. The firmware compiles
+the stock `.cc` files through `src/meld/stock/stock_*.cc` because the
+Makefile keys objects by basename and both trees have `modulator.cc` etc.
+
 Changes:
 
 1. `clouds/dsp/window.h`, `Window::Start()`: restored `done_ = false;`.

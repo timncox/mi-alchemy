@@ -20,7 +20,7 @@
 # module attached in DFU (memory feedback_no_builds_with_board_in_dfu).
 # =============================================================================
 
-FWS := clouds elements marbles plaits warps
+FWS := clouds elements marbles plaits warps meld
 FW  ?= clouds
 ifeq ($(filter $(FW),$(FWS)),)
 $(error FW must be one of: $(FWS) (got '$(FW)'))
