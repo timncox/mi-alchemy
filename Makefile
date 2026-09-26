@@ -140,6 +140,8 @@ size:
 STAGE_DIR ?= ../daisy-sdk/alchemy-lab
 stage:
 	@for f in $(FWS); do b=build-$$f/$${f}_alchemy.bin; [ -f $$b ] && cp -v $$b $(STAGE_DIR)/$${f}_alchemy-$(MI_GIT_HASH)-front.bin; done; true
+	@# Elements' exciter samples live on the card as /mi/elements.smp
+	@[ -f build-elements/elements.smp ] && cp -v build-elements/elements.smp $(STAGE_DIR)/elements-$(MI_GIT_HASH).smp; true
 
 test:
 	$(MAKE) -C test
