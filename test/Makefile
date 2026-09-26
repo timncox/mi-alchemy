@@ -19,6 +19,7 @@ STMLIB_CC := $(EURORACK)/stmlib/dsp/units.cc $(EURORACK)/stmlib/dsp/atan.cc \
              $(EURORACK)/stmlib/utils/random.cc
 BIN := bin
 
+.DEFAULT_GOAL := all
 FW_TESTS :=
 include $(wildcard *.mk)
 
