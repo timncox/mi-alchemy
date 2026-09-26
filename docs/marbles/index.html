@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marbles for Alchemy Lab</title>
+<meta name="description" content="Operation manual for Marbles on the Hermetic Modular Alchemy Lab V2: Mutable Instruments' random sampler, three gate streams and four voltages from one module, with a loop you can lock.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='30' cy='70' r='16' fill='%23e0482f'/%3E%3Ccircle cx='66' cy='66' r='20' fill='%232447e0'/%3E%3Ccircle cx='50' cy='30' r='14' fill='%230f8f6e'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#edf0ec; --paper2:#e2e7e3; --card:#f6f8f5; --ink:#13201c; --ink2:#34433e; --mute:#5f6d68; --rule:#c5cec9;
+  --acc:#2447e0; --acc-ink:#ffffff;
+  --t1:#d8432b; --t2:#0f8a69; --t3:#b98100;
+  --x1:#2447e0; --x2:#08849c; --x3:#7d42cf; --y:#5f6f7c;
+  --warn:#b54708; --warnbg:#fbe9dc; --okbg:#dcefe6;
+  --plate:#1a2320; --plate2:#26312d; --plate-ink:#dbe4df; --plate-mute:#86958f; --hole:#070b0a;
+  --display:"Big Shoulders Display","Arial Narrow","Helvetica Neue",Arial,sans-serif;
+  --body:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0d1412; --paper2:#141d1a; --card:#18221f; --ink:#e3eae6; --ink2:#bac6c1; --mute:#8b9893; --rule:#2b3834;
+    --acc:#8499ff; --acc-ink:#0d1412;
+    --t1:#ff6d52; --t2:#34d6a0; --t3:#f2b632;
+    --x1:#8499ff; --x2:#41c8e0; --x3:#b88fff; --y:#9aa9b4;
+    --warn:#ffab70; --warnbg:#3a2415; --okbg:#15312a;
+    --plate:#1c2623; --plate2:#29342f;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0d1412; --paper2:#141d1a; --card:#18221f; --ink:#e3eae6; --ink2:#bac6c1; --mute:#8b9893; --rule:#2b3834;
+  --acc:#8499ff; --acc-ink:#0d1412;
+  --t1:#ff6d52; --t2:#34d6a0; --t3:#f2b632;
+  --x1:#8499ff; --x2:#41c8e0; --x3:#b88fff; --y:#9aa9b4;
+  --warn:#ffab70; --warnbg:#3a2415; --okbg:#15312a;
+  --plate:#1c2623; --plate2:#29342f;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 var(--body);}
+a{color:var(--acc);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+code,kbd{font-family:var(--mono);font-size:.88em;background:var(--paper2);padding:.08em .35em;border-radius:3px}
+pre{font:13.5px/1.6 var(--mono);background:var(--plate);color:var(--plate-ink);padding:16px 18px;border-radius:6px;overflow-x:auto;margin:0}
+pre b{color:var(--plate-mute);font-weight:400}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px}
+@media (max-width:480px){.wrap{padding-inline:16px}}
+section{padding-block:64px;border-top:1px solid var(--rule)}
+h1,h2,h3,h4{text-wrap:balance;margin:0}
+.sh{font:800 clamp(34px,5vw,52px)/.95 var(--display);text-transform:uppercase;letter-spacing:.01em}
+.sub{font:500 12.5px/1.4 var(--mono);color:var(--mute);letter-spacing:.06em;text-transform:uppercase;margin:10px 0 22px}
+.lede{max-width:68ch;font-size:18px;color:var(--ink2);margin:0 0 28px}
+p{max-width:70ch}
+h3.h{font:700 22px/1.2 var(--body);margin:44px 0 6px}
+.note{border-left:3px solid var(--acc);background:var(--card);padding:16px 20px;border-radius:0 6px 6px 0;max-width:80ch}
+.note h3{font:700 17px/1.3 var(--body);margin-bottom:6px}
+.note p{margin:.4em 0}
+.note.warn{border-color:var(--warn);background:var(--warnbg)}
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--rule)}
+th{font:600 12px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--mute);background:var(--paper2)}
+tr:last-child td{border-bottom:0}
+td:first-child{white-space:nowrap;font-weight:600}
+.num{font-variant-numeric:tabular-nums}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:18px 20px}
+.card .k{font:500 11.5px/1.3 var(--mono);color:var(--mute);text-transform:uppercase;letter-spacing:.07em}
+.card h4{font:700 18px/1.25 var(--body);margin:6px 0 8px}
+.card p{margin:0;color:var(--ink2);font-size:15px}
+.dot{display:inline-block;width:.8em;height:.8em;border-radius:50%;vertical-align:-.05em;margin-right:.35em;background:currentColor}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 7px;border-radius:3px;border:1px solid currentColor;margin-left:6px;vertical-align:.15em}
+
+/* nav */
+nav.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+nav.top .wrap{display:flex;gap:18px;align-items:center;height:50px;overflow-x:auto;scrollbar-width:none}
+nav.top .wrap::-webkit-scrollbar{display:none}
+nav.top a{font:600 13.5px/1 var(--body);color:var(--ink2);text-decoration:none;white-space:nowrap}
+nav.top a:hover{color:var(--acc)}
+nav.top .brand{font:900 20px/1 var(--display);letter-spacing:.04em;color:var(--ink);margin-right:6px}
+
+/* hero */
+header.hero{padding-block:48px 56px}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:end}
+@media (max-width:860px){.hero .wrap{grid-template-columns:1fr}h1.title{font-size:clamp(76px,21vw,150px)}}
+.kicker{font:500 13px/1.4 var(--mono);color:var(--mute);letter-spacing:.06em;text-transform:uppercase}
+h1.title{font:900 clamp(76px,9.6vw,138px)/.82 var(--display);letter-spacing:-.01em;text-transform:uppercase;margin:14px 0 6px;color:var(--ink)}
+h1.title span{display:block;font:600 clamp(20px,2.6vw,30px)/1.1 var(--display);letter-spacing:.08em;color:var(--mute);margin-top:12px}
+.thesis{font-size:20px;line-height:1.45;max-width:34ch;margin:18px 0 22px;color:var(--ink2)}
+.status{display:inline-flex;gap:10px;align-items:flex-start;background:var(--warnbg);color:var(--ink);border:1px solid var(--warn);border-radius:6px;padding:10px 14px;font-size:14.5px;max-width:52ch}
+.status b{color:var(--warn)}
+.galton{position:relative;background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:14px 14px 10px}
+.galton canvas{display:block;width:100%;height:auto;aspect-ratio:4/3.4}
+.galton .cap{display:flex;justify-content:space-between;gap:10px;font:500 11.5px/1.3 var(--mono);color:var(--mute);letter-spacing:.04em;margin-top:8px;flex-wrap:wrap}
+
+/* panel */
+.toggles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.tg{font:600 13.5px/1 var(--body);padding:9px 13px;border-radius:5px;border:1.5px solid var(--rule);background:var(--card);color:var(--ink2);cursor:pointer}
+.tg[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tg.stg{border-style:dashed}
+.drawing{display:grid;grid-template-columns:minmax(260px,380px) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:760px){.drawing{grid-template-columns:1fr}}
+.plate{background:var(--paper2);border-radius:10px;padding:14px;max-width:420px;width:100%;margin-inline:auto}
+.plate svg{display:block;width:100%;height:auto}
+.plate svg .hit{cursor:pointer}
+.plate svg .hit:focus{outline:none}
+.plate svg .hit:focus-visible .sel,.plate svg .hit.on .sel{stroke:#ffffff;stroke-width:.55}
+.readout{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:20px 22px;position:sticky;top:70px}
+.readout .rk{font:500 12px/1.3 var(--mono);color:var(--mute);letter-spacing:.07em;text-transform:uppercase}
+.readout h3{font:800 34px/1 var(--display);text-transform:uppercase;margin:8px 0 4px}
+.readout .rs{font:500 13.5px/1.4 var(--mono);color:var(--acc);margin-bottom:12px}
+.readout .rd{color:var(--ink2);font-size:15.5px}
+.readout .meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:14px;font:12.5px/1.5 var(--mono);color:var(--mute)}
+.readout .meta b{color:var(--ink);font-weight:500}
+.hint{font-size:13.5px;color:var(--mute);margin-top:14px}
+
+/* jack map */
+.jmap{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:8px 0 26px}
+@media (max-width:760px){.jmap{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.jk{border-radius:8px;padding:14px 14px 12px;background:var(--card);border:1px solid var(--rule);position:relative;min-height:128px}
+.jk .jn{font:500 12px/1 var(--mono);color:var(--mute);letter-spacing:.06em}
+.jk .jr{font:900 36px/.95 var(--display);text-transform:uppercase;margin:8px 0 6px}
+.jk .jd{font-size:13px;line-height:1.4;color:var(--ink2)}
+.jk .jp{position:absolute;top:12px;right:12px;font:600 10.5px/1 var(--mono);letter-spacing:.06em;padding:4px 6px;border-radius:3px;border:1px solid currentColor}
+.jk.fast .jp{color:var(--t2)} .jk.slow .jp{color:var(--x1)} .jk.inp .jp{color:var(--mute)}
+.jk .bar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:8px 0 0 8px}
+
+/* simulator */
+.sim{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}
+@media (max-width:900px){.sim{grid-template-columns:1fr}}
+.scope{background:var(--plate);border-radius:10px;padding:12px 12px 10px;color:var(--plate-ink)}
+.scope canvas{display:block;width:100%;height:auto}
+.scope .sbar{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font:12.5px/1.4 var(--mono);color:var(--plate-mute);margin-top:10px}
+.scope .sbar b{color:var(--plate-ink);font-weight:500}
+.loopstrip{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:3px;margin-top:10px}
+.loopstrip div{height:26px;border-radius:3px;background:var(--plate2);position:relative;overflow:hidden}
+.loopstrip div i{position:absolute;left:0;right:0;bottom:0;background:var(--x1)}
+.loopstrip div.in{outline:1px solid var(--plate-mute)}
+.loopstrip div.cur{outline:2px solid #ffffff}
+.ctl{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:16px 18px;display:grid;gap:12px}
+.ctl h4{font:600 12px/1.2 var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--mute);margin-top:4px}
+.row{display:grid;grid-template-columns:92px minmax(0,1fr) 62px;gap:10px;align-items:center;font-size:14px}
+.row label{font-weight:600}
+.row output{font:500 12.5px/1 var(--mono);text-align:right;color:var(--ink2);font-variant-numeric:tabular-nums}
+.row input[type=range]{width:100%;accent-color:var(--acc)}
+.row select{width:100%;font:14px var(--body);padding:5px 6px;border-radius:4px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+.dvb{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dvbtn{display:flex;align-items:center;gap:10px;font:600 14px/1.2 var(--body);padding:10px 12px;border-radius:6px;border:1.5px solid var(--rule);background:var(--paper);color:var(--ink);cursor:pointer;user-select:none;touch-action:none;text-align:left}
+.dvbtn .led{width:18px;height:18px;border-radius:50%;background:#2a302e;box-shadow:inset 0 0 0 2px rgba(0,0,0,.25);flex:none}
+.dvbtn small{display:block;font:500 11.5px/1.2 var(--mono);color:var(--mute);margin-top:2px}
+.simbtns{display:flex;gap:8px;flex-wrap:wrap}
+.simbtns .tg{flex:1}
+.proof{margin-top:12px;font:13px/1.5 var(--mono);color:var(--ink2);background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:10px 14px}
+.proof b{font-weight:500;color:var(--ink)}
+.proof .ok{color:var(--t2)}
+
+/* led swatches */
+.sw{display:inline-block;width:.85em;height:.85em;border-radius:50%;vertical-align:-.08em;margin-right:.3em;background:currentColor;box-shadow:0 0 0 1px var(--rule)}
+
+/* family */
+.fam{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.fam a{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:16px 18px}
+.fam a:hover{border-color:var(--acc)}
+.fam .fn{font:800 24px/1 var(--display);text-transform:uppercase}
+.fam .fd{font-size:14px;color:var(--ink2);margin:6px 0 10px}
+.fam .fh{font:500 11.5px/1 var(--mono);color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.fam a.here{border-color:var(--ink);background:var(--paper2)}
+
+footer{border-top:1px solid var(--rule);padding-block:44px 64px;color:var(--mute);font-size:14px}
+footer .fl{font:900 30px/1 var(--display);text-transform:uppercase;color:var(--ink);margin-bottom:14px}
+ul.plain{padding-left:1.1em;margin:0}
+ul.plain li{margin:.35em 0;max-width:72ch}
+ol.tests{padding-left:1.4em;margin:0}
+ol.tests li{margin:.45em 0;max-width:74ch}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Sections"><div class="wrap">
+  <a class="brand" href="#top">MARBLES</a>
+  <a href="#what">What it does</a>
+  <a href="#panel">Panel</a>
+  <a href="#jacks">Jacks</a>
+  <a href="#live">Live</a>
+  <a href="#buttons">Buttons &amp; LEDs</a>
+  <a href="#settings">Settings</a>
+  <a href="#card">Card</a>
+  <a href="#build">Build</a>
+  <a href="#status">Status</a>
+  <a href="#family">Family</a>
+</div></nav>
+
+<header class="hero" id="top"><div class="wrap">
+  <div>
+    <div class="kicker">Mutable Instruments Marbles · for the Hermetic Modular Alchemy Lab V2</div>
+    <h1 class="title">Marbles<span>for Alchemy Lab</span></h1>
+    <p class="thesis">A random sampler. Three streams of gates, four of voltages, drawn from
+      distributions you shape with the knobs, and a loop that can make chance repeat itself.</p>
+    <div class="status" role="note"><span aria-hidden="true">●</span><span><b>Built, tested on a
+      computer, not yet flashed or heard.</b> Version 0.1.0 compiles and its native test suite
+      passes. No module has run it. The <a href="#status">status section</a> lists what to check
+      first.</span></div>
+  </div>
+  <figure class="galton" style="margin:0">
+    <canvas id="galton" width="640" height="544" aria-label="Marbles falling through a peg board into a distribution"></canvas>
+    <figcaption class="cap"><span>Each marble is one X value: a uniform random number bent by SPREAD and BIAS.</span><span id="galtonCap">SPREAD 50% · BIAS 50%</span></figcaption>
+  </figure>
+</div></header>
+
+<main>
+
+<section id="what"><div class="wrap">
+  <h2 class="sh">What it does</h2>
+  <div class="sub">01 · The same generators as the Eurorack module</div>
+  <p class="lede">Marbles makes decisions for a patch. Its <b>T section</b> is a clock and two
+    coin-flippers: T2 ticks, and on each tick T1 or T3 (or both, or neither) fire, depending on
+    the mode and the bias. Its <b>X section</b> draws three voltages, X1–X3, each time its clock
+    ticks, from a distribution SPREAD and BIAS shape, optionally quantized to a scale. <b>Y</b> is
+    a fourth, slower voltage. <b>DEJA VU</b> decides how often a value is new and how often it is
+    one of the last LENGTH values again.</p>
+  <div class="cols">
+    <div class="card"><div class="k">Engine</div><h4>Unmodified TGenerator and XYGenerator</h4>
+      <p>Emilie Gillet's generator code, byte-identical to pichenettes/eurorack at 08460a6, at the
+        original's 32 kHz. This firmware maps the Alchemy Lab's pots, buttons and jacks onto it,
+        using the scaling from Marbles' own <code>cv_reader.cc</code>.</p></div>
+    <div class="card"><div class="k">On this panel</div><h4>A CV and gate module</h4>
+      <p>No audio. Seven of the ten jacks are outputs: X1–X3 and Y on J3–J6, the T gates on J7,
+        J9 and J10. J1 and J2 take clocks, and J8 is the one CV input.</p></div>
+    <div class="card"><div class="k">Controls</div><h4>Six pots on two pages</h4>
+      <p>PLAY holds the eleven-knob module's six most-used knobs. Hold B3 for SETUP: steps,
+        length and the modes Marbles set with buttons. Three Settings pages hold the hidden
+        options, the Y section among them.</p></div>
+  </div>
+</div></section>
+
+<section id="panel"><div class="wrap">
+  <h2 class="sh">The panel</h2>
+  <div class="sub">02 · Drawn to scale from the SDK's KiCad template · click any control</div>
+  <p class="lede">Every hole is where it sits on an Alchemy Lab. The coordinates come from the
+    SDK's own front-panel template, and the drawing is generated from them. Pick a page, then
+    click a pot, a button or a jack.</p>
+
+  <div class="toggles" role="group" aria-label="Page">
+    <button class="tg" type="button" data-page="0" aria-pressed="true">Play page</button>
+    <button class="tg" type="button" data-page="1" aria-pressed="false">Setup · hold B3</button>
+    <button class="tg stg" type="button" data-page="2" aria-pressed="false">Settings · main</button>
+    <button class="tg stg" type="button" data-page="3" aria-pressed="false">Settings · firmware</button>
+    <button class="tg stg" type="button" data-page="4" aria-pressed="false">Settings · Y</button>
+  </div>
+
+  <div class="drawing">
+    <div class="plate">
+      <svg id="panelSvg" viewBox="-3 -3 67 135" role="img" aria-label="Alchemy Lab panel as Marbles uses it"></svg>
+    </div>
+    <div class="readout" id="ro" aria-live="polite">
+      <div class="rk" id="roK">Select a control</div>
+      <h3 id="roT">The panel</h3>
+      <div class="rs" id="roS">6 pots × 2 pages + 3 Settings pages · 3 buttons · 10 jacks</div>
+      <div class="rd" id="roD">Click anything on the drawing. The rings show example values, drawn
+        as the firmware draws them.</div>
+      <div class="meta" id="roM">
+        <div>plate <b>60.96 × 128.5 mm</b> · 12 HP</div>
+        <div>rings <b>16 LEDs</b>, 13 in the arc</div>
+      </div>
+      <div class="hint">The six middle jacks are numbered in reading order (J3 J4 J5 above,
+        J6 J7 J8 below). The template doesn't state the order, so check against the numbers
+        printed on your panel.</div>
+    </div>
+  </div>
+</div></section>
+
+<section id="jacks"><div class="wrap">
+  <h2 class="sh">The jacks</h2>
+  <div class="sub">03 · Seven outputs, three inputs · fast paths for the gates</div>
+  <p class="lede">The Alchemy Lab has three ways to put a voltage on a jack. Marbles uses all
+    three and gives the fastest to the T gates: the codec's DC-coupled outputs run per sample.
+    The X voltages go through the slower I²C converter, where a millisecond does no harm to a
+    stepped voltage.</p>
+
+  <div class="jmap" id="jmap"></div>
+
+  <div class="tablewrap"><table>
+    <thead><tr><th>Jack</th><th>Role</th><th>Path</th><th>Timing</th></tr></thead>
+    <tbody>
+      <tr><td>J1</td><td>t CLOCK in: T follows this clock</td><td>codec input, AC-coupled</td><td class="num">edge per sample, on above +1.0 V, off below +0.5 V</td></tr>
+      <tr><td>J2</td><td>X CLOCK in: X steps on this clock</td><td>codec input, AC-coupled</td><td class="num">same</td></tr>
+      <tr><td>J3 · J4 · J5</td><td>X1 · X2 · X3</td><td>MCP4728 DAC over I²C</td><td class="num">staged when a value moves ≥ 2.4 mV, one flush per 1 ms poll (~0.45 ms of bus)</td></tr>
+      <tr><td>J6</td><td>Y</td><td>MCP4728 DAC over I²C</td><td class="num">same</td></tr>
+      <tr><td>J7</td><td>T3</td><td>STM32 DAC</td><td class="num">once per 16-sample block (0.5 ms)</td></tr>
+      <tr><td>J8</td><td>CV in, default RATE at 1 V/oct</td><td>ADC</td><td class="num">once per block</td></tr>
+      <tr><td>J9</td><td>T1</td><td>codec output, DC-coupled</td><td class="num">per sample</td></tr>
+      <tr><td>J10</td><td>T2, the master clock</td><td>codec output, DC-coupled</td><td class="num">per sample</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="cols" style="margin-top:22px">
+    <div class="card"><div class="k">Why T2 on J10</div><h4>The clock gets the clean path</h4>
+      <p>T2 is Marbles' steady master clock, the output most likely to clock other modules, so it
+        rides the only sample-accurate path. T1 sits next to it on the codec pair; T3 takes the
+        STM32 DAC with 0.5 ms of jitter, which gates don't notice.</p></div>
+    <div class="card"><div class="k">X first, then T</div><h4>Gates leave 2 ms late</h4>
+      <p>X reaches its jack up to ~2 ms after it is computed. The T gates are held back 64
+        samples (2 ms) so a sample-and-hold or envelope fired by T1 sees the new X1, as on the
+        original. The original held them back 2 samples. Relative to J1's clock, T is 2 ms late.</p></div>
+    <div class="card"><div class="k">Is a cable in?</div><h4>Edges instead of switches</h4>
+      <p>Marbles knew a cable was in J1/J2 from the jack's switch. The Lab can't tell, so a
+        clock input counts as patched while edges arrive (the last within 3 s). Settings can
+        force the internal clock or pick X's clock explicitly.</p></div>
+  </div>
+
+  <div class="note warn" style="margin-top:22px">
+    <h3>Check X against a tuner before playing melodies</h3>
+    <p>The SDK rates J3–J8 at about ±50 mV in output mode, because their calibration was
+      measured with the output switch open. At 1 V per octave that is about ±60 cents: fine
+      for modulation, possibly out of tune into an oscillator. J1 and J2 are AC-coupled, so a
+      long held gate sags and releases early; clocks and triggers are fine. Gates on J9/J10 are
+      written as 0 V and +4.995 V; their real levels haven't been measured.</p>
+  </div>
+</div></section>
+
+<section id="live"><div class="wrap">
+  <h2 class="sh">The loop, live</h2>
+  <div class="sub">04 · Marbles' random-sequence code, running in this page</div>
+  <p class="lede">Turn DEJA VU to noon and lock a button: the gates and the voltages repeat
+    exactly every LENGTH steps. Turn it left for new values, right to shuffle the loop. The
+    random sequence, the coin-toss, independent, three-state and drum models, the jitter and
+    the quantizer are ported line for line from the vendored C++; the notes below list the one
+    simplification.</p>
+
+  <div class="sim">
+    <div>
+      <div class="scope">
+        <canvas id="scope" width="1280" height="620" aria-label="Scrolling T gates and X voltages"></canvas>
+        <div class="sbar">
+          <span>T2 <b id="oRate">2.00 Hz</b></span>
+          <span>t deja vu <b id="oTdv">0.00</b></span>
+          <span>X deja vu <b id="oXdv">0.00</b></span>
+          <span>LENGTH <b id="oLen">8</b></span>
+          <span>X1 <b id="oX1">—</b></span>
+        </div>
+        <div class="loopstrip" id="loopstrip" aria-label="X1's sixteen-value deja vu buffer"></div>
+        <div class="sbar"><span>X1's deja vu buffer: 16 values. The outlined cells are the last LENGTH; white is the value just played.</span></div>
+      </div>
+      <div class="proof" id="proof">Lock both deja vu buttons to check the repeat.</div>
+    </div>
+
+    <div class="ctl" id="ctl">
+      <h4>Buttons · tap on / off, hold 2 s to lock</h4>
+      <div class="dvb">
+        <button class="dvbtn" type="button" id="bT"><span class="led" id="ledT"></span><span>B1 · t deja vu<small id="sT">off</small></span></button>
+        <button class="dvbtn" type="button" id="bX"><span class="led" id="ledX"></span><span>B2 · X deja vu<small id="sX">off</small></span></button>
+      </div>
+      <h4>Play page</h4>
+      <div class="row"><label for="kRate">RATE</label><input type="range" id="kRate" min="0.2" max="0.75" step="0.001" value="0.5"><output id="vRate"></output></div>
+      <div class="row"><label for="kTb">t BIAS</label><input type="range" id="kTb" min="0" max="1" step="0.001" value="0.5"><output id="vTb"></output></div>
+      <div class="row"><label for="kTj">t JITTER</label><input type="range" id="kTj" min="0" max="1" step="0.001" value="0"><output id="vTj"></output></div>
+      <div class="row"><label for="kDv">DEJA VU</label><input type="range" id="kDv" min="0" max="1" step="0.001" value="0.5"><output id="vDv"></output></div>
+      <div class="row"><label for="kXs">X SPREAD</label><input type="range" id="kXs" min="0" max="1" step="0.001" value="0.5"><output id="vXs"></output></div>
+      <div class="row"><label for="kXb">X BIAS</label><input type="range" id="kXb" min="0" max="1" step="0.001" value="0.5"><output id="vXb"></output></div>
+      <h4>Setup page</h4>
+      <div class="row"><label for="kSt">X STEPS</label><input type="range" id="kSt" min="0" max="1" step="0.001" value="0.75"><output id="vSt"></output></div>
+      <div class="row"><label for="kLen">LENGTH</label><input type="range" id="kLen" min="0" max="1" step="0.001" value="0.75"><output id="vLen"></output></div>
+      <div class="row"><label for="kTm">t MODE</label><select id="kTm">
+        <option value="0">Coin toss</option><option value="1" disabled>Clusters (not simulated)</option>
+        <option value="2">Drums</option><option value="3">Independent</option>
+        <option value="4" disabled>Divider (not simulated)</option><option value="5">Three states</option></select><span></span></div>
+      <div class="row"><label for="kXm">X MODE</label><select id="kXm"><option value="0">Identical</option><option value="1">Bump</option><option value="2">Tilt</option></select><span></span></div>
+      <div class="row"><label for="kXr">X RANGE</label><select id="kXr"><option value="0">+2 V</option><option value="1">+5 V</option><option value="2" selected>±5 V</option></select><span></span></div>
+      <div class="row"><label for="kSc">SCALE</label><select id="kSc"><option value="0">Major</option><option value="1">Minor</option><option value="2">Pentatonic</option><option value="3">Pelog</option><option value="4">Raag Bhairav</option><option value="5">Raag Shri</option></select><span></span></div>
+      <div class="simbtns">
+        <button class="tg" type="button" id="simRun" aria-pressed="true">Pause</button>
+        <button class="tg" type="button" id="simReset">Reset example</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:22px">
+    <h3>What is ported, and the one simplification</h3>
+    <p><b>Ported:</b> <code>RandomSequence::NextValue</code> and <code>NextVector</code> (the
+      16-value loop, p = (2·deja vu − 1)², new values at or below noon, random jumps above it,
+      locked = 0.5 so p = 0); the four T models' bitmask code and drum patterns; the jitter
+      (JITTER⁴ × 36 semitones, with the phase-difference pull back to the straight clock); the
+      firmware's RATE curve and deja vu deadband; the loop-length table; the X modes' spread
+      and bias per channel; the degenerate and Bernoulli ends of SPREAD; and the quantizer's
+      weight thresholds with the six factory scales. X1, X2 and X3 each step on T1, T2 and T3,
+      the default X CLOCK.</p>
+    <p><b>Simplified:</b> the X distribution. Marbles reads a precomputed inverse-CDF table;
+      this page draws from a beta curve set by SPREAD and BIAS, so shapes are close, not
+      identical. Left of noon, X STEPS eases to each value instead of running Marbles' lag
+      processor. Clusters and Divider aren't simulated. The page uses the browser's random
+      numbers; the module uses the STM32's hardware generator. The firmware and its
+      native tests run the real code; this page is for getting a feel for it.</p>
+  </div>
+</div></section>
+
+<section id="buttons"><div class="wrap">
+  <h2 class="sh">Buttons and lights</h2>
+  <div class="sub">05 · Marbles' deja vu gesture, decided on release</div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Button</th><th>Does</th><th>LEDs</th></tr></thead>
+    <tbody>
+      <tr><td>B1 · t DEJA VU</td><td>From off: tap for on, hold 2 s for locked. From on: tap for off, hold 2 s for locked. From locked: any press returns to on.</td>
+        <td><span class="sw" style="color:#2a302e"></span>dark: off · <span class="sw" style="color:#00ff00"></span>green: on, breathing while DEJA VU sits in its noon lock band · <span class="sw" style="color:#ffa000"></span>amber: locked</td></tr>
+      <tr><td>B2 · X DEJA VU</td><td>The same gesture for the X section. B2 stands down while B3 is held, because B2 + B3 for 2 s opens Settings.</td>
+        <td>as B1 · <span class="sw" style="color:#ff0000"></span>red when the audio callback averages over 80 % CPU</td></tr>
+      <tr><td>B3 · SETUP</td><td>Hold to show the SETUP page. Pots catch their stored values on the way in and out, so nothing jumps.</td>
+        <td><span class="sw" style="color:#ffffff"></span>flashes white on each T2 tick</td></tr>
+    </tbody>
+  </table></div>
+  <div class="cols" style="margin-top:22px">
+    <div class="card"><div class="k">RATE ring</div><h4>Three gate pips</h4><p>Over RATE's level arc, three pips light while T1, T2 and T3 are high, so the clock is visible without a patch cable.</p></div>
+    <div class="card"><div class="k">DEJA VU ring</div><h4>Bipolar from noon</h4><p>Left of noon: new values more often. Noon: a small deadband that locks the loop. Right: the loop's values in shuffled order.</p></div>
+    <div class="card"><div class="k">At boot</div><h4>Last session's CPU</h4><p>For 2.5 s the P1 ring shows the previous session's worst audio-block load: green, amber above 75 %, red above 90 %. One dim dot means no data yet.</p></div>
+  </div>
+</div></section>
+
+<section id="settings"><div class="wrap">
+  <h2 class="sh">Settings</h2>
+  <div class="sub">06 · Hold B2 + B3 for two seconds · B1 steps through the pages</div>
+  <p class="lede">The options Marbles hid behind button combinations, including the whole Y
+    section. Changes are saved with the rest of the state.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Page</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th><th>P6</th></tr></thead>
+    <tbody>
+      <tr><td>Main</td><td>Brightness</td><td>t RANGE: ×¼, ×1, ×4</td><td>Preset slot</td><td>Preset action</td><td>J1 CLOCK: Auto, Ignore</td><td>X CLOCK: Auto, T1+T2+T3, T1, T2, T3, J2</td></tr>
+      <tr><td>Firmware</td><td>FILE</td><td>FLASH</td><td>DFU</td><td>J8 CV TO: Rate, t Bias, t Jitter, Deja vu, X Spread, X Bias, X Steps, Length</td><td>EXTERNAL X: Off, On</td><td>GATE LENGTH</td></tr>
+      <tr><td>Y</td><td>Y SPREAD</td><td>Y BIAS</td><td>Y STEPS</td><td>Y DIVIDER: 1/64 … 1/1 (default 1/8)</td><td>Y RANGE: +2 V, +5 V, ±5 V</td><td>GATE JITTER</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="plain" style="margin-top:20px">
+    <li><b>J8 CV TO.</b> RATE takes exact 1 V/oct (12 semitones per volt, as Marbles' rate
+      input). Any other destination moves its knob's whole travel over 10 V.</li>
+    <li><b>EXTERNAL X.</b> Marbles' external processing: X samples the voltage on J8 on each
+      X clock and quantizes it to the scale. J8 then has no other destination.</li>
+    <li><b>X CLOCK Auto</b> uses J2 while edges arrive, otherwise T1 clocks X1, T2 clocks X2 and
+      T3 clocks X3. <b>J1 CLOCK Ignore</b> keeps T on the internal clock whatever J1 receives.</li>
+    <li><b>Y DIVIDER</b> sets how many X steps pass before Y takes a new value.</li>
+    <li>The firmware page's FILE, FLASH and DFU are the <a href="#card">SD card picker</a>.</li>
+  </ul>
+</div></section>
+
+<section id="card"><div class="wrap">
+  <h2 class="sh">On the card</h2>
+  <div class="sub">07 · One of several firmwares, switched from the panel</div>
+  <p class="lede">Marbles carries the same SD card firmware picker as Mark, Belt, Smack and the
+    other Mutable ports, so any of them can hand the module to any other without a computer.</p>
+  <div class="cols">
+    <div class="card"><div class="k">Prepare the card</div><h4>FAT32, a folder named alchemy</h4>
+      <p>Put <code>marbles_alchemy.bin</code> in <code>/alchemy</code> with the other firmwares.
+        On a Mac, run <code>dot_clean</code> on the card before ejecting so resource forks
+        don't show up as files.</p></div>
+    <div class="card"><div class="k">Switch</div><h4>Settings, firmware page</h4>
+      <p>P1 FILE picks the file. On P2 FLASH, turn below 85 % and then all the way up: it
+        compares, erases, writes, verifies and reboots. If that firmware is already loaded it
+        writes nothing and just shows solid green.</p></div>
+    <div class="card"><div class="k">Its own memory</div><h4>Preset slot 10</h4>
+      <p>Marbles keeps its working state in slot 10 (0-based) and saves it 5 s after the last
+        change, once your hands are off the buttons. Switch away and back, and it returns as
+        you left it. Smack, Mark, Belt and Relay use 12–15 and the other Mutable ports 8, 9 and
+        11, so slots 0–7 are free for presets you save by hand.</p></div>
+  </div>
+</div></section>
+
+<section id="build"><div class="wrap">
+  <h2 class="sh">Build and install</h2>
+  <div class="sub">08 · From source · Alchemy Lab V2 only</div>
+  <p class="lede">There is no release download yet. Build it from the repository, which holds
+    all four Mutable Instruments ports, then put it on the card or flash it over the front
+    USB-C.</p>
+  <pre>git clone https://github.com/timncox/mi-alchemy
+cd mi-alchemy
+git submodule update --init
+git -C lib/libDaisy submodule update --init --recursive
+make libdaisy        <b># once</b>
+make FW=marbles      <b># build-marbles/marbles_alchemy.bin, ~399 KB</b>
+make test            <b># the native suites for all four engines</b></pre>
+  <div class="cols" style="margin-top:22px">
+    <div class="card"><div class="k">From the card</div><h4>The picker</h4><p>Copy the <code>.bin</code> to <code>/alchemy</code> and flash it from any firmware in the family, as above.</p></div>
+    <div class="card"><div class="k">First time</div><h4>Hold B3 at power-on</h4><p>The bootloader serves DFU on the front USB-C. Flash with Hermetic's <a href="https://hermeticmodular.com/program">web programmer</a> or <code>dfu-util</code>, pinned to your module with <code>-S</code>.</p></div>
+    <div class="card"><div class="k">USB</div><h4>HostLink only in 0.1</h4><p>The front USB-C talks to the web programmer. This version has no Launchpad or USB-audio mode, and it never changes the card's shared USB setting.</p></div>
+  </div>
+  <div class="note warn" style="margin-top:22px">
+    <h3>Custom firmware</h3>
+    <p>Hermetic Modular and Mutable Instruments didn't write or test this port and can't support
+      it. Please don't contact them about it; <a href="https://github.com/timncox/mi-alchemy/issues">open
+      an issue</a> on the repository instead.</p>
+  </div>
+</div></section>
+
+<section id="built"><div class="wrap">
+  <h2 class="sh">How it is built</h2>
+  <div class="sub">09 · The layer between Marbles' code and the Alchemy SDK</div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Piece</th><th>What it is</th></tr></thead>
+    <tbody>
+      <tr><td>The engine</td><td><code>marbles::TGenerator</code>, <code>XYGenerator</code>, the ramp extractor and the lookup tables, byte-identical to pichenettes/eurorack @ 08460a6, at 32 kHz in 16-sample blocks.</td></tr>
+      <tr><td><code>marbles_engine.h</code></td><td>What <code>marbles.cc</code>'s <code>Process()</code> did, without the hardware: clock edge detection, the parameter scaling from <code>cv_reader.cc</code>, the deja vu deadband, the loop-length quantizer, the X clock source and the 2 ms T delay. The native test runs this exact code.</td></tr>
+      <tr><td>Parameter scaling</td><td>RATE = pot × 120 − 60 semitones around 2 Hz; t BIAS × 1.05 − 0.025; X SPREAD and BIAS × 1.02 − 0.01; STEPS × 1.04 − 0.02; LENGTH through Marbles' 1–16 table. A one-pole filter smooths the knob values.</td></tr>
+      <tr><td>Scales</td><td>The six factory scales copied from <code>settings.cc</code>, which can't be compiled here because it includes the STM32F4 flash driver.</td></tr>
+      <tr><td>Random numbers</td><td>The STM32's hardware generator feeds Marbles' random stream from the 1 ms poll, as its own RNG driver did.</td></tr>
+      <tr><td>Working state</td><td>Slot 10: both pages, the Settings, the deja vu buttons and last session's CPU peak, schema-tagged so another firmware's slot is never read as this one's.</td></tr>
+      <tr><td>Budget</td><td>398,844 B image: SRAM 82.75 % of 480 KB, DTCM 83,880 B, D2 only the LED window. CPU on the module is unmeasured; Marbles ran on a 168 MHz STM32F405 with its whole UI.</td></tr>
+    </tbody>
+  </table></div>
+  <h3 class="h">Left out</h3>
+  <ul class="plain">
+    <li>Scale recording and per-note scale edits: the six factory scales only.</li>
+    <li>Explicit reset mode, the self-patching detector (pick T1, T2 or T3 as X CLOCK instead),
+      factory calibration and output-test modes, and the colour-blind LED scheme.</li>
+    <li>The Markov T model, which the original firmware also keeps out of reach.</li>
+    <li>CV on every knob: there is one CV input, J8, so that Y could keep its jack.</li>
+  </ul>
+</div></section>
+
+<section id="status"><div class="wrap">
+  <h2 class="sh">Status</h2>
+  <div class="sub">10 · Built and tested on a computer · not flashed · not heard</div>
+  <p class="lede">The native test suite runs <code>marbles_engine.h</code> over the vendored
+    generators at 32 kHz with address and undefined-behaviour sanitizers. All of it passes.
+    Nothing below has been checked on a module.</p>
+  <div class="cols">
+    <div class="card"><div class="k">Passed on the computer</div><h4>Clocks and loops</h4>
+      <p>RATE at noon gives 2.000 Hz, +12 semitones 4.000 Hz, J8 at +1 V 4.000 Hz. A 3 Hz clock
+        on J1 gives 3.000 Hz at 1/1 and 12.000 Hz at ×4. Deja vu locked at LENGTH 2, 5 and 16
+        repeats X and T with no mismatches.</p></div>
+    <div class="card"><div class="k">Passed on the computer</div><h4>Voltages</h4>
+      <p>X stays inside and fills the +2 V, +5 V and ±5 V ranges. Quantized X lands on the scale
+        for all six scales. EXTERNAL X: +2 V on J8 gives 2.000 V on X1.</p></div>
+  </div>
+  <h3 class="h">To check on a module, in order</h3>
+  <ol class="tests">
+    <li>It boots from the picker, the P1 ring shows the CPU readout, B3 flashes with T2.</li>
+    <li>T1 on J9, T2 on J10, T3 on J7; RATE at noon is 2 Hz.</li>
+    <li>A clock into J1 takes over T; X CLOCK Auto follows a clock into J2.</li>
+    <li>X1–X3 and Y on J3–J6, measured against a tuner or meter (the ±50 mV question).</li>
+    <li>J8 into RATE at 1 V/oct.</li>
+    <li>Whether the panel feels slow with smooth X (STEPS left of noon), which flushes the I²C
+      DAC every millisecond and uses about half of the control loop.</li>
+    <li>Settings survive switching to another firmware and back.</li>
+  </ol>
+</div></section>
+
+<section id="family"><div class="wrap">
+  <h2 class="sh">The rest of them</h2>
+  <div class="sub">11 · Four Mutable Instruments ports from one repository, and their siblings</div>
+  <div class="fam">
+    <a href="../"><div class="fn">mi-alchemy</div><div class="fd">The repository's landing page: all four ports, the card layout, the preset slots.</div><div class="fh">overview</div></a>
+    <a href="../clouds/"><div class="fn">Clouds</div><div class="fd">Granular texture synthesizer: granular, stretch, looping delay, spectral.</div><div class="fh">mutable port · slot 8</div></a>
+    <a href="../elements/"><div class="fn">Elements</div><div class="fd">Modal synthesis voice: bow, blow and strike a resonator.</div><div class="fh">mutable port · slot 9</div></a>
+    <a class="here" href="./" aria-current="page"><div class="fn">Marbles</div><div class="fd">This page: random gates and voltages with deja vu.</div><div class="fh">mutable port · slot 10</div></a>
+    <a href="../plaits/"><div class="fn">Plaits</div><div class="fd">Macro oscillator: 24 synthesis models, one voice.</div><div class="fh">mutable port · slot 11</div></a>
+    <a href="https://timncox.github.io/mark-alchemy/"><div class="fn">Mark</div><div class="fd">Five-track live looper, the family's first picker firmware to be heard.</div><div class="fh">sibling firmware</div></a>
+    <a href="https://timncox.github.io/smack-alchemy/"><div class="fn">Smack</div><div class="fd">Live loop capture, slicing and seeded glitch.</div><div class="fh">sibling firmware</div></a>
+    <a href="https://timncox.github.io/belt-alchemy/"><div class="fn">Belt</div><div class="fd">Vocal pitch correction and harmony.</div><div class="fh">sibling firmware</div></a>
+  </div>
+</div></section>
+
+</main>
+
+<footer><div class="wrap">
+  <div class="fl">Marbles for Alchemy Lab</div>
+  <p>Marbles is Mutable Instruments' design, by Emilie Gillet, and its code is MIT-licensed
+    (<a href="https://github.com/pichenettes/eurorack">pichenettes/eurorack</a>). This is an
+    unofficial port. Mutable Instruments and Hermetic Modular did not write, review or endorse
+    it, and cannot support it. Alchemy Lab is Hermetic Modular's product.</p>
+  <p>Built on the <a href="https://github.com/hermetic-modular/alchemy-sdk">Alchemy SDK</a> and
+    libDaisy. Source: <a href="https://github.com/timncox/mi-alchemy">github.com/timncox/mi-alchemy</a>.</p>
+</div></footer>
+
+<script>
+/* == BEGIN GENERATED GEOMETRY -- tools/emit_panel_geometry.py == */
+const PANEL = {
+ "source": "lib/alchemy-sdk/panel/front-panel-template.kicad_pcb",
+ "units": "mm, front view, origin top-left of the plate, y down",
+ "plate": {
+  "w": 60.96,
+  "h": 128.5,
+  "hp": 12.0
+ },
+ "mount": [
+  {
+   "x": 4.537,
+   "y": 1.297,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  },
+  {
+   "x": 51.312,
+   "y": 1.311,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  },
+  {
+   "x": 4.537,
+   "y": 123.8,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  },
+  {
+   "x": 51.323,
+   "y": 123.812,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  }
+ ],
+ "rails": [
+  7.23,
+  122.18
+ ],
+ "pots": [
+  {
+   "id": "P1",
+   "x": 12.758,
+   "y": 21.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P2",
+   "x": 47.758,
+   "y": 21.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P3",
+   "x": 12.758,
+   "y": 49.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P4",
+   "x": 47.758,
+   "y": 49.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P5",
+   "x": 12.758,
+   "y": 77.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P6",
+   "x": 47.758,
+   "y": 77.304,
+   "hole": 3.6
+  }
+ ],
+ "ring": {
+  "r": 10.09,
+  "leds": 16,
+  "start_hour": 7.5,
+  "step_hours": 0.75,
+  "arc_leds": 13
+ },
+ "buttons": [
+  {
+   "id": "B1",
+   "x": 30.257,
+   "y": 21.31,
+   "hole": 3.1,
+   "halo": 4.0
+  },
+  {
+   "id": "B2",
+   "x": 30.257,
+   "y": 49.312,
+   "hole": 3.1,
+   "halo": 4.0
+  },
+  {
+   "id": "B3",
+   "x": 30.257,
+   "y": 77.32,
+   "hole": 3.1,
+   "halo": 4.0
+  }
+ ],
+ "usb": {
+  "x": 25.317,
+  "y": 89.274,
+  "w": 10.034,
+  "h": 4.044,
+  "r": 2.022
+ },
+ "jacks": [
+  {
+   "id": "J1",
+   "x": 6.699,
+   "y": 100.093,
+   "hole": 3.2
+  },
+  {
+   "id": "J2",
+   "x": 6.699,
+   "y": 113.053,
+   "hole": 3.2
+  },
+  {
+   "id": "J3",
+   "x": 18.51,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J4",
+   "x": 30.286,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J5",
+   "x": 42.014,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J6",
+   "x": 18.51,
+   "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J7",
+   "x": 30.286,
+   "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J8",
+   "x": 42.014,
+   "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J9",
+   "x": 53.901,
+   "y": 100.126,
+   "hole": 3.2
+  },
+  {
+   "id": "J10",
+   "x": 53.889,
+   "y": 113.036,
+   "hole": 3.2
+  }
+ ],
+ "jack_order_assumed": "J3..J8 in reading order; the printed panel is the authority",
+ "labels": {
+  "knob_dy": 14.0,
+  "button_dy": 10.63,
+  "in": [
+   5.556,
+   120.642
+  ],
+  "out": [
+   51.53,
+   120.642
+  ]
+ }
+};
+/* == END GENERATED GEOMETRY == */
+
+/* ------------------------------------------------------------------ *
+ *  What the firmware makes of each hole (src/marbles/marbles_alchemy.cpp)
+ * ------------------------------------------------------------------ */
+const LED = { rate:"#40ff40", tbias:"#ff9020", jit:"#ffd040", dvU:"#40c0ff", dvD:"#ff60c0", spr:"#60a0ff",
+  xbias:"#a080ff", steps:"#40ffc0", len:"#ffc060", sel:"#ffffff", dim:"#1c2220", notch:"#ffffff",
+  stg:"#9aa6a1", pick:"#00d060" };
+
+const PAGES = [
+  { name:"PLAY", pots:[
+    { name:"RATE", ring:{s:"level",c:LED.rate}, v:.5, sub:"2 Hz at noon · ±5 octaves · J8 1 V/oct",
+      d:"The T clock's rate: pot × 120 − 60 semitones around 2 Hz (in the ×1 t RANGE). With a clock on J1 it multiplies or divides that clock instead. Three pips on the ring light while T1, T2 and T3 are high.",
+      meta:["ident <b>t_rate</b>","CV <b>J8 (default)</b>"] },
+    { name:"t BIAS", ring:{s:"bi",c:LED.tbias}, v:.35, sub:"T1 ← noon → T3",
+      d:"Which gate wins more often. Left favours T1, right favours T3. In Drums it picks the pattern family; in Divider it picks the ratio.",
+      meta:["ident <b>t_bias</b>","scaling <b>× 1.05 − 0.025</b>"] },
+    { name:"t JITTER", ring:{s:"level",c:LED.jit}, v:.2, sub:"steady → Poisson-like",
+      d:"From a steady clock to a random one. Each tick's period is bent by up to JITTER⁴ × 36 semitones, pulled back toward the straight clock so it never drifts away.",
+      meta:["ident <b>t_jitter</b>"] },
+    { name:"DEJA VU", ring:{s:"bi",c:LED.dvU,c2:LED.dvD}, v:.5, sub:"new ← loop at noon → shuffle",
+      d:"Only acts when a deja vu button is on. Fully left, every value is new. At noon (a small deadband) the last LENGTH values loop exactly. Right of noon, the loop plays in shuffled order.",
+      meta:["ident <b>deja_vu</b>","deadband <b>±2–3 % at noon</b>"] },
+    { name:"X SPREAD", ring:{s:"level",c:LED.spr}, v:.5, sub:"one value → wide → the extremes",
+      d:"Width of the X distribution. Fully left, X sits on the BIAS value; noon is roughly even; fully right, X jumps between the two ends of the range.",
+      meta:["ident <b>x_spread</b>","scaling <b>× 1.02 − 0.01</b>"] },
+    { name:"X BIAS", ring:{s:"bi",c:LED.xbias}, v:.6, sub:"low ← centre → high",
+      d:"Where in the X RANGE the distribution is centred.",
+      meta:["ident <b>x_bias</b>","scaling <b>× 1.02 − 0.01</b>"] },
+  ]},
+  { name:"SETUP", pots:[
+    { name:"X STEPS", ring:{s:"bi",c:LED.steps}, v:.75, sub:"smooth ← noon → quantized",
+      d:"Left of noon, X glides: smooth, then slewed. Right of noon, X is quantized to the SCALE, keeping fewer, more important notes as it turns, down to the root alone.",
+      meta:["ident <b>x_steps</b>","scaling <b>× 1.04 − 0.02</b>"] },
+    { name:"LENGTH", ring:{s:"level",c:LED.len}, v:.75, sub:"1 … 16 steps",
+      d:"The deja vu loop length, through Marbles' own table (1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16).",
+      meta:["ident <b>dv_length</b>"] },
+    { name:"t MODE", ring:{s:"sel",n:6}, v:.5/6, sub:"Coin toss · Clusters · Drums · Independent · Divider · Three states",
+      d:"How T1 and T3 are decided on each tick. Coin toss: one or the other. Clusters: bursts. Drums: kick/snare-style patterns. Independent: two separate coins. Divider: T1 and T3 at ratios of T2. Three states: one, the other, or neither.",
+      meta:["ident <b>t_mode</b>","default <b>Coin toss</b>"] },
+    { name:"X MODE", ring:{s:"sel",n:3}, v:.5/3, sub:"Identical · Bump · Tilt",
+      d:"How SPREAD, BIAS and STEPS reach X1–X3. Identical: all three the same. Bump: X2 gets them, X1 and X3 the opposite. Tilt: a slope from X1 to X3.",
+      meta:["ident <b>x_mode</b>","default <b>Identical</b>"] },
+    { name:"X RANGE", ring:{s:"sel",n:3}, v:2.5/3, sub:"+2 V · +5 V · ±5 V",
+      d:"The output range of X1–X3.",
+      meta:["ident <b>x_range</b>","default <b>±5 V</b>"] },
+    { name:"SCALE", ring:{s:"sel",n:6}, v:.5/6, sub:"Major · Minor · Pentatonic · Pelog · Raag Bhairav · Raag Shri",
+      d:"The scale X STEPS quantizes to: Marbles' six factory scales, each with a weight per note that decides which notes survive as STEPS turns.",
+      meta:["ident <b>x_scale</b>","default <b>Major</b>"] },
+  ]},
+  { name:"SETTINGS · MAIN", settings:true, pots:[
+    { name:"BRIGHTNESS", ring:{s:"level",c:LED.stg}, v:.7, sub:"LED brightness", d:"The SDK's shared LED brightness setting.", meta:["SDK"] },
+    { name:"t RANGE", ring:{s:"sel",n:3}, v:1.5/3, sub:"×¼ · ×1 · ×4", d:"RATE's range: a quarter, normal, or four times as fast.", meta:["ident <b>t_range</b>","default <b>×1</b>"] },
+    { name:"PRESET SLOT", ring:{s:"level",c:LED.stg}, v:.4, sub:"0–15", d:"Choose a preset slot for the action on P4. Slot 10 is Marbles' own working state; 0–7 are free.", meta:["SDK"] },
+    { name:"PRESET ACTION", ring:{s:"level",c:LED.stg}, v:.2, sub:"load · save", d:"Load or save the slot chosen on P3.", meta:["SDK"] },
+    { name:"J1 CLOCK", ring:{s:"sel",n:2}, v:.25, sub:"Auto · Ignore", d:"Auto: J1 clocks T while edges arrive (the last within 3 s), else the internal clock runs. Ignore: always the internal clock.", meta:["ident <b>j1_mode</b>"] },
+    { name:"X CLOCK", ring:{s:"sel",n:6}, v:.5/6, sub:"Auto · T1+T2+T3 · T1 · T2 · T3 · J2", d:"What steps X. Auto: J2 while edges arrive, else T1+T2+T3, where T1 steps X1, T2 steps X2 and T3 steps X3.", meta:["ident <b>x_clock</b>"] },
+  ]},
+  { name:"SETTINGS · FIRMWARE", settings:true, pots:[
+    { name:"FILE", ring:{s:"sel",n:5,c:LED.pick}, v:2.5/5, sub:"one dot per .bin in /alchemy", d:"The SD picker: choose a firmware file. Red: no card; orange: no folder or no files.", meta:["shared picker"] },
+    { name:"FLASH", ring:{s:"level",c:"#0070ff"}, v:.1, sub:"dip below 85 %, then all the way up", d:"Compares, erases, writes, verifies and reboots into the chosen file. Solid green means it's already loaded and nothing is written.", meta:["shared picker"] },
+    { name:"DFU", ring:{s:"level",c:"#9040ff"}, v:.05, sub:"same gesture", d:"Reboots into the bootloader's update mode for a USB flash.", meta:["shared picker"] },
+    { name:"J8 CV TO", ring:{s:"sel",n:8}, v:.5/8, sub:"Rate · t Bias · t Jitter · Deja vu · X Spread · X Bias · X Steps · Length", d:"Where J8 goes. RATE takes 1 V/oct; the others move their knob's whole travel over 10 V.", meta:["ident <b>cv_dest</b>","default <b>Rate</b>"] },
+    { name:"EXTERNAL X", ring:{s:"sel",n:2}, v:.25, sub:"Off · On", d:"Marbles' external processing: X samples and quantizes the voltage on J8 on each X clock.", meta:["ident <b>ext_x</b>"] },
+    { name:"GATE LENGTH", ring:{s:"level",c:LED.stg}, v:.5, sub:"fraction of the clock period", d:"T gate length. Default half the period.", meta:["ident <b>t_pw</b>"] },
+  ]},
+  { name:"SETTINGS · Y", settings:true, pots:[
+    { name:"Y SPREAD", ring:{s:"level",c:LED.stg}, v:.5, sub:"width of Y", d:"Y's distribution width: Marbles' hidden Y setting.", meta:["ident <b>y_spread</b>"] },
+    { name:"Y BIAS", ring:{s:"level",c:LED.stg}, v:.5, sub:"centre of Y", d:"Y's distribution centre.", meta:["ident <b>y_bias</b>"] },
+    { name:"Y STEPS", ring:{s:"level",c:LED.stg}, v:0, sub:"smooth → stepped", d:"Y's smoothness. Default smooth.", meta:["ident <b>y_steps</b>"] },
+    { name:"Y DIVIDER", ring:{s:"sel",n:12}, v:6.5/12, sub:"1/64 … 1/1", d:"Y takes a new value every n X steps. Default 1/8.", meta:["ident <b>y_divider</b>"] },
+    { name:"Y RANGE", ring:{s:"sel",n:3}, v:2.5/3, sub:"+2 V · +5 V · ±5 V", d:"Y's output range. Default ±5 V.", meta:["ident <b>y_range</b>"] },
+    { name:"GATE JITTER", ring:{s:"level",c:LED.stg}, v:0, sub:"random gate length", d:"Random variation of the T gate length. Default none.", meta:["ident <b>t_pw_std</b>"] },
+  ]},
+];
+
+const BUTTONS = [
+  { name:"B1 · t DEJA VU", sub:"tap on/off · hold 2 s to lock", led:"#00ff00",
+    d:"Turns deja vu on or off for the T section. From off, a tap turns it on and a 2 s hold locks it; from locked, any press returns to on. Green on, amber locked, dark off. In Settings, B1 steps through the pages." },
+  { name:"B2 · X DEJA VU", sub:"tap on/off · hold 2 s to lock", led:"#ffa000",
+    d:"The same for the X section. It turns red when the audio callback averages over 80 % CPU. B2 + B3 held 2 s opens Settings." },
+  { name:"B3 · SETUP", sub:"hold for the Setup page", led:"#ffffff",
+    d:"Hold to show the SETUP page; the pots catch their stored values on the way in and out. The B3 lights flash white on each T2 tick." },
+];
+
+const JACKS = {
+  J1:{ role:"t CLOCK", dir:"in", col:"var(--mute)", d:"Clock in for T. AC-coupled codec input, edge-detected per sample (on above +1.0 V, off below +0.5 V). Counts as patched while edges arrive.", path:"codec in" },
+  J2:{ role:"X CLOCK", dir:"in", col:"var(--mute)", d:"Clock in for X, used by X CLOCK Auto while edges arrive. AC-coupled: a long held gate sags.", path:"codec in" },
+  J3:{ role:"X1", dir:"out", col:"var(--x1)", d:"X1 voltage through the MCP4728 I²C DAC. Staged when it moves, flushed once per 1 ms poll. About ±50 mV accuracy in output mode.", path:"I²C DAC" },
+  J4:{ role:"X2", dir:"out", col:"var(--x2)", d:"X2 voltage, as X1.", path:"I²C DAC" },
+  J5:{ role:"X3", dir:"out", col:"var(--x3)", d:"X3 voltage, as X1.", path:"I²C DAC" },
+  J6:{ role:"Y", dir:"out", col:"var(--y)", d:"Y, the slower fourth voltage, divided from the X clock (Settings · Y).", path:"I²C DAC" },
+  J7:{ role:"T3", dir:"out", col:"var(--t3)", d:"T3 gate through the STM32's own DAC, updated once per 16-sample block (0.5 ms).", path:"STM32 DAC" },
+  J8:{ role:"CV IN", dir:"in", col:"var(--mute)", d:"The one CV input. Default RATE at exact 1 V/oct; Settings sends it elsewhere or makes it the EXTERNAL X input.", path:"ADC" },
+  J9:{ role:"T1", dir:"out", col:"var(--t1)", d:"T1 gate on the DC-coupled codec output, written per sample. 0 / +4.995 V.", path:"codec out" },
+  J10:{ role:"T2", dir:"out", col:"var(--t2)", d:"T2, the master clock, on the DC-coupled codec output, written per sample.", path:"codec out" },
+};
+
+/* ------------------------------------------------------------------ *
+ *  Panel drawing
+ * ------------------------------------------------------------------ */
+const svgNS = "http://www.w3.org/2000/svg";
+const svg = document.getElementById("panelSvg");
+let curPage = 0, curSel = null;
+function el(tag, attrs, parent){ const e=document.createElementNS(svgNS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+function hourXY(cx,cy,r,h){ const a=h/12*2*Math.PI; return [cx+r*Math.sin(a), cy-r*Math.cos(a)]; }
+function ringLeds(p){
+  const g=PANEL.ring, out=[];
+  for(let i=0;i<g.leds;i++){ const h=(g.start_hour+g.step_hours*i)%12; out.push({i,h,arc:i<g.arc_leds}); }
+  return out;
+}
+function ringColors(spec, v){
+  const g=PANEL.ring, n=g.arc_leds, cols=new Array(g.leds).fill(LED.dim);
+  if(spec.s==="level"){ const k=Math.round(v*n); for(let i=0;i<k;i++) cols[i]=spec.c; }
+  else if(spec.s==="bi"){ const mid=(n-1)/2, t=Math.round(v*(n-1)); cols[Math.round(mid)]=LED.notch;
+    if(t>mid){ for(let i=Math.round(mid)+1;i<=t;i++) cols[i]=spec.c; } else if(t<mid){ for(let i=t;i<Math.round(mid);i++) cols[i]=spec.c2||spec.c; } }
+  else if(spec.s==="sel"){ const z=Math.min(spec.n-1,Math.floor(v*spec.n));
+    for(let k=0;k<spec.n;k++){ const led=Math.round(k*(n-1)/Math.max(1,spec.n-1)); cols[led]= k===z ? (spec.c||LED.sel) : "#39423f"; } }
+  return cols;
+}
+function draw(){
+  svg.textContent="";
+  const P=PANEL, pw=P.plate.w, ph=P.plate.h;
+  el("rect",{x:0,y:0,width:pw,height:ph,rx:1.2,fill:"#1a2320"},svg);
+  for(const m of P.mount) el("rect",{x:m.x-m.w/2,y:m.y-m.h/2,width:m.w,height:m.h,rx:m.r,fill:"#070b0a"},svg);
+  const t=el("text",{x:pw/2,y:5.6,"text-anchor":"middle","font-family":"Big Shoulders Display, Arial Narrow, sans-serif","font-weight":"900","font-size":"4.4",fill:"#dbe4df","letter-spacing":".3"},svg); t.textContent="MARBLES";
+  const pg=PAGES[curPage];
+  const pageLab=el("text",{x:pw/2,y:9.4,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":"2.1",fill: pg.settings?"#f2b632":"#86958f"},svg); pageLab.textContent=pg.name;
+  // pots
+  P.pots.forEach((p,i)=>{
+    const spec=pg.pots[i], cols=ringColors(spec.ring, spec.v);
+    const g=el("g",{class:"hit",tabindex:"0",role:"button","aria-label":`${p.id} ${spec.name}`},svg);
+    ringLeds().forEach(L=>{ const [x,y]=hourXY(p.x,p.y,P.ring.r,L.h); el("circle",{cx:x,cy:y,r:.9,fill:L.arc?cols[L.i]:"#101614"},g); });
+    el("circle",{cx:p.x,cy:p.y,r:6.3,fill:"#2b3632"},g);
+    el("circle",{class:"sel",cx:p.x,cy:p.y,r:5.2,fill:"#10171a",stroke:"#3b4743","stroke-width":".35"},g);
+    const va=(PANEL.ring.start_hour+PANEL.ring.step_hours*(PANEL.ring.arc_leds-1)*spec.v)%12, [ix,iy]=hourXY(p.x,p.y,4.1,va);
+    el("line",{x1:p.x,y1:p.y,x2:ix,y2:iy,stroke:"#dbe4df","stroke-width":".7","stroke-linecap":"round"},g);
+    const lab=el("text",{x:p.x,y:p.y+P.labels.knob_dy-.6,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":"2.35",fill:"#dbe4df"},g); lab.textContent=spec.name;
+    g.addEventListener("click",()=>select({k:"pot",i}));
+    g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); select({k:"pot",i}); }});
+    if(curSel&&curSel.k==="pot"&&curSel.i===i) g.classList.add("on");
+  });
+  // buttons
+  const bled = pg.settings ? ["#ffffff","#303836","#303836"] : ["#00ff00","#ffa000","#30104a"];
+  P.buttons.forEach((b,i)=>{
+    const g=el("g",{class:"hit",tabindex:"0",role:"button","aria-label":BUTTONS[i].name},svg);
+    el("circle",{cx:b.x-2.3,cy:b.y+3.1,r:.8,fill:bled[i]},g); el("circle",{cx:b.x+2.3,cy:b.y+3.1,r:.8,fill:bled[i]},g);
+    el("circle",{class:"sel",cx:b.x,cy:b.y,r:b.halo/2+.6,fill:"#2b3632",stroke:"#3b4743","stroke-width":".35"},g);
+    el("circle",{cx:b.x,cy:b.y,r:b.hole/2,fill:"#0c1110"},g);
+    const lab=el("text",{x:b.x,y:b.y+P.labels.button_dy-.2,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":"1.9",fill:"#86958f"},g);
+    lab.textContent = pg.settings ? ["PAGE","",""][i] || b.id : ["t DV","X DV","SETUP"][i];
+    g.addEventListener("click",()=>select({k:"btn",i}));
+    g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); select({k:"btn",i}); }});
+    if(curSel&&curSel.k==="btn"&&curSel.i===i) g.classList.add("on");
+  });
+  // usb
+  el("rect",{x:P.usb.x-P.usb.w/2,y:P.usb.y-P.usb.h/2,width:P.usb.w,height:P.usb.h,rx:P.usb.r,fill:"#070b0a",stroke:"#3b4743","stroke-width":".3"},svg);
+  // legends
+  const lin=el("text",{x:P.labels.in[0],y:P.labels.in[1]+3.4,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":"1.9",fill:"#86958f"},svg); lin.textContent="IN";
+  const lout=el("text",{x:P.labels.out[0]+1.6,y:P.labels.out[1]+3.4,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":"1.9",fill:"#86958f"},svg); lout.textContent="OUT";
+  // jacks
+  const css=getComputedStyle(document.documentElement);
+  const colOf=c=>c.startsWith("var(")?css.getPropertyValue(c.slice(4,-1)).trim():c;
+  P.jacks.forEach(j=>{
+    const info=JACKS[j.id];
+    const g=el("g",{class:"hit",tabindex:"0",role:"button","aria-label":`${j.id} ${info.role}`},svg);
+    const c = info.dir==="out" ? colOf(info.col) : "#86958f";
+    el("circle",{class:"sel",cx:j.x,cy:j.y,r:3.55,fill:"#2b3632",stroke:c,"stroke-width": info.dir==="out"?".75":".35"},g);
+    el("circle",{cx:j.x,cy:j.y,r:j.hole/2,fill:"#070b0a"},g);
+    const lab=el("text",{x:j.x,y:j.y-4.5,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":"1.95","font-weight":"500",fill: info.dir==="out"?c:"#dbe4df"},g); lab.textContent=info.role;
+    const jn=el("text",{x:j.x,y:j.y+5.6,"text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":"1.6",fill:"#6c7a75"},g); jn.textContent=j.id;
+    g.addEventListener("click",()=>select({k:"jack",id:j.id}));
+    g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); select({k:"jack",id:j.id}); }});
+    if(curSel&&curSel.k==="jack"&&curSel.id===j.id) g.classList.add("on");
+  });
+}
+const ro={k:document.getElementById("roK"),t:document.getElementById("roT"),s:document.getElementById("roS"),d:document.getElementById("roD"),m:document.getElementById("roM")};
+function select(s){
+  curSel=s; const pg=PAGES[curPage];
+  if(s.k==="pot"){ const p=pg.pots[s.i]; ro.k.textContent=`${PANEL.pots[s.i].id} · ${pg.name}`; ro.t.textContent=p.name; ro.s.textContent=p.sub; ro.d.textContent=p.d; ro.m.innerHTML=p.meta.map(x=>`<div>${x}</div>`).join(""); }
+  else if(s.k==="btn"){ const b=BUTTONS[s.i]; ro.k.textContent=PANEL.buttons[s.i].id; ro.t.textContent=b.name.split(" · ")[1]; ro.s.textContent=b.sub; ro.d.textContent=b.d; ro.m.innerHTML=""; }
+  else { const j=JACKS[s.id]; ro.k.textContent=`${s.id} · ${j.dir==="out"?"output":"input"}`; ro.t.textContent=j.role; ro.s.textContent=j.path; ro.d.textContent=j.d; ro.m.innerHTML=""; }
+  draw();
+}
+document.querySelectorAll(".toggles .tg").forEach(b=>b.addEventListener("click",()=>{
+  curPage=+b.dataset.page; document.querySelectorAll(".toggles .tg").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));
+  if(curSel&&curSel.k==="pot") select(curSel); else draw();
+}));
+draw();
+
+/* jack map cards */
+(function(){
+  const host=document.getElementById("jmap");
+  const order=["J3","J4","J5","J6","J7","J9","J10","J1","J2","J8"];
+  const kind={J3:"slow",J4:"slow",J5:"slow",J6:"slow",J7:"fast",J9:"fast",J10:"fast",J1:"inp",J2:"inp",J8:"inp"};
+  const tagtxt={J3:"I²C · 1 ms",J4:"I²C · 1 ms",J5:"I²C · 1 ms",J6:"I²C · 1 ms",J7:"DAC · 0.5 ms",J9:"CODEC · SAMPLE",J10:"CODEC · SAMPLE",J1:"IN",J2:"IN",J8:"IN"};
+  for(const id of order){ const j=JACKS[id]; const d=document.createElement("div"); d.className="jk "+kind[id];
+    d.innerHTML=`<span class="bar" style="background:${j.col}"></span><div class="jn">${id}</div><div class="jr" style="color:${j.dir==="out"?j.col:"var(--ink)"}">${j.role}</div><div class="jd">${j.d.split(". ")[0]}.</div><span class="jp">${tagtxt[id]}</span>`;
+    host.appendChild(d); }
+})();
+
+/* ------------------------------------------------------------------ *
+ *  Ported engine pieces (vendor/eurorack/marbles/random/*)
+ * ------------------------------------------------------------------ */
+const U32 = 4294967296;
+const rnd = ()=>Math.random();                       /* RandomStream::GetFloat */
+
+class RandomSequence {                               /* random_sequence.h */
+  constructor(){ this.loop=new Float32Array(16); for(let i=0;i<16;i++) this.loop[i]=rnd();
+    this.writeHead=0; this.length=8; this.step=0; this.dejaVu=0; this.lastIndex=0; }
+  setLength(n){ if(n<1||n>16) return; this.length=n; this.step=this.step%n; }
+  nextValue(){
+    const pSqrt=2*this.dejaVu-1, p=pSqrt*pSqrt, mutate=rnd()<p;
+    if(mutate && this.dejaVu<=0.5){ this.loop[this.writeHead]=rnd(); this.writeHead=(this.writeHead+1)%16; this.step=this.length-1; }
+    else if(mutate){ this.step=Math.floor(rnd()*this.length); }
+    else { this.step=this.step+1; if(this.step>=this.length) this.step=0; }
+    const i=(this.writeHead+16-this.length+this.step)%16; this.lastIndex=i;
+    return this.loop[i];
+  }
+  nextVector(n){                                      /* NextVector: seed, then an LCG */
+    const seed=this.nextValue(); let word=Math.floor(seed*U32)>>>0; const out=[];
+    for(let k=0;k<n;k++){ out.push(word/U32); word=(Math.imul(word,1664525)+1013904223)>>>0; }
+    return out;
+  }
+}
+
+const DRUMS=[[1,0,0,0,2,0,0,0],[0,0,1,0,2,0,0,0],[1,0,1,0,2,0,0,0],[0,0,1,0,2,0,0,2],[1,0,1,0,2,0,1,0],[0,2,1,0,2,0,0,2],
+  [1,0,0,0,2,0,1,0],[0,2,1,0,2,0,1,2],[1,0,0,1,2,0,0,0],[0,2,1,1,2,0,1,2],[1,0,0,1,2,0,1,0],[0,2,1,1,2,2,1,2],
+  [1,0,0,1,2,0,1,2],[0,2,0,1,2,0,1,2],[1,0,1,1,2,0,1,2],[2,0,1,2,0,1,2,0],[1,2,1,1,2,0,1,2],[2,0,1,2,0,1,2,2]];
+const LOOP_LEN=[1,...Array(11).fill(2),...Array(11).fill(3),...Array(12).fill(4),...Array(4).fill(5),...Array(12).fill(6),
+  ...Array(2).fill(7),...Array(9).fill(8),...Array(3).fill(10),...Array(7).fill(12),...Array(2).fill(14),16];
+const SCALES=[{"deg":[[0.0,255],[0.0833,16],[0.1667,96],[0.25,24],[0.3333,128],[0.4167,64],[0.5,8],[0.5833,192],[0.6667,16],[0.75,96],[0.8333,24],[0.9167,128]]},{"deg":[[0.0,255],[0.0833,16],[0.1667,96],[0.25,128],[0.3333,8],[0.4167,64],[0.5,4],[0.5833,192],[0.6667,96],[0.75,16],[0.8333,128],[0.9167,16]]},{"deg":[[0.0,255],[0.0833,4],[0.1667,96],[0.25,4],[0.3333,4],[0.4167,140],[0.5,4],[0.5833,192],[0.6667,4],[0.75,96],[0.8333,4],[0.9167,4]]},{"deg":[[0.0,255],[0.1275,128],[0.2625,32],[0.46,8],[0.5883,192],[0.7067,64],[0.8817,16]]},{"deg":[[0.0,255],[0.0752,128],[0.1699,4],[0.263,4],[0.3219,128],[0.415,64],[0.4918,4],[0.585,192],[0.6601,64],[0.7549,4],[0.8479,4],[0.9069,64]]},{"deg":[[0.0,255],[0.0752,4],[0.1699,128],[0.263,64],[0.3219,4],[0.415,128],[0.4918,4],[0.585,192],[0.6601,4],[0.7549,64],[0.8479,128],[0.9069,4]]}];
+const NOTE=["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
+
+/* quantizer.cc: weight thresholds per level, the second-largest rule */
+function makeLevels(scale){
+  const d=scale.deg; let second=0, largest=0;
+  for(const [,w] of d){ if(w>largest){ second=largest; largest=w; } else if(w>second) second=w; }
+  const th=[0,16,32,64,128,192,255]; if(second>192) th[5]=second;
+  return th.map(t=>d.map(([v,w])=>w>=t?v:null).filter(v=>v!==null));
+}
+function quantize(volts, amount, levels){                 /* Quantizer::Process, no hysteresis */
+  let level=Math.floor(Math.max(0,Math.min(0.9999,amount))*8);   /* 7 thresholds + "off" */
+  if(level<=0) return volts;
+  const avail=levels[Math.min(6,level-1)];
+  const oct=Math.floor(volts), frac=volts-oct;
+  let a=avail[avail.length-1]-1, b=avail[0]+1;
+  for(const v of avail){ if(frac>v) a=v; else { b=v; break; } }
+  return (frac<(a+b)/2?a:b)+oct;
+}
+
+/* The X distribution (simplified: a beta curve, see the note on the page) */
+const icdfCache=new Map();
+function betaIcdf(spread,bias){
+  const key=Math.round(spread*200)+":"+Math.round(bias*200);
+  if(icdfCache.has(key)) return icdfCache.get(key);
+  const k=2*Math.pow(2,8*(0.5-spread)), a=Math.max(0.06,bias*k), b=Math.max(0.06,(1-bias)*k);
+  const N=400, cdf=new Float64Array(N+1); let acc=0;
+  for(let i=1;i<=N;i++){ const x=(i-.5)/N; acc+=Math.pow(x,a-1)*Math.pow(1-x,b-1); cdf[i]=acc; }
+  for(let i=0;i<=N;i++) cdf[i]/=acc;
+  const f=u=>{ let lo=0,hi=N; while(hi-lo>1){ const m=(lo+hi)>>1; if(cdf[m]<u) lo=m; else hi=m; } const span=cdf[hi]-cdf[lo]||1; return (lo+(u-cdf[lo])/span)/N; };
+  if(icdfCache.size>600) icdfCache.clear(); icdfCache.set(key,f); return f;
+}
+function xValue(u, spread, bias){                         /* OutputChannel::GenerateNewVoltage */
+  const degenerate=Math.min(1,Math.max(0,1.25-spread*25)), bern=Math.min(1,Math.max(0,spread*25-23.75));
+  let v=betaIcdf(spread,bias)(u); const bv=u>=(1-bias)?0.999999:0;
+  v+=degenerate*(bias-v); v+=bern*(bv-v); return v;
+}
+const RANGE=[[2,0],[5,0],[10,-5]];                         /* scale, offset per X RANGE */
+
+/* ------------------------------------------------------------------ *
+ *  The simulation: 1 ms steps, like the module's per-sample loop
+ * ------------------------------------------------------------------ */
+const $=id=>document.getElementById(id);
+const K={rate:$("kRate"),tb:$("kTb"),tj:$("kTj"),dv:$("kDv"),xs:$("kXs"),xb:$("kXb"),st:$("kSt"),len:$("kLen"),tm:$("kTm"),xm:$("kXm"),xr:$("kXr"),sc:$("kSc")};
+const EX={rate:.5,tb:.5,tj:0,dv:.5,xs:.5,xb:.5,st:.75,len:.75,tm:"0",xm:"0",xr:"2",sc:"0"};
+const dvState={t:2,x:2};   /* 0 off, 1 on, 2 locked */
+let S;
+function freshState(){
+  S={ tSeq:new RandomSequence(), xSeq:[new RandomSequence(),new RandomSequence(),new RandomSequence()],
+    master:0, jit:1, phaseDiff:0, drumStep:0, drumIdx:0, t1:{on:false,left:0}, t3:{on:false,left:0}, tickLen:.5,
+    x:[0,0,0], xPrev:[0,0,0], xTick:[0,0,0], xPeriod:[.5,.5,.5], now:0, hist:[], ticks:0, record:[], lastT2:0 };
+}
+freshState();
+function param(){
+  const r=+K.rate.value, tb=Math.min(1,Math.max(0,+K.tb.value*1.05-0.025)), tj=+K.tj.value;
+  let dv=+K.dv.value; const d=Math.abs(dv-.5);
+  const lock=d<0.02; if(dv<.47) dv*=1.06382978723; else if(dv>.53) dv=.5+(dv-.53)*1.06382978723; else dv=.5;
+  const hz=2*Math.pow(2,(r*120-60)/12);
+  const len=LOOP_LEN[Math.min(LOOP_LEN.length-1,Math.floor(+K.len.value*LOOP_LEN.length))];
+  return { hz, tb, tj, dv, lock, len,
+    tdv: dvState.t===2?.5:(dvState.t===1?dv:0), xdv: dvState.x===2?.5:(dvState.x===1?dv:0),
+    xs:Math.min(1,Math.max(0,+K.xs.value*1.02-.01)), xb:Math.min(1,Math.max(0,+K.xb.value*1.02-.01)),
+    st:Math.min(1,Math.max(0,+K.st.value*1.04-.02)), tm:+K.tm.value, xm:+K.xm.value, xr:+K.xr.value, sc:+K.sc.value };
+}
+let levelsCache={sc:-1,l:null};
+function levelsFor(sc){ if(levelsCache.sc!==sc) levelsCache={sc,l:makeLevels(SCALES[sc])}; return levelsCache.l; }
+function newX(i, P){
+  const amt = P.xm===0 ? 1 : (P.xm===1 ? (i===1?1:-1) : (2*i/2-1));
+  const spread=.5+(P.xs-.5)*amt, bias=.5+(P.xb-.5)*amt, steps=.5+(P.st-.5)*amt;
+  const seq=S.xSeq[i]; seq.setLength(P.len); seq.dejaVu=P.xdv;
+  const u=seq.nextValue(); const [sc,off]=RANGE[P.xr];
+  let v=xValue(u,spread,bias)*sc+off;
+  const q = steps>=.5 ? quantize(v, 2*steps-1, levelsFor(P.sc)) : v;
+  S.xPrev[i]=S.x[i]; S.x[i]=q; S.xSteps=S.xSteps||[]; S.xSteps[i]=steps; S.xPeriod[i]=Math.max(.02,S.now-S.xTick[i]); S.xTick[i]=S.now;
+  if(i===0){ S.record.push({u,idx:seq.lastIndex}); if(S.record.length>64) S.record.shift(); }
+}
+function tick(P){                                            /* TGenerator: master phase wrapped */
+  const seq=S.tSeq; seq.setLength(P.len); seq.dejaVu=P.tdv;
+  const v=seq.nextVector(6);                               /* pulse_width[2], u[2], p, jitter */
+  const u0=v[2], u1=v[3], jv=v[5];
+  const amount=Math.pow(P.tj,4)*36;
+  const x=betaIcdf(0.44,0.57)(jv);                         /* ~ FastBetaDistributionSample (dist 4,3) */
+  let mult=Math.pow(2,((x*2-1)*amount)/12);
+  mult*= S.phaseDiff>0 ? 1+S.phaseDiff : 1/(1-S.phaseDiff);
+  S.jit=mult;
+  let mask=0; const bias=P.tb;
+  if(P.tm===0){ for(let i=0;i<2;i++) if((u0>bias)!==!!(i&1)) mask|=1<<i; }
+  else if(P.tm===3){ const u=[u0,u1]; for(let i=0;i<2;i++) if((u[i]>bias)!==!!(i&1)) mask|=1<<i; }
+  else if(P.tm===5){ const pn=.75-Math.abs(bias-.5), th=pn+(1-pn)*(.25+bias*.5); for(let i=0;i<2;i++){ const u=u0; if(u>pn && ((u>th)!==!!(i&1))) mask|=1<<i; } }
+  else if(P.tm===2){ S.drumStep++; if(S.drumStep>=8){ S.drumStep=0; const u=u0*2*Math.abs(bias-.5); S.drumIdx=Math.floor(18*u); if(bias<=.5) S.drumIdx-=S.drumIdx%2; S.drumIdx=Math.min(17,S.drumIdx); } mask=DRUMS[S.drumIdx][S.drumStep]; }
+  const period=1/(P.hz*S.jit), pw=0.05+0.9*0.5;
+  S.t1={on:!!(mask&1),left:period*pw}; S.t3={on:!!(mask&2),left:period*pw};
+  S.ticks++; S.lastT2=S.now;
+  newX(1,P);                                               /* X2 on T2 */
+  if(mask&1) newX(0,P);                                    /* X1 on T1 */
+  if(mask&2) newX(2,P);                                    /* X3 on T3 */
+  S.tRec=S.tRec||[]; S.tRec.push(mask); if(S.tRec.length>64) S.tRec.shift();
+}
+function stepSim(dt, P){
+  const n=Math.ceil(dt/0.001), h=dt/n;
+  for(let s=0;s<n;s++){
+    const f=P.hz*h, jf=f*S.jit;
+    S.master+=jf; S.phaseDiff+=f-jf; S.now+=h;
+    if(S.master>1){ S.master-=1; tick(P); }
+    S.t1.left-=h; S.t3.left-=h;
+    const x=S.x.map((v,i)=>{ const st=(S.xSteps&&S.xSteps[i])||1; if(st>=.5) return v;
+      const sm=1-2*st, span=S.xPeriod[i]*Math.max(.02,sm), k=Math.min(1,(S.now-S.xTick[i])/span); return S.xPrev[i]+(v-S.xPrev[i])*k; });
+    S.hist.push({t:S.now, t1:S.t1.on&&S.t1.left>0, t2:S.master<0.5, t3:S.t3.on&&S.t3.left>0, x});
+  }
+  const keep=S.now-6.2; while(S.hist.length&&S.hist[0].t<keep) S.hist.shift();
+}
+
+/* ---- scope drawing ---- */
+const cv=$("scope"), cx=cv.getContext("2d");
+function cssv(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function render(P){
+  const W=cv.width, H=cv.height; cx.clearRect(0,0,W,H);
+  const lanes=[{k:"t1",n:"T1 · J9",c:cssv("--t1")},{k:"t2",n:"T2 · J10",c:cssv("--t2")},{k:"t3",n:"T3 · J7",c:cssv("--t3")}];
+  const xl=[{n:"X1 · J3",c:cssv("--x1")},{n:"X2 · J4",c:cssv("--x2")},{n:"X3 · J5",c:cssv("--x3")}];
+  const L=96, R=W-12, gh=46, gy0=16, xh=128, xy0=gy0+3*(gh+10)+14;
+  const t1=S.now, t0=t1-6;
+  const X=t=>L+(t-t0)/(t1-t0)*(R-L);
+  cx.font="500 20px IBM Plex Mono, monospace"; cx.textBaseline="middle";
+  lanes.forEach((ln,i)=>{ const y=gy0+i*(gh+10);
+    cx.fillStyle="#26312d"; cx.fillRect(L,y,R-L,gh); cx.fillStyle="#86958f"; cx.fillText(ln.n,6,y+gh/2);
+    cx.fillStyle=ln.c; let st=null;
+    for(const h of S.hist){ if(h[ln.k]){ if(st===null) st=h.t; } else if(st!==null){ cx.fillRect(X(st),y+6,Math.max(2,X(h.t)-X(st)),gh-12); st=null; } }
+    if(st!==null) cx.fillRect(X(st),y+6,Math.max(2,R-X(st)),gh-12);
+  });
+  const [sc,off]=RANGE[P.xr], vmin=off, vmax=off+sc;
+  xl.forEach((ln,i)=>{ const y=xy0+i*(xh+12);
+    cx.fillStyle="#26312d"; cx.fillRect(L,y,R-L,xh); cx.fillStyle="#86958f"; cx.fillText(ln.n,6,y+xh/2);
+    cx.strokeStyle="#34413c"; cx.lineWidth=1; cx.beginPath();
+    for(let v=Math.ceil(vmin);v<=vmax;v++){ const yy=y+xh-(v-vmin)/(vmax-vmin)*xh; cx.moveTo(L,yy); cx.lineTo(R,yy); } cx.stroke();
+    cx.strokeStyle=ln.c; cx.lineWidth=3; cx.beginPath(); let first=true;
+    for(const h of S.hist){ const yy=y+xh-(Math.min(vmax,Math.max(vmin,h.x[i]))-vmin)/(vmax-vmin)*xh; if(first){cx.moveTo(X(h.t),yy); first=false;} else cx.lineTo(X(h.t),yy); }
+    cx.stroke();
+  });
+  cx.fillStyle="#86958f"; cx.font="500 17px IBM Plex Mono, monospace";
+  cx.fillText(`${vmax} V`,L-58+8,xy0+8); cx.fillText(`${vmin} V`,L-58+8,xy0+xh-8);
+  cx.fillText("6 s", R-40, H-10);
+}
+function noteName(v){ const semi=Math.round(v*12); const n=((semi%12)+12)%12; return NOTE[n]+" · "+v.toFixed(2)+" V"; }  /* scale roots sit on whole volts */
+
+/* ---- loop strip + proof ---- */
+const strip=$("loopstrip"); for(let i=0;i<16;i++){ const d=document.createElement("div"); d.appendChild(document.createElement("i")); strip.appendChild(d); }
+function updateStrip(P){
+  const seq=S.xSeq[0], cells=strip.children;
+  for(let i=0;i<16;i++){ const inLoop=((i-(seq.writeHead+16-P.len))%16+16)%16<P.len;
+    cells[i].className=(inLoop?"in":"")+(i===seq.lastIndex?" cur":""); cells[i].firstChild.style.height=(seq.loop[i]*100).toFixed(0)+"%"; }
+}
+function updateProof(P){
+  const pr=$("proof");
+  if(dvState.t===2 && dvState.x===2){
+    const r=S.record, t=S.tRec||[], L=P.len; let ok=0, n=0;
+    for(let i=L;i<t.length;i++){ n++; if(t[i]===t[i-L]) ok++; }
+    pr.innerHTML = n>=L ? `Both sections locked, LENGTH ${L}: the last ${n} T ticks match the tick ${L} before them in <b class="${ok===n?"ok":""}">${ok} of ${n}</b>. X1 plays buffer cells ${[...new Set(r.slice(-L).map(e=>e.idx))].sort((a,b)=>a-b).join(", ")} and nothing else.` : `Both sections locked. Collecting ticks for LENGTH ${L}…`;
+  } else pr.textContent = "Lock both deja vu buttons (hold each 2 s) to check the repeat.";
+}
+
+/* ---- controls ---- */
+function fmt(){
+  const P=param();
+  $("vRate").textContent=P.hz.toFixed(2)+" Hz"; $("vTb").textContent=Math.round(+K.tb.value*100)+"%";
+  $("vTj").textContent=Math.round(+K.tj.value*100)+"%"; $("vDv").textContent=P.lock?"noon":Math.round(+K.dv.value*100)+"%";
+  $("vXs").textContent=Math.round(+K.xs.value*100)+"%"; $("vXb").textContent=Math.round(+K.xb.value*100)+"%";
+  $("vSt").textContent=+K.st.value<.5?"smooth":(+K.st.value<.52?"noon":"steps"); $("vLen").textContent=P.len;
+  $("oRate").textContent=(P.hz).toFixed(2)+" Hz"; $("oTdv").textContent=P.tdv.toFixed(2); $("oXdv").textContent=P.xdv.toFixed(2); $("oLen").textContent=P.len;
+  $("galtonCap").textContent=`SPREAD ${Math.round(+K.xs.value*100)}% · BIAS ${Math.round(+K.xb.value*100)}%`;
+  return P;
+}
+Object.values(K).forEach(k=>k.addEventListener("input",fmt));
+const LEDC={0:"#2a302e",1:"#00d000",2:"#ffa000"}, LAB={0:"off",1:"on",2:"locked"};
+function paintDv(){ $("ledT").style.background=LEDC[dvState.t]; $("ledX").style.background=LEDC[dvState.x]; $("sT").textContent=LAB[dvState.t]; $("sX").textContent=LAB[dvState.x]; fmt(); }
+function dvButton(btn,key){
+  let t0=0, timer=null, held=false;
+  const down=e=>{ e.preventDefault(); t0=performance.now(); held=false; timer=setTimeout(()=>{ held=true; dvState[key]=2; paintDv(); },2000); };
+  const up=()=>{ if(!t0) return; clearTimeout(timer); const s=dvState[key];
+    if(!held){ dvState[key]= s===2?1:(s===1?0:1); } t0=0; paintDv(); };
+  btn.addEventListener("pointerdown",down); btn.addEventListener("pointerup",up); btn.addEventListener("pointerleave",()=>{ if(t0){ clearTimeout(timer); t0=0; } });
+  btn.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ")&&!e.repeat){ down(e); } });
+  btn.addEventListener("keyup",e=>{ if(e.key==="Enter"||e.key===" ") up(); });
+}
+dvButton($("bT"),"t"); dvButton($("bX"),"x");
+let running=true;
+$("simRun").addEventListener("click",()=>{ running=!running; $("simRun").textContent=running?"Pause":"Run"; $("simRun").setAttribute("aria-pressed",running?"true":"false"); });
+$("simReset").addEventListener("click",()=>{ for(const k in EX) K[k].value=EX[k]; dvState.t=2; dvState.x=2; freshState(); paintDv(); });
+
+/* The example opens with both sections locked at LENGTH 8 (the factory default) and a steady 2 Hz clock, so the repeat is visible at once. */
+paintDv();
+
+/* warm up so the first frame (and a thumbnail) already shows 6 s of output */
+(function(){ const P=param(); for(let i=0;i<60;i++) stepSim(0.1,P); const P2=fmt(); render(P2); updateStrip(P2); updateProof(P2); $("oX1").textContent=noteName(S.x[0]); })();
+
+let last=performance.now(), vis=true;
+const io=('IntersectionObserver' in window)?new IntersectionObserver(es=>{ vis=es[0].isIntersecting; }):null; if(io) io.observe(cv);
+function loop(now){
+  const dt=Math.min(0.1,(now-last)/1000); last=now;
+  if(running&&vis){ const P=fmt(); stepSim(dt,P); render(P); updateStrip(P); updateProof(P); $("oX1").textContent= +K.st.value>=.5 ? noteName(S.x[0]) : S.x[0].toFixed(2)+" V"; }
+  requestAnimationFrame(loop);
+}
+const reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+if(!reduced) requestAnimationFrame(loop); else { running=false; $("simRun").textContent="Run"; $("simRun").setAttribute("aria-pressed","false");
+  $("simRun").addEventListener("click",()=>{ if(running){ last=performance.now(); requestAnimationFrame(loop); } }, {once:false}); }
+
+/* ------------------------------------------------------------------ *
+ *  Hero: a peg board. Each marble takes a uniform number through the
+ *  same xValue() curve, so the pile is the X distribution.
+ * ------------------------------------------------------------------ */
+(function(){
+  const c=$("galton"), g=c.getContext("2d"), W=c.width, H=c.height, BINS=25, pegRows=9;
+  const bins=new Array(BINS).fill(0), balls=[];
+  const cols=["--x1","--x2","--x3","--t1","--t2","--t3"];
+  function spreadBias(){ return [Math.min(1,Math.max(0,+K.xs.value*1.02-.01)), Math.min(1,Math.max(0,+K.xb.value*1.02-.01))]; }
+  function drop(){ const [s,b]=spreadBias(); const v=xValue(Math.random(),s,b); balls.push({x:W/2,y:-10,tx:18+v*(W-36),vy:0,c:cols[Math.floor(Math.random()*cols.length)],row:0}); }
+  function settle(bl){ const i=Math.min(BINS-1,Math.max(0,Math.floor((bl.tx-18)/(W-36)*BINS))); bins[i]++; if(Math.max(...bins)>24) for(let k=0;k<BINS;k++) bins[k]=Math.floor(bins[k]*.75); }
+  function frame(){
+    g.clearRect(0,0,W,H);
+    const top=40, pegBottom=H*0.52;
+    g.fillStyle=cssv("--rule");
+    for(let r=0;r<pegRows;r++){ const n=r+3, y=top+r*((pegBottom-top)/pegRows), w=(W-120)*(r+1)/pegRows;
+      for(let k=0;k<n;k++){ const x=W/2-w/2+w*k/Math.max(1,n-1); g.beginPath(); g.arc(x,y,3.2,0,Math.PI*2); g.fill(); } }
+    const bw=(W-36)/BINS, base=H-14, ball=bw*0.42;
+    for(let i=0;i<BINS;i++){ for(let k=0;k<bins[i];k++){ g.fillStyle=cssv(cols[(i+k)%cols.length]); g.beginPath(); g.arc(18+bw*(i+.5), base-ball-k*(ball*2+1), ball, 0, Math.PI*2); g.fill(); } }
+    g.strokeStyle=cssv("--rule"); g.lineWidth=2; g.beginPath(); g.moveTo(14,base+2); g.lineTo(W-14,base+2); g.stroke();
+    for(let i=balls.length-1;i>=0;i--){ const bl=balls[i]; bl.vy+=0.55; bl.y+=bl.vy; const f=Math.min(1,Math.max(0,(bl.y-top)/(pegBottom-top)));
+      const wob=Math.sin(bl.y*0.19+i)*8*(1-f); bl.x=W/2+(bl.tx-W/2)*f+wob;
+      g.fillStyle=cssv(bl.c); g.beginPath(); g.arc(bl.x,bl.y,ball,0,Math.PI*2); g.fill();
+      const floor=base-ball-bins[Math.min(BINS-1,Math.max(0,Math.floor((bl.tx-18)/(W-36)*BINS)))]*(ball*2+1);
+      if(bl.y>=floor){ settle(bl); balls.splice(i,1); } }
+  }
+  /* rest state: a full pile before anything moves */
+  for(let i=0;i<260;i++){ const [s,b]=spreadBias(); settle({tx:18+xValue(Math.random(),s,b)*(W-36)}); }
+  frame();
+  if(!reduced){ let acc=0, lastT=performance.now(); const run=t=>{ acc+=t-lastT; lastT=t; while(acc>110){ drop(); acc-=110; } frame(); requestAnimationFrame(run); }; requestAnimationFrame(run); }
+  [K.xs,K.xb].forEach(k=>k.addEventListener("input",()=>{ bins.fill(0); const [s,b]=spreadBias(); for(let i=0;i<200;i++) settle({tx:18+xValue(Math.random(),s,b)*(W-36)}); frame(); }));
+})();
+</script>
+</body>
+</html>

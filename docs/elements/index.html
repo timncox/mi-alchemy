@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Elements for Alchemy Lab</title>
+<meta name="description" content="Operation manual for Elements on the Hermetic Modular Alchemy Lab: Mutable Instruments' modal synthesis voice, bowed, blown and struck, on six pots across three pages.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10c-18 0-26 16-26 34v22l-10 12h72L76 66V44c0-18-8-34-26-34z' fill='none' stroke='%23e0a54a' stroke-width='8'/%3E%3Ccircle cx='50' cy='86' r='6' fill='%23e0a54a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,300..900&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>const REPO = "https://github.com/timncox/mi-alchemy";</script>
+<style>
+/*
+  Elements for Alchemy Lab: operation manual.
+
+  The world is a struck object: cast bronze, a patina of verdigris, the
+  graph paper an acoustics lab plots its modes on. Dark first, like the
+  other manuals for this module (the rack with the lights off). Every ring
+  colour on the panel drawing is a constant from src/elements/
+  elements_alchemy.cpp or src/common/picker.cpp. The display face is
+  Anybody, whose width axis lets the title stand in the shape of a
+  vibrating mode.
+*/
+:root{
+  color-scheme: dark;
+  --bg:#120f0c; --bg2:#17130f; --panel:#1d1813; --panel2:#251f18;
+  --ink:#efe6d6; --soft:#cfc3ae; --dim:#998b76;
+  --line:rgba(239,230,214,.13); --line2:rgba(239,230,214,.06);
+  --acc:#e0a54a; --acc-ink:#1a1206; --acc-soft:rgba(224,165,74,.13);
+  --pat:#62b6a4; --pat-soft:rgba(98,182,164,.12);
+  --warn:#ff6a4a; --warn-soft:rgba(255,106,74,.12);
+  --grid:rgba(98,182,164,.10);
+  --plate:#1c1c1e; --plate-edge:#3a3a3e; --plate-ink:#d8d8dc; --hole:#050506;
+
+  --disp:"Anybody","Arial Narrow","Helvetica Neue",Arial,sans-serif;
+  --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    color-scheme: light;
+    --bg:#e7e3da; --bg2:#dfdad0; --panel:#f1eee7; --panel2:#e9e4da;
+    --ink:#1b1812; --soft:#3c362c; --dim:#6e6555;
+    --line:rgba(27,24,18,.16); --line2:rgba(27,24,18,.07);
+    --acc:#8f5c10; --acc-ink:#fff8ea; --acc-soft:rgba(143,92,16,.12);
+    --pat:#1f6f60; --pat-soft:rgba(31,111,96,.11);
+    --warn:#b8321a; --warn-soft:rgba(184,50,26,.10);
+    --grid:rgba(31,111,96,.10);
+  }
+}
+:root[data-theme="light"]{
+  color-scheme: light;
+  --bg:#e7e3da; --bg2:#dfdad0; --panel:#f1eee7; --panel2:#e9e4da;
+  --ink:#1b1812; --soft:#3c362c; --dim:#6e6555;
+  --line:rgba(27,24,18,.16); --line2:rgba(27,24,18,.07);
+  --acc:#8f5c10; --acc-ink:#fff8ea; --acc-soft:rgba(143,92,16,.12);
+  --pat:#1f6f60; --pat-soft:rgba(31,111,96,.11);
+  --warn:#b8321a; --warn-soft:rgba(184,50,26,.10);
+  --grid:rgba(31,111,96,.10);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--acc);text-underline-offset:3px}
+a:hover{color:var(--ink)}
+code,pre,.mono{font-family:var(--mono);font-size:.88em}
+code{background:var(--panel2);padding:.08em .38em;border-radius:3px;border:1px solid var(--line2)}
+pre{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:12px 14px;overflow-x:auto;margin:0}
+b{font-weight:600}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+.wrap{max-width:1120px;margin:0 auto;padding-inline:max(16px,4vw)}
+
+/* nav */
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line2)}
+nav .wrap{display:flex;gap:4px 16px;align-items:center;overflow-x:auto;scrollbar-width:none;padding-block:10px;white-space:nowrap}
+nav .wrap::-webkit-scrollbar{display:none}
+nav .logo{font-family:var(--disp);font-weight:800;font-stretch:130%;letter-spacing:.02em;color:var(--ink);text-decoration:none;margin-right:8px}
+nav .logo em{font-style:normal;color:var(--acc)}
+nav .s{color:var(--dim);text-decoration:none;font-size:13.5px}
+nav .s:hover{color:var(--ink)}
+
+/* hero */
+header{padding-block:44px 30px;border-bottom:1px solid var(--line2);
+  background:
+    linear-gradient(var(--grid) 1px,transparent 1px) 0 0/24px 24px,
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/24px 24px}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:36px;align-items:start}
+.eyebrow{font:500 12px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--pat)}
+h1.title{margin:14px 0 4px;font-family:var(--disp);font-weight:850;line-height:.86;font-size:clamp(46px,10.4vw,116px);
+  letter-spacing:-.01em;color:var(--ink)}
+h1.title .word{display:flex;flex-wrap:nowrap;white-space:nowrap}
+h1.title .ch{display:inline-block;font-stretch:100%;transition:none}
+h1.title .for{display:block;width:100%;font-family:var(--body);font-weight:400;font-size:.19em;letter-spacing:.01em;
+  color:var(--dim);margin-top:.35em;line-height:1.2}
+.tagline{font-family:var(--disp);font-weight:500;font-stretch:88%;font-size:clamp(20px,2.6vw,28px);line-height:1.2;
+  color:var(--soft);max-width:30ch;margin:18px 0 26px;text-wrap:balance}
+.modecap{font:12px/1.4 var(--mono);color:var(--dim);margin:-2px 0 18px}
+.modecap b{color:var(--acc);font-weight:500}
+.heroplate{background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:14px 14px 10px}
+.heroplate svg{display:block;width:100%;height:auto}
+.cap{font:12px/1.4 var(--mono);color:var(--dim);margin-top:8px;text-align:center}
+
+.note{border:1px solid var(--line);border-left:3px solid var(--acc);background:var(--acc-soft);padding:14px 18px;border-radius:0 4px 4px 0;max-width:62ch}
+.note h3{margin:0 0 6px;font:600 15px/1.3 var(--body)}
+.note p{margin:0 0 8px;font-size:15px}
+.note p:last-child{margin-bottom:0}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.note.pat{border-left-color:var(--pat);background:var(--pat-soft)}
+
+/* sections */
+section{padding-block:64px;border-bottom:1px solid var(--line2)}
+h2.sh{margin:0;font-family:var(--disp);font-weight:800;font-stretch:118%;font-size:clamp(30px,4.4vw,46px);line-height:1;letter-spacing:-.005em;text-wrap:balance}
+.sub{font:500 12.5px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--pat);margin:10px 0 22px}
+.lede{font-size:18.5px;line-height:1.55;max-width:64ch;color:var(--soft);margin:0 0 26px}
+p{max-width:68ch}
+h3.h{font-family:var(--disp);font-weight:750;font-stretch:110%;font-size:24px;margin:40px 0 4px}
+h4{margin:4px 0 8px;font:600 17px/1.3 var(--body)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line2);border-radius:5px;padding:18px 18px 16px}
+.card p{margin:0;font-size:15px;color:var(--soft)}
+.k{font:500 11.5px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--acc)}
+.sw{display:inline-block;width:.8em;height:.8em;border-radius:50%;background:currentColor;vertical-align:-.05em;margin-right:.3em;box-shadow:0 0 6px currentColor}
+
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:5px}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--line2)}
+th{font:500 11.5px/1.3 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--dim);background:var(--panel2)}
+tr:last-child td{border-bottom:0}
+td:first-child{white-space:nowrap;font-weight:600}
+td .mono{color:var(--dim)}
+
+/* panel drawing */
+.toggles{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 18px}
+.tg{font:500 13.5px/1 var(--body);color:var(--soft);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:9px 14px;cursor:pointer}
+.tg:hover{color:var(--ink);border-color:var(--dim)}
+.tg[aria-pressed="true"]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.tg.stg[aria-pressed="true"]{background:var(--pat);border-color:var(--pat);color:var(--acc-ink)}
+.tgcap{font:12px/1.4 var(--mono);color:var(--dim)}
+.drawing{display:grid;grid-template-columns:minmax(260px,380px) minmax(0,1fr);gap:28px;align-items:start}
+.plate{background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px}
+.plate svg{display:block;width:100%;height:auto}
+.plate svg [data-id]{cursor:pointer}
+.plate svg [data-id]:focus{outline:none}
+.plate svg [data-id].sel .hit{stroke:var(--acc);stroke-width:.6}
+.readout{position:sticky;top:70px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px 22px}
+.readout .rk{font:500 11.5px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--acc)}
+.readout h3{margin:6px 0 2px;font-family:var(--disp);font-weight:780;font-stretch:112%;font-size:30px;line-height:1.05}
+.readout .rs{font:13px/1.4 var(--mono);color:var(--pat);margin-bottom:12px}
+.readout .rd{font-size:15.5px;color:var(--soft)}
+.readout .meta{margin-top:16px;padding-top:12px;border-top:1px solid var(--line2);font:12.5px/1.7 var(--mono);color:var(--dim)}
+.readout .meta b{color:var(--ink);font-weight:500}
+.hint{margin-top:14px;font-size:13px;color:var(--dim)}
+
+/* steps */
+ol.steps{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:14px;max-width:760px}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;align-items:start}
+ol.steps li::before{content:counter(s);font-family:var(--disp);font-weight:800;font-stretch:120%;font-size:30px;line-height:1;color:var(--acc)}
+ol.steps li p{margin:0}
+
+/* the resonator */
+.lab{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+.scope{background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:12px}
+.scope canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;max-width:100%}
+.scope .legend{display:flex;flex-wrap:wrap;gap:6px 18px;font:12px/1.4 var(--mono);color:var(--dim);margin-top:8px}
+.ctrls{display:grid;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px}
+.ctrl label{display:flex;justify-content:space-between;gap:10px;font:500 13px/1.3 var(--body)}
+.ctrl label span{font:12.5px/1.3 var(--mono);color:var(--pat);font-variant-numeric:tabular-nums}
+.ctrl input[type=range]{width:100%;accent-color:var(--acc)}
+.ctrl small{display:block;color:var(--dim);font-size:12px;line-height:1.35;margin-top:2px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{font:600 14px/1 var(--body);border-radius:4px;padding:12px 16px;border:1px solid var(--acc);background:var(--acc);color:var(--acc-ink);cursor:pointer;flex:1 1 auto;touch-action:none;user-select:none;-webkit-user-select:none}
+.btn.ghost{background:transparent;color:var(--acc)}
+.btn.ghost.on{background:var(--acc-soft)}
+.btn:active{transform:translateY(1px)}
+.small{font-size:13px;color:var(--dim)}
+
+.fam{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.fam a{display:block;text-decoration:none;color:var(--ink);background:var(--panel);border:1px solid var(--line2);border-radius:5px;padding:16px 18px}
+.fam a:hover{border-color:var(--acc)}
+.fam .fn{font-family:var(--disp);font-weight:780;font-stretch:112%;font-size:22px}
+.fam .fd{font-size:14px;color:var(--soft);margin:4px 0 8px}
+.fam .fh{font:11.5px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--pat)}
+.fam a.here{border-color:var(--acc);background:var(--acc-soft)}
+
+footer{padding-block:44px 60px;color:var(--dim);font-size:14px}
+footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:26px;color:var(--ink);margin-bottom:12px}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .heroplate{max-width:320px}
+  .drawing{grid-template-columns:minmax(0,1fr)}
+  .plate{max-width:420px}
+  .readout{position:static}
+  .lab{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:480px){
+  section{padding-block:48px}
+  .lede{font-size:17px}
+  ol.steps li{grid-template-columns:32px minmax(0,1fr)}
+}
+</style>
+</head>
+<body>
+
+<nav aria-label="Sections"><div class="wrap">
+  <a class="logo" href="#top">ELEMENTS<em>·</em>ALCHEMY LAB</a>
+  <a class="s" href="#what">What</a>
+  <a class="s" href="#panel">Panel</a>
+  <a class="s" href="#play">Playing</a>
+  <a class="s" href="#resonator">Resonator</a>
+  <a class="s" href="#voice">The voice</a>
+  <a class="s" href="#cv">Jacks</a>
+  <a class="s" href="#lights">Lights</a>
+  <a class="s" href="#samples">Samples</a>
+  <a class="s" href="#card">Card</a>
+  <a class="s" href="#install">Install</a>
+  <a class="s" href="#built">Built</a>
+  <a class="s" href="#family">Family</a>
+  <a class="s" href="https://github.com/timncox/mi-alchemy">Source ↗</a>
+</div></nav>
+
+<header id="top"><div class="wrap">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Custom firmware · Hermetic Modular Alchemy Lab V2 · mi-alchemy v0.1.0 · build 30989c0</div>
+      <h1 class="title" id="title" aria-label="Elements for Alchemy Lab"><span class="word"><span class="ch">E</span><span class="ch">l</span><span class="ch">e</span><span class="ch">m</span><span class="ch">e</span><span class="ch">n</span><span class="ch">t</span><span class="ch">s</span></span><span class="for">for Alchemy Lab</span></h1>
+      <div class="modecap" id="modecap" aria-hidden="true">the letters stand in <b>mode 3</b> of a free bar</div>
+      <div class="tagline">Bow it, blow it, strike it. Tune the object it resonates in.</div>
+
+      <div class="note warn">
+        <h3>Built and tested on a laptop, not yet heard</h3>
+        <p>This firmware compiles, and its native test suite passes: the samples file round-trips
+          byte for byte, all six sound cases render, and the string tunes within 5 cents. <b>It has
+          not been flashed onto a module or listened to.</b> CPU load on the module, the pitch at 0 V
+          and the input levels are unmeasured.</p>
+      </div>
+    </div>
+    <div class="heroplate">
+      <svg id="heroSvg" viewBox="-4 -4 69 137" role="img" aria-label="Elements for Alchemy Lab panel at first boot: PLAY page, samples loaded"></svg>
+      <div class="cap">12 HP · 6 pots · 3 pages · 10 jacks · drawn at true scale</div>
+    </div>
+  </div>
+</div></header>
+
+<section id="what"><div class="wrap">
+  <h2 class="sh">What it does</h2>
+  <div class="sub">The idea</div>
+  <p class="lede">Mutable Instruments' Elements is a modal synthesis voice: three exciters (a bow, a breath
+    of noise and a strike) set a virtual object ringing, and you decide what the object is made of. This
+    is its DSP, unchanged, running at its native 32 kHz on the Alchemy Lab.</p>
+  <div class="cols">
+    <div class="card"><div class="k">The exciters</div><h4>Bow · blow · strike</h4>
+      <p>Mix them on the <b>Exciter</b> page (hold B3). Each has a level, a timbre and, for blow and
+        strike, a character: FLOW turns the breath from steady to sputtering, MALLET goes from a mallet
+        through recorded samples to bouncing particles. CONTOUR is the envelope over all three.</p></div>
+    <div class="card"><div class="k">The resonator</div><h4>What it rings in</h4>
+      <p>The <b>Play</b> page tunes it and shapes it: GEOMETRY from plates and bars through strings to
+        bells, BRIGHTNESS, DAMPING, and POSITION, where on the object it is excited. MODEL on the
+        Timbre page swaps the modal resonator for a string, a string ensemble, or Ominous.</p></div>
+    <div class="card"><div class="k">The space</div><h4>Mono to reverb, and frozen</h4>
+      <p>SPACE (Timbre page, hold B2) opens the two outputs from mono to stereo into Elements' reverb.
+        The last eighth of its travel freezes the reverb, which the original module only reached with
+        CV.</p></div>
+  </div>
+  <p style="margin-top:26px">Elements had 16 knobs, 3 sliders and 7 CV attenuverters. The Alchemy Lab
+    has six pots, so they are spread over three pages that you reach by holding a button, and the pots
+    catch their stored values before taking over. Hold <b>B1</b> to play; a gate on J3 does the same.
+    Patch audio into J1 or J2 and it replaces the blow or strike exciter.</p>
+</div></section>
+
+<section id="panel"><div class="wrap">
+  <h2 class="sh">The panel</h2>
+  <div class="sub">Drawn at true scale · click any control</div>
+  <p class="lede">The coordinates come from the Alchemy SDK's KiCad front-panel template, and the drawing
+    is generated from them. Rings show the first-boot values in the firmware's own colours.</p>
+
+  <div class="toggles" role="group" aria-label="Page shown on the drawing">
+    <button class="tg" type="button" id="tgPlay" data-page="0" aria-pressed="true">Play page</button>
+    <button class="tg" type="button" id="tgExc" data-page="1" aria-pressed="false">Exciter · hold B3</button>
+    <button class="tg" type="button" id="tgTim" data-page="2" aria-pressed="false">Timbre · hold B2</button>
+    <button class="tg stg" type="button" id="tgSet1" data-page="3" aria-pressed="false">Settings · hold B2+B3</button>
+    <button class="tg stg" type="button" id="tgSet2" data-page="4" aria-pressed="false">Settings 2 · Firmware</button>
+  </div>
+
+  <div class="drawing">
+    <div class="plate">
+      <svg id="panelSvg" viewBox="-4 -4 69 137" role="img" aria-label="Interactive Alchemy Lab panel diagram"></svg>
+    </div>
+    <div class="readout" id="ro" aria-live="polite">
+      <div class="rk" id="roK">Select a control</div>
+      <h3 id="roT">The panel</h3>
+      <div class="rs" id="roS">6 pots × 3 pages · 3 buttons · 10 jacks · 102 LEDs</div>
+      <div class="rd" id="roD">Hover or click anything on the drawing, or tab to it. Switch pages above.
+        Audio in and out, the front USB-C and the light rings are fixed Alchemy Lab hardware; everything
+        else is what this firmware makes of them.</div>
+      <div class="meta">
+        <div>plate <b>60.96 × 128.5 mm</b> · 12 HP</div>
+        <div>pot pitch <b>35 mm</b> across, <b>28 mm</b> down · rings <b>16 LEDs</b>, 13 in the arc</div>
+        <div>source <b>KiCad template, parsed</b></div>
+      </div>
+      <div class="hint">J1/J2 sit under the IN legend, J9/J10 under OUT. The six CV jacks between them are
+        numbered here in reading order, which the template does not state: the numbers printed on your
+        panel are the authority.</div>
+    </div>
+  </div>
+
+  <h3 class="h">At a glance</h3>
+  <div class="sub">Front view: [P1] B1 [P2] · [P3] B2 [P4] · [P5] B3 [P6]</div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Page</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th><th>P6</th></tr></thead>
+    <tbody>
+      <tr><td>Play</td><td>COARSE</td><td>FINE</td><td>GEOMETRY</td><td>BRIGHTNESS</td><td>DAMPING</td><td>POSITION</td></tr>
+      <tr><td>Exciter · hold B3</td><td>BOW</td><td>BLOW</td><td>STRIKE</td><td>CONTOUR</td><td>FLOW</td><td>MALLET</td></tr>
+      <tr><td>Timbre · hold B2</td><td>BOW timbre</td><td>BLOW timbre</td><td>STRIKE timbre</td><td>SPACE</td><td>MODEL</td><td>FM</td></tr>
+      <tr><td>Settings</td><td>Brightness</td><td>·</td><td>Preset slot</td><td>Save / load</td><td>·</td><td>·</td></tr>
+      <tr><td>Settings 2</td><td>FILE</td><td>FLASH</td><td>DFU</td><td>·</td><td>·</td><td>·</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note pat" style="margin-top:22px">
+    <h3>B2 is a page button here</h3>
+    <p>In the other firmwares for this module B2 is a plain button and only B3 holds a page. Elements
+      needs a third page, so holding B2 shows Timbre. Hold <b>B2 and B3 together for two seconds</b> and
+      Settings still opens: the pager drops a layer when both are down. How that feels on the panel is
+      one of the things to check on hardware.</p>
+  </div>
+</div></section>
+
+<section id="play"><div class="wrap">
+  <h2 class="sh">Playing it</h2>
+  <div class="sub">From power-up to a struck bell</div>
+  <ol class="steps">
+    <li><p><b>Patch J9 and J10</b> to your mixer. J9 is Elements' main output, J10 the aux; with SPACE
+      up they are a stereo pair.</p></li>
+    <li><p><b>Hold B1.</b> On a first boot the voice is Elements' init sound: a struck modal resonator,
+      STRIKE at 80%, a short CONTOUR, a little SPACE. B1 is momentary, so a tap is a short note.</p></li>
+    <li><p><b>Tune it on the Play page.</b> COARSE covers five octaves in semitone steps, FINE ±2
+      semitones. Patch 1 V/octave into J5 and a gate into J3 to play it from a sequencer.</p></li>
+    <li><p><b>Change what it is.</b> Sweep GEOMETRY slowly: plates, then strings, then bells and
+      inharmonic objects. Lower BRIGHTNESS darkens the high modes, DAMPING shortens the ring, POSITION
+      moves where it is struck.</p></li>
+    <li><p><b>Hold B3</b> and bring up BOW or BLOW. Hold B2 for SPACE and MODEL. Let go and the Play
+      page is back, each pot waiting to catch its value before it takes over.</p></li>
+  </ol>
+</div></section>
+
+<section id="resonator"><div class="wrap">
+  <h2 class="sh">The resonator, in your browser</h2>
+  <div class="sub">An illustration computed from Elements' own code</div>
+  <p class="lede">A modal resonator is a bank of filters, one per mode of the object. Elements works out
+    52 of them from GEOMETRY, BRIGHTNESS and DAMPING, and weights them by POSITION. The plot below does
+    the same arithmetic as <code>Resonator::ComputeFilters</code>, with the same lookup tables, and plays
+    the result.</p>
+  <div class="lab">
+    <div class="scope">
+      <canvas id="modeCanvas" width="960" height="600" aria-label="Plot of the resonator's modes: frequency across, pickup level up, ring time as brightness"></canvas>
+      <div class="legend">
+        <span><span class="sw" style="color:var(--acc)"></span>mode: height = level at the pickup (POSITION)</span>
+        <span><span class="sw" style="color:var(--pat)"></span>tail = ring time (DAMPING, BRIGHTNESS)</span>
+        <span id="modeCount">·</span>
+      </div>
+    </div>
+    <div class="ctrls">
+      <div class="ctrl"><label for="rCoarse">COARSE <span id="vCoarse">·</span></label>
+        <input type="range" id="rCoarse" min="0" max="60" step="1" value="30">
+        <small>At 0 V on J5: note = 24.1 + COARSE + 19, the firmware's formula.</small></div>
+      <div class="ctrl"><label for="rGeom">GEOMETRY <span id="vGeom">·</span></label>
+        <input type="range" id="rGeom" min="0" max="0.9995" step="0.0005" value="0.25"></div>
+      <div class="ctrl"><label for="rBright">BRIGHTNESS <span id="vBright">·</span></label>
+        <input type="range" id="rBright" min="0" max="0.9995" step="0.0005" value="0.5"></div>
+      <div class="ctrl"><label for="rDamp">DAMPING <span id="vDamp">·</span></label>
+        <input type="range" id="rDamp" min="0" max="0.9995" step="0.0005" value="0.45"></div>
+      <div class="ctrl"><label for="rPos">POSITION <span id="vPos">·</span></label>
+        <input type="range" id="rPos" min="0" max="0.9995" step="0.0005" value="0.3"></div>
+      <div class="btns">
+        <button class="btn" type="button" id="bStrike">Strike</button>
+        <button class="btn ghost" type="button" id="bBlow" aria-pressed="false">Blow · hold</button>
+      </div>
+      <div class="small" id="audioNote">Sound starts on your first press.</div>
+    </div>
+  </div>
+  <p class="small" style="margin-top:18px;max-width:80ch">What is exact and what is not: mode frequencies,
+    their count (up to 52, stopping below 0.49 of 32 kHz), stiffness from <code>lut_stiffness</code>, the Q
+    from <code>lut_4_decades</code> and its per-mode loss are ported line for line from
+    <code>vendor/eurorack/elements/dsp/resonator.cc</code>. Each mode is then played as a decaying sine
+    (ring time Q ÷ πf, level proportional to the filter's gain) instead of Elements' state-variable filter
+    bank, the pickup weighting uses an exact cosine where Elements uses a fast approximation, and there is
+    no bow, no exciter envelope and no reverb. Strike is an impulse; Blow is white noise through the same
+    response. On the module you hear the real thing.</p>
+</div></section>
+
+<section id="voice"><div class="wrap">
+  <h2 class="sh">The voice, control by control</h2>
+  <div class="sub">Three pages, and the laws behind them</div>
+
+  <h3 class="h">Play page</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Pot</th><th>Does</th><th>Range and curve</th></tr></thead>
+    <tbody>
+      <tr><td>P1 · COARSE</td><td>Resonator pitch. J5 adds 1 V/octave.</td><td>0–60 semitones, whole steps with 0.3-semitone hysteresis (upstream's quantized-note law)</td></tr>
+      <tr><td>P2 · FINE</td><td>Fine tune.</td><td>±2 semitones, square law: finest at noon</td></tr>
+      <tr><td>P3 · GEOMETRY</td><td>The object's structure: plates and bars, strings, then bells and inharmonic objects. J7 adds CV.</td><td>0–1</td></tr>
+      <tr><td>P4 · BRIGHTNESS</td><td>How much the high modes are kept. J8 adds CV.</td><td>0–1</td></tr>
+      <tr><td>P5 · DAMPING</td><td>How long it rings.</td><td>0–1</td></tr>
+      <tr><td>P6 · POSITION</td><td>Where on the object it is excited: the comb-filtering of the modes.</td><td>0–1</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="h">Exciter page · hold B3</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Pot</th><th>Does</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>P1 · BOW</td><td>Level of the bow: a friction model that sustains while the gate is on.</td><td>First boot 0</td></tr>
+      <tr><td>P2 · BLOW</td><td>Level of the blow exciter: granular noise, or J1's audio when patched and louder than −80 dB.</td><td>First boot 0 · noise from the card</td></tr>
+      <tr><td>P3 · STRIKE</td><td>Level of the strike exciter: mallet, samples, particles, or J2's audio.</td><td>First boot 80% · samples from the card</td></tr>
+      <tr><td>P4 · CONTOUR</td><td>The exciter envelope: gate-length AD at one end, a slow swell at the other, ADSR shapes between.</td><td>First boot 20%</td></tr>
+      <tr><td>P5 · FLOW</td><td>Blow character: a steady breath to granular sputter.</td><td>First boot 50%</td></tr>
+      <tr><td>P6 · MALLET</td><td>Strike character: a mallet, then the recorded samples, then bouncing particles.</td><td>First boot 30%</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="h">Timbre page · hold B2</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Pot</th><th>Does</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>P1 · BOW timbre</td><td>Colour of the bow.</td><td>First boot 50%</td></tr>
+      <tr><td>P2 · BLOW timbre</td><td>Colour of the breath.</td><td>First boot 50%</td></tr>
+      <tr><td>P3 · STRIKE timbre</td><td>Brightness of the strike.</td><td>First boot 50%</td></tr>
+      <tr><td>P4 · SPACE</td><td>Mono, then stereo, then reverb. The last eighth of the travel freezes the reverb.</td><td>0–2 · first boot 0.6</td></tr>
+      <tr><td>P5 · MODEL</td><td>Modal (Elements) · String · Strings (sympathetic ensemble) · <b>Ominous</b>, the two-oscillator FM drone voice Elements shipped as a hidden easter egg.</td><td>4 zones · first boot Modal</td></tr>
+      <tr><td>P6 · FM</td><td>Attenuverter for J6.</td><td>Quartic: fine near noon, ±12 semitones per volt at the ends</td></tr>
+    </tbody>
+  </table></div>
+  <p style="margin-top:22px">On a first boot the Play page follows the pots, so whatever they point at is
+    what you hear. After that, every page is saved and restored, and each pot must catch its stored value
+    before it moves anything. The pots are shared by every firmware on the card, so after switching
+    they point wherever the last firmware left them.</p>
+</div></section>
+
+<section id="cv"><div class="wrap">
+  <h2 class="sh">Jacks and CV</h2>
+  <div class="sub">Two audio ins, six CV jacks, two outs</div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Jack</th><th>Role</th><th>How it is read</th></tr></thead>
+    <tbody>
+      <tr><td>J1 · Blow in</td><td>Audio. Replaces the blow exciter.</td><td>Elements' noise gate: below −80 dB it fades out, so an unpatched jack's hiss never replaces the internal noise</td></tr>
+      <tr><td>J2 · Strike in</td><td>Audio. Replaces the strike exciter.</td><td>Same gate</td></tr>
+      <tr><td>J3 · Gate</td><td>Plays the voice, ORed with B1.</td><td>Raw ADC once per 0.5 ms block: on above 1.5 V, off below 0.5 V. Read one block after the CVs, as upstream, so the pitch is in before the strike</td></tr>
+      <tr><td>J4 · Strength</td><td>How hard each note is played.</td><td>0.5 + 0.1 × volts, so ±5 V spans 0–1 and an unpatched jack gives 0.5</td></tr>
+      <tr><td>J5 · V/Oct</td><td>Pitch.</td><td>Calibrated volts × 12. Jumps over 0.4 semitone land at once, smaller moves glide</td></tr>
+      <tr><td>J6 · FM</td><td>Frequency modulation.</td><td>Through the FM attenuverter (Timbre P6)</td></tr>
+      <tr><td>J7 · CV</td><td>GEOMETRY.</td><td>The SDK's CV matrix; re-routable in Hermetic's web programmer</td></tr>
+      <tr><td>J8 · CV</td><td>BRIGHTNESS.</td><td>Same</td></tr>
+      <tr><td>J9 · Out main</td><td>Elements' main output (left).</td><td>Codec</td></tr>
+      <tr><td>J10 · Out aux</td><td>Elements' aux output (right).</td><td>Codec</td></tr>
+    </tbody>
+  </table></div>
+  <p style="margin-top:20px">Elements had CV for damping, position, space and each timbre, with an
+    attenuverter on most. Here only J7 and J8 are free for that, so re-route them in the web programmer if
+    you need a different destination.</p>
+</div></section>
+
+<section id="lights"><div class="wrap">
+  <h2 class="sh">Reading the lights</h2>
+  <div class="sub">What the buttons and the boot rings say</div>
+  <div class="cols">
+    <div class="card"><div class="k">B1 · Play</div><h4>The gate and the exciter</h4>
+      <p><span class="sw" style="color:#ffffff"></span>White while the gate is on. Otherwise the exciter
+        level in orange over a dim base: <span class="sw" style="color:#3050ff"></span>dim blue when the
+        samples are loaded, <span class="sw" style="color:#ff8000"></span><b>dim amber when
+        <code>/mi/elements.smp</code> is missing or bad</b>.</p></div>
+    <div class="card"><div class="k">B2 · Timbre</div><h4>The resonator</h4>
+      <p><span class="sw" style="color:#00ff00"></span>The resonator's level in green over a dim blue,
+        Elements' second meter. <span class="sw" style="color:#ff0000"></span>Red when the audio callback
+        averages over 80% CPU. Blue while held, as the Timbre page's colour.</p></div>
+    <div class="card"><div class="k">B3 · Exciter</div><h4>Page tint</h4>
+      <p><span class="sw" style="color:#ff4040"></span>A dim red tint at rest, the Exciter page's colour
+        while held.</p></div>
+    <div class="card"><div class="k">P1 ring · boot</div><h4>Last session's CPU</h4>
+      <p>For 2.5 s after power-up: the worst audio-block load of the previous session as a fill,
+        <span class="sw" style="color:#00ff00"></span>green, <span class="sw" style="color:#ff8000"></span>amber
+        from 75%, <span class="sw" style="color:#ff0000"></span>red from 90%. One dim blue pip means no data
+        yet, after a fresh flash.</p></div>
+    <div class="card"><div class="k">P2 ring · boot</div><h4>The samples file</h4>
+      <p>For the same 2.5 s: <span class="sw" style="color:#00ff00"></span>full green, loaded;
+        <span class="sw" style="color:#ff0000"></span>one red pip, no file; full red, a file was there
+        and was refused.</p></div>
+  </div>
+</div></section>
+
+<section id="samples"><div class="wrap">
+  <h2 class="sh">The samples live on the card</h2>
+  <div class="sub">338 KB that do not fit in the firmware</div>
+  <p class="lede">Elements' strike exciter plays recorded samples and its blow exciter reads a noise
+    recording. Together those two tables are 338 KB, and the firmware image has to fit in 480 KB of SRAM
+    beside the SDK. So they ship as a file, and the firmware reads them into SDRAM at boot.</p>
+  <div class="cols">
+    <div class="card"><div class="k">Where</div><h4><code>/mi/elements.smp</code></h4>
+      <p>A folder named <code>mi</code> in the root of the card, not <code>alchemy</code>: the firmware
+        picker lists everything in <code>/alchemy</code>. The build writes the file to
+        <code>build-elements/elements.smp</code>; it is 337,976 bytes.</p></div>
+    <div class="card"><div class="k">Checked</div><h4>Header, counts, CRC-32</h4>
+      <p>A 24-byte header (magic <code>MIES</code>, version 1, the two sample counts, a CRC-32 of the
+        payload), then 128,013 strike samples and 40,963 noise samples. Anything short of an intact file
+        is refused. The bytes are upstream's own arrays, written by a tool that includes the vendored
+        <code>resources.cc</code>.</p></div>
+    <div class="card"><div class="k">Without it</div><h4>Still plays, quieter</h4>
+      <p>The two tables are zeroed: the strike samples and the blow noise go silent. The bow, the mallet
+        synthesis, particles, the external inputs, the resonator and the reverb all still work. B1 rests
+        dim amber and the P2 ring shows red at boot.</p></div>
+  </div>
+  <p style="margin-top:22px" class="small">The file is read once, at boot, before audio starts. If the card
+    is slow to mount, the samples stay silent until the next power-up. At build 30989c0 its SHA-256 is
+    <span class="mono" style="word-break:break-all">c1838da0e3ed431f02446bdc349998f1b8089b5139416af14eb39230424e90c5</span>.</p>
+</div></section>
+
+<section id="card"><div class="wrap">
+  <h2 class="sh">Firmware on the card</h2>
+  <div class="sub">Carry several firmwares, change between them from the panel</div>
+  <p class="lede">Like the other firmwares for this module, Elements can write any <code>.bin</code> from
+    the card into the module's firmware slot, verify it and reboot into it, from a Settings page.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>File on the card</th><th>What it is</th></tr></thead>
+    <tbody>
+      <tr><td><code>/alchemy/elements_alchemy.bin</code></td><td>This firmware (staged as <code>elements_alchemy-30989c0-front.bin</code>; rename it)</td></tr>
+      <tr><td><code>/mi/elements.smp</code></td><td>The exciter samples (staged as <code>elements-30989c0.smp</code>)</td></tr>
+      <tr><td><code>/alchemy/*.bin</code></td><td>Any other Alchemy Lab firmware: Clouds, Marbles, Plaits, Mark, Belt, Smack…</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="h">The gesture</h3>
+  <div class="sub">Hold B2 + B3 two seconds · tap B1 to the Firmware page · B2 or B3 leaves</div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Pot</th><th>Does</th><th>Ring</th></tr></thead>
+    <tbody>
+      <tr><td>P1 · FILE</td><td>Picks a file: one dot per <code>.bin</code> in <code>/alchemy</code>, the chosen one bright.</td>
+        <td><span class="sw" style="color:#40ff60"></span>green dots · <span class="sw" style="color:#c00000"></span>red: no card · <span class="sw" style="color:#c04800"></span>orange: no folder or no files</td></tr>
+      <tr><td>P2 · FLASH</td><td><b>Turn it below 85%, then all the way up.</b> The dip arms it. It compares first: if the file is the firmware already running, nothing is written.</td>
+        <td><span class="sw" style="color:#20c0c0"></span>teal comparing · <span class="sw" style="color:#40ff60"></span>solid green: already loaded · <span class="sw" style="color:#ffa000"></span>orange erasing · <span class="sw" style="color:#2060ff"></span>blue writing · <span class="sw" style="color:#20ff60"></span>green verifying · white, then reboot · blinking red: failed, nothing booted</td></tr>
+      <tr><td>P3 · DFU</td><td>Same gesture: reboots into the bootloader's update mode and stays there, for a USB flash.</td>
+        <td><span class="sw" style="color:#c020ff"></span>violet arming bar</td></tr>
+    </tbody>
+  </table></div>
+  <p style="margin-top:20px">The first Settings page holds the LED brightness (P1, 30% by default; these
+    LEDs get very bright) and the preset gesture: P3 picks a slot, P4 saves or loads it.
+    Elements keeps its working state in <b>slot 9</b> (0-based; HostLink's list numbers from 1), saved
+    five seconds after the last change once your hands are off the buttons. Clouds, Marbles and Plaits
+    use 8, 10 and 11, and Smack, Mark, Belt and Relay 12–15, so slots <b>0–7</b> are yours for presets
+    saved by hand.</p>
+</div></section>
+
+<section id="install"><div class="wrap">
+  <h2 class="sh">Installing</h2>
+  <div class="sub">From the card, or through the front USB-C</div>
+  <div class="cols">
+    <div class="card"><div class="k">From another firmware</div><h4>The picker</h4>
+      <p>Copy <code>elements_alchemy.bin</code> into <code>/alchemy</code> and <code>elements.smp</code>
+        into <code>/mi</code>, then pick it from Settings page 2 of any firmware in the family.</p></div>
+    <div class="card"><div class="k">First time</div><h4>Hold B3 at power-on</h4>
+      <p>Hold B3 through the boot window and the module enters update mode. Flash the <code>.bin</code>
+        with Hermetic's <a href="https://hermeticmodular.com/program">web programmer</a>, or pin
+        dfu-util to your module's serial:</p>
+      <pre style="margin-top:12px">make FW=elements program-live DFU_SERIAL=&lt;serial&gt;</pre></div>
+    <div class="card"><div class="k">Build it</div><h4>From the repository</h4>
+      <pre>make libdaisy
+make FW=elements
+make -C test test-elements</pre>
+      <p style="margin-top:10px">Never build with a module attached in DFU mode.</p></div>
+  </div>
+  <div class="note warn" style="margin-top:28px">
+    <h3>Before you flash it</h3>
+    <p>This is custom firmware. Hermetic Modular did not write it, did not test it and cannot support
+      it, so <b>please do not contact them about it</b>. Mutable Instruments wrote the DSP and has nothing
+      to do with this port either. It has not yet run on a module. Worth reporting if you try it: the CPU
+      readout on P1 after a busy session, whether 0 V with COARSE at noon sounds near note 73, and how
+      the B2 page button gets along with the Settings chord.</p>
+  </div>
+</div></section>
+
+<section id="built"><div class="wrap">
+  <h2 class="sh">How it is built</h2>
+  <div class="sub">The layer between Elements and the Alchemy SDK</div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Piece</th><th>What it is</th></tr></thead>
+    <tbody>
+      <tr><td>The DSP</td><td><code>elements::Part</code> from pichenettes/eurorack at 08460a6, byte-identical, at 32 kHz with its 16-frame block, so the parameter reads happen at 2 kHz as they did on the original.</td></tr>
+      <tr><td>The shim</td><td>What <code>cv_scaler.cc</code>, <code>ui.cc</code> and <code>elements.cc</code> did: the pot laws, one-pole smoothing (0.01 for pots, 0.05 where a CV joins), the input noise gates, and the gate read one block late.</td></tr>
+      <tr><td>Samples out of the image</td><td>The build cuts the two sample arrays out of a copy of <code>resources.cc</code> and checks it found both; the vendored file stays untouched. The engine links to two SDRAM arrays under its own symbol names, filled from the card at boot.</td></tr>
+      <tr><td>Memory</td><td>Image 366 KB, 77% of the 480 KB SRAM region. <code>Part</code> (113 KB) and the reverb buffer (64 KB) in cached D2 SRAM; the samples in SDRAM.</td></tr>
+      <tr><td>Per-unit character</td><td>Elements seeded its reverb and resonator modulation from the chip's serial number. This uses the H750's unique ID for the same job, so each module sounds slightly its own.</td></tr>
+      <tr><td>Pitch</td><td>note = 24.1 + 12 × V(J5) + COARSE + 19 + FINE. The 24.1 is upstream's default calibration at 0 V, worked out from its constants: 0 V with COARSE at noon is note 73.1, about 558 Hz. Nobody has checked it by ear yet.</td></tr>
+      <tr><td>Tests</td><td>On a laptop, with address and undefined-behaviour checks: the samples file through the firmware's own reader in five chunk sizes, byte-identical, and six kinds of bad file refused; modal strike, bow and blow, string, strings and Ominous for 2 s each, finite and not silent; the string at note 57 reads 220.17 Hz (+1.4 cents), note 69 441.14 Hz (+4.5 cents).</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="h">Left out, compared with a real Elements</h3>
+  <ul style="max-width:70ch;color:var(--soft)">
+    <li>Elements' own V/Oct calibration: the Lab's calibrated jack voltages stand in, with upstream's default offset.</li>
+    <li>Five of the seven CV attenuverters and their jacks; J7 and J8 go through the SDK's CV matrix.</li>
+    <li>Bypass mode and the factory test port. The easter-egg boot flag is replaced by MODEL.</li>
+    <li>Launchpad control and USB audio: v0.1 of these ports is HostLink only, and it never changes the card's shared USB setting.</li>
+  </ul>
+  <p style="margin-top:18px">Found something? <a href="https://github.com/timncox/mi-alchemy/issues">Open an
+    issue</a>. A report from someone playing it is worth more than anything measurable on a laptop.</p>
+</div></section>
+
+<section id="family"><div class="wrap">
+  <h2 class="sh">The rest of them</h2>
+  <div class="sub">Four Mutable Instruments ports from one repository, and their siblings</div>
+  <div class="fam">
+    <a href="../clouds/"><div class="fn">Clouds</div><div class="fd">Granular texture synthesis: grains, stretch, looping delay, spectral.</div><div class="fh">mi-alchemy</div></a>
+    <a class="here" href="#top" aria-current="page"><div class="fn">Elements</div><div class="fd">This page. A modal voice, bowed, blown and struck.</div><div class="fh">mi-alchemy · you are here</div></a>
+    <a href="../marbles/"><div class="fn">Marbles</div><div class="fd">Random gates and voltages, with deja vu.</div><div class="fh">mi-alchemy</div></a>
+    <a href="../plaits/"><div class="fn">Plaits</div><div class="fd">A macro oscillator with 24 synthesis models.</div><div class="fh">mi-alchemy</div></a>
+    <a href="../"><div class="fn">All four</div><div class="fd">The mi-alchemy landing page: what is on the card and how they share it.</div><div class="fh">index</div></a>
+    <a href="https://timncox.github.io/mark-alchemy/"><div class="fn">Mark</div><div class="fd">A five-track live looper on the same module. Loop Elements into it.</div><div class="fh">sibling firmware</div></a>
+    <a href="https://timncox.github.io/belt-alchemy/"><div class="fn">Belt</div><div class="fd">Vocal pitch correction and harmony.</div><div class="fh">sibling firmware</div></a>
+    <a href="https://timncox.github.io/smack-alchemy/"><div class="fn">Smack</div><div class="fd">Live loop capture, slicing and seeded glitch.</div><div class="fh">sibling firmware</div></a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="fl">Elements for Alchemy Lab</div>
+  <p style="margin-bottom:14px">Custom firmware, not affiliated with or endorsed by Hermetic Modular or Mutable
+    Instruments. Hermetic Modular did not write it and cannot support it; <b style="color:var(--ink)">please do
+    not contact them about it</b>.</p>
+  <p>The DSP is <b style="color:var(--ink)">Mutable Instruments Elements</b> by Emilie Gillet, MIT licence, from
+    <a href="https://github.com/pichenettes/eurorack">pichenettes/eurorack</a>. Built on Hermetic Modular's
+    <a href="https://github.com/hermetic-modular/alchemy-sdk">Alchemy SDK</a> and Electro-Smith's libDaisy.
+    Source: <a href="https://github.com/timncox/mi-alchemy">timncox/mi-alchemy</a>.</p>
+</div></footer>
+
+<script>
+/* == BEGIN GENERATED GEOMETRY -- tools/emit_panel_geometry.py == */
+const PANEL = {
+ "source": "lib/alchemy-sdk/panel/front-panel-template.kicad_pcb",
+ "units": "mm, front view, origin top-left of the plate, y down",
+ "plate": {
+  "w": 60.96,
+  "h": 128.5,
+  "hp": 12.0
+ },
+ "mount": [
+  {
+   "x": 4.537,
+   "y": 1.297,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  },
+  {
+   "x": 51.312,
+   "y": 1.311,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  },
+  {
+   "x": 4.537,
+   "y": 123.8,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  },
+  {
+   "x": 51.323,
+   "y": 123.812,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  }
+ ],
+ "rails": [
+  7.23,
+  122.18
+ ],
+ "pots": [
+  {
+   "id": "P1",
+   "x": 12.758,
+   "y": 21.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P2",
+   "x": 47.758,
+   "y": 21.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P3",
+   "x": 12.758,
+   "y": 49.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P4",
+   "x": 47.758,
+   "y": 49.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P5",
+   "x": 12.758,
+   "y": 77.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P6",
+   "x": 47.758,
+   "y": 77.304,
+   "hole": 3.6
+  }
+ ],
+ "ring": {
+  "r": 10.09,
+  "leds": 16,
+  "start_hour": 7.5,
+  "step_hours": 0.75,
+  "arc_leds": 13
+ },
+ "buttons": [
+  {
+   "id": "B1",
+   "x": 30.257,
+   "y": 21.31,
+   "hole": 3.1,
+   "halo": 4.0
+  },
+  {
+   "id": "B2",
+   "x": 30.257,
+   "y": 49.312,
+   "hole": 3.1,
+   "halo": 4.0
+  },
+  {
+   "id": "B3",
+   "x": 30.257,
+   "y": 77.32,
+   "hole": 3.1,
+   "halo": 4.0
+  }
+ ],
+ "usb": {
+  "x": 25.317,
+  "y": 89.274,
+  "w": 10.034,
+  "h": 4.044,
+  "r": 2.022
+ },
+ "jacks": [
+  {
+   "id": "J1",
+   "x": 6.699,
+   "y": 100.093,
+   "hole": 3.2
+  },
+  {
+   "id": "J2",
+   "x": 6.699,
+   "y": 113.053,
+   "hole": 3.2
+  },
+  {
+   "id": "J3",
+   "x": 18.51,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J4",
+   "x": 30.286,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J5",
+   "x": 42.014,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J6",
+   "x": 18.51,
+   "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J7",
+   "x": 30.286,
+   "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J8",
+   "x": 42.014,
+   "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J9",
+   "x": 53.901,
+   "y": 100.126,
+   "hole": 3.2
+  },
+  {
+   "id": "J10",
+   "x": 53.889,
+   "y": 113.036,
+   "hole": 3.2
+  }
+ ],
+ "jack_order_assumed": "J3..J8 in reading order; the printed panel is the authority",
+ "labels": {
+  "knob_dy": 14.0,
+  "button_dy": 10.63,
+  "in": [
+   5.556,
+   120.642
+  ],
+  "out": [
+   51.53,
+   120.642
+  ]
+ }
+};
+/* == END GENERATED GEOMETRY == */
+</script>
+<script>
+(function(){
+"use strict";
+const NS = "http://www.w3.org/2000/svg";
+const reduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---- the title in a standing wave -------------------------------------
+   Each letter's width follows |sin| of a free bar's third mode across the
+   word; the Resonator section below makes it ring again on each Strike. */
+const letters = Array.from(document.querySelectorAll("#title .ch"));
+function shapeTitle(amp, mode){
+  const n = letters.length;
+  letters.forEach((el, i) => {
+    const x = (i + 0.5) / n;
+    const w = 84 + amp * 40 * Math.abs(Math.sin(Math.PI * mode * x));
+    el.style.fontStretch = Math.max(50, Math.min(150, w)).toFixed(1) + "%";
+  });
+}
+shapeTitle(1, 3);
+let ringRaf = 0;
+function ringTitle(tau){
+  if (reduced) return;
+  cancelAnimationFrame(ringRaf);
+  const t0 = performance.now();
+  const step = (t) => {
+    const s = (t - t0) / 1000;
+    const env = Math.exp(-s / Math.max(0.25, Math.min(tau, 2.5)));
+    shapeTitle(0.25 + 0.75 * env * Math.cos(2 * Math.PI * 2.2 * s) , 3);
+    if (env > 0.02) ringRaf = requestAnimationFrame(step); else shapeTitle(1, 3);
+  };
+  ringRaf = requestAnimationFrame(step);
+}
+
+/* ---- panel drawing ---------------------------------------------------- */
+const P = (typeof PANEL !== "undefined") ? PANEL : null;
+
+function hex(c){ return "#" + c.map(v => v.toString(16).padStart(2, "0")).join(""); }
+/* Dim LED colours (#000030 and the like) are invisible on a screen; lift
+   them to a visible floor without changing the hue. */
+function led(c){
+  const m = Math.max(c[0], c[1], c[2]);
+  if (m === 0) return "#1a1a1a";
+  if (m >= 0x70) return hex(c);
+  const k = 0x70 / m;
+  return hex(c.map(v => Math.round(v * k)));
+}
+const C = {
+  coarse:[0xFF,0x90,0x20], fineU:[0xFF,0xC0,0x60], fineD:[0x60,0xC0,0xFF],
+  geom:[0x40,0xC0,0xFF], bright:[0xFF,0xFF,0x80], damp:[0x60,0xFF,0xC0], pos:[0xC0,0x60,0xFF],
+  bow:[0xFF,0x40,0x40], blow:[0x40,0xFF,0x40], strike:[0x40,0x80,0xFF], env:[0xFF,0xFF,0xFF],
+  space:[0x80,0x80,0xFF], model:[0xFF,0x60,0xA0], fmU:[0xFF,0x80,0x00], fmD:[0x00,0x80,0xFF],
+  notch:[0xFF,0xFF,0xFF], dim:[0x18,0x18,0x18], exPage:[0x40,0x10,0x10], tbPage:[0x10,0x10,0x40],
+  idle:[0x00,0x00,0x30], white:[0xFF,0xFF,0xFF], file:[0x40,0xFF,0x60], dfu:[0xC0,0x20,0xFF],
+  exHeld:[0xFF,0x40,0x40], tbHeld:[0x40,0x40,0xFF], stgB1:[0xFF,0xFF,0xFF]
+};
+
+/* Rings: 16 LEDs, 13 in the arc from 7:30 clockwise. kind: level | bip | sel | none */
+const PAGES = [
+  { name:"Play", rings:[
+    {id:"P1", n:"COARSE", k:"level", c:C.coarse, v:0.5},
+    {id:"P2", n:"FINE", k:"bip", p:C.fineU, m:C.fineD, v:0.5},
+    {id:"P3", n:"GEOMETRY", k:"level", c:C.geom, v:0.25},
+    {id:"P4", n:"BRIGHTNESS", k:"level", c:C.bright, v:0.6},
+    {id:"P5", n:"DAMPING", k:"level", c:C.damp, v:0.45},
+    {id:"P6", n:"POSITION", k:"level", c:C.pos, v:0.3}],
+    b:{B1:C.idle, B2:C.tbPage, B3:C.exPage}},
+  { name:"Exciter", rings:[
+    {id:"P1", n:"BOW", k:"level", c:C.bow, v:0},
+    {id:"P2", n:"BLOW", k:"level", c:C.blow, v:0},
+    {id:"P3", n:"STRIKE", k:"level", c:C.strike, v:0.8},
+    {id:"P4", n:"CONTOUR", k:"level", c:C.env, v:0.2},
+    {id:"P5", n:"FLOW", k:"level", c:C.blow, v:0.5},
+    {id:"P6", n:"MALLET", k:"level", c:C.strike, v:0.3}],
+    b:{B1:C.idle, B2:C.tbPage, B3:C.exHeld}},
+  { name:"Timbre", rings:[
+    {id:"P1", n:"BOW T.", k:"level", c:C.bow, v:0.5},
+    {id:"P2", n:"BLOW T.", k:"level", c:C.blow, v:0.5},
+    {id:"P3", n:"STRIKE T.", k:"level", c:C.strike, v:0.5},
+    {id:"P4", n:"SPACE", k:"level", c:C.space, v:0.3},
+    {id:"P5", n:"MODEL", k:"sel", c:C.model, zones:4, z:0},
+    {id:"P6", n:"FM", k:"bip", p:C.fmU, m:C.fmD, v:0.5}],
+    b:{B1:C.idle, B2:C.tbHeld, B3:C.exPage}},
+  { name:"Settings", rings:[
+    {id:"P1", n:"BRIGHT", k:"level", c:C.white, v:0.3},
+    {id:"P2", n:"", k:"none"},
+    {id:"P3", n:"SLOT", k:"sel", c:C.white, zones:16, z:9},
+    {id:"P4", n:"SAVE/LOAD", k:"none"},
+    {id:"P5", n:"", k:"none"},
+    {id:"P6", n:"", k:"none"}],
+    b:{B1:C.stgB1, B2:C.dim, B3:C.dim}},
+  { name:"Firmware", rings:[
+    {id:"P1", n:"FILE", k:"sel", c:C.file, zones:7, z:1},
+    {id:"P2", n:"FLASH", k:"none"},
+    {id:"P3", n:"DFU", k:"none"},
+    {id:"P4", n:"", k:"none"},
+    {id:"P5", n:"", k:"none"},
+    {id:"P6", n:"", k:"none"}],
+    b:{B1:C.stgB1, B2:C.dim, B3:C.dim}}
+];
+
+const INFO = {
+  P1:[
+    ["COARSE","Play · P1","0–60 semitones in whole steps","Resonator pitch over five octaves, with 0.3-semitone hysteresis so a pot resting between two notes does not flutter. J5 adds 1 V/octave on top. At 0 V with COARSE at noon the note is 73.1, derived from upstream's default calibration and not yet checked by ear."],
+    ["BOW","Exciter · P1 · hold B3","level 0–1 · first boot 0","The bow: a friction model that sustains while the gate is on. Its colour is BOW timbre on the Timbre page."],
+    ["BOW timbre","Timbre · P1 · hold B2","0–1 · first boot 50%","The colour of the bow's friction."],
+    ["Brightness","Settings · P1","5–100% · default 30%","Brightness of every LED on the panel. They get very bright and warm at the top of the range."],
+    ["FILE","Settings 2 · P1","one dot per .bin","Picks a firmware from /alchemy on the card. Green dots, the chosen one bright; red: no card; orange: no folder or no files."]],
+  P2:[
+    ["FINE","Play · P2","±2 semitones, square law","Fine tune, finest near noon. At boot this ring shows the samples file for 2.5 s: full green loaded, one red pip missing, full red refused."],
+    ["BLOW","Exciter · P2 · hold B3","level 0–1 · first boot 0","The blow exciter: granular noise read from /mi/elements.smp, or J1's audio when it is patched and louder than −80 dB. Silent without the samples file unless J1 is patched."],
+    ["BLOW timbre","Timbre · P2 · hold B2","0–1 · first boot 50%","The colour of the breath noise."],
+    ["(unused)","Settings · P2","",""],
+    ["FLASH","Settings 2 · P2","dip below 85%, then all the way up","Writes the chosen file into the firmware slot, verifies it and reboots into it. It compares first: if that file is already running, nothing is written. Teal comparing, orange erasing, blue writing, green verifying, white then reboot; blinking red: failed and nothing booted."]],
+  P3:[
+    ["GEOMETRY","Play · P3","0–1 · J7 adds CV","The resonator's structure. Low: plates and bars, whose overtones crowd together. Around a quarter: a string's harmonic series. Higher: bells, then inharmonic objects whose modes spread apart. Try it in the Resonator section."],
+    ["STRIKE","Exciter · P3 · hold B3","level 0–1 · first boot 80%","The strike exciter: a mallet, the recorded samples, or bouncing particles, chosen by MALLET. J2's audio replaces it when patched."],
+    ["STRIKE timbre","Timbre · P3 · hold B2","0–1 · first boot 50%","How bright the strike is."],
+    ["Preset slot","Settings · P3","slots 0–15","Chooses a preset slot for P4 to save to or load from. Slot 9 is Elements' own working state; saving into it by hand replaces that. Slots 0–7 are free for your presets."],
+    ["DFU","Settings 2 · P3","dip, then all the way up","Reboots into the bootloader's update mode and stays there, for flashing over USB. Violet arming bar."]],
+  P4:[
+    ["BRIGHTNESS","Play · P4","0–1 · J8 adds CV","How much of the high modes survive. Low values make each higher mode lose more of its ring time."],
+    ["CONTOUR","Exciter · P4 · hold B3","0–1 · first boot 20%","The exciter envelope over all three exciters: a gate-length attack-decay at one end, a slow swell at the other, ADSR shapes in between."],
+    ["SPACE","Timbre · P4 · hold B2","0–2 · first boot 0.6","From mono, through stereo, into Elements' reverb. The last eighth of the travel freezes the reverb; the original module reached that only with CV."],
+    ["Save / load","Settings · P4","the SDK's preset gesture","Saves the whole state to the slot on P3, or loads it."],
+    ["(unused)","Settings 2 · P4","",""]],
+  P5:[
+    ["DAMPING","Play · P5","0–1","How long the object rings. A strike or a bow also damps it slightly on release, as a hand on a string would."],
+    ["FLOW","Exciter · P5 · hold B3","0–1 · first boot 50%","The blow exciter's character: a steady breath at one end, granular sputter at the other."],
+    ["MODEL","Timbre · P5 · hold B2","Modal · String · Strings · Ominous","The resonator: Elements' modal bank; a single string; a sympathetic string ensemble; or Ominous, the two-oscillator FM drone voice Elements shipped as a hidden easter egg."],
+    ["(unused)","Settings · P5","",""],
+    ["(unused)","Settings 2 · P5","",""]],
+  P6:[
+    ["POSITION","Play · P6","0–1","Where on the object it is excited. Each mode is weighted by how much it moves at that point, which is the comb-filtering you hear as you turn it."],
+    ["MALLET","Exciter · P6 · hold B3","0–1 · first boot 30%","The strike's character: a mallet, then the recorded samples, then bouncing particles."],
+    ["FM","Timbre · P6 · hold B2","attenuverter, quartic","How much of J6 reaches the pitch. Fine near noon, up to ±12 semitones per volt at the ends."],
+    ["(unused)","Settings · P6","",""],
+    ["(unused)","Settings 2 · P6","",""]],
+};
+const BTN = {
+  B1:["B1 · Play","hold","The gate while held; J3 is ORed in. Momentary, so a tap is a short note. White while the gate is on; otherwise the exciter level in orange over dim blue, or over dim amber when the samples file is missing or bad. In Settings, B1 steps between the two Settings pages."],
+  B2:["B2 · Timbre","hold","Holding B2 shows the Timbre page. At rest its lights are the resonator level in green; red when the audio callback averages over 80% CPU. Held with B3 for two seconds it opens Settings, and in Settings a press of B2 leaves."],
+  B3:["B3 · Exciter","hold","Holding B3 shows the Exciter page. A dim red tint at rest. Held with B2 for two seconds it opens Settings, and in Settings a press of B3 leaves."],
+};
+const JACK = {
+  J1:["J1 · Blow in","audio in","Replaces the blow exciter. Elements' noise gate fades it out below −80 dB, so an unpatched jack's hiss never takes over."],
+  J2:["J2 · Strike in","audio in","Replaces the strike exciter, with the same noise gate."],
+  J3:["J3 · Gate","gate","Plays the voice, together with B1. On above 1.5 V, off below 0.5 V, read every 0.5 ms, one block after the CVs so the pitch arrives first."],
+  J4:["J4 · Strength","CV","How hard each note is played: 0.5 + 0.1 × volts. Unpatched it reads 0.5."],
+  J5:["J5 · V/Oct","CV","Pitch at 1 V/octave, from the Lab's calibrated jack voltage. Jumps of more than 0.4 semitone land at once; smaller moves glide."],
+  J6:["J6 · FM","CV","Frequency modulation, scaled by the FM attenuverter on the Timbre page."],
+  J7:["J7 · CV Geometry","CV","Added to GEOMETRY through the SDK's CV matrix. Re-routable in the web programmer."],
+  J8:["J8 · CV Brightness","CV","Added to BRIGHTNESS through the SDK's CV matrix. Re-routable."],
+  J9:["J9 · Out main","audio out","Elements' main output, the left of the stereo pair when SPACE is up."],
+  J10:["J10 · Out aux","audio out","Elements' aux output, the right of the pair."],
+  USB:["Front USB-C","HostLink","The web programmer, presets and card access over USB. In v0.1 this firmware does not host a Launchpad or act as a USB audio interface."],
+};
+
+function el(tag, attrs, parent){
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function hourXY(cx, cy, r, h){
+  const a = h / 12 * 2 * Math.PI;
+  return [cx + r * Math.sin(a), cy - r * Math.cos(a)];
+}
+function ringColors(spec){
+  const n = P.ring.arc_leds;           /* 13 */
+  const out = new Array(P.ring.leds).fill(null);
+  if (spec.k === "none") return out;
+  for (let i = 0; i < n; i++) out[i] = [0x14,0x14,0x14];
+  if (spec.k === "level"){
+    const lit = Math.round(spec.v * n);
+    for (let i = 0; i < lit; i++) out[i] = spec.c;
+  } else if (spec.k === "bip"){
+    const mid = (n - 1) / 2;
+    const off = Math.round((spec.v - 0.5) * 2 * mid);
+    if (off > 0) for (let i = 1; i <= off; i++) out[mid + i] = spec.p;
+    if (off < 0) for (let i = 1; i <= -off; i++) out[mid - i] = spec.m;
+    out[mid] = C.notch;
+  } else if (spec.k === "sel"){
+    for (let z = 0; z < spec.zones; z++){
+      const i = Math.round(z * (n - 1) / Math.max(1, spec.zones - 1));
+      out[i] = z === spec.z ? spec.c : C.dim.map(v => v * 2);
+    }
+  }
+  return out;
+}
+
+function draw(svg, page, interactive){
+  svg.textContent = "";
+  if (!P) return;
+  const pg = PAGES[page];
+  /* plate */
+  el("rect", {x:0, y:0, width:P.plate.w, height:P.plate.h, rx:1.2, fill:"#1c1c1e", stroke:"#3a3a3e", "stroke-width":0.35}, svg);
+  P.mount.forEach(m => el("rect", {x:m.x - m.w/2, y:m.y - m.h/2, width:m.w, height:m.h, rx:m.r, fill:"#050506"}, svg));
+  const t = (x, y, s, txt, fill, anchor, w) => {
+    const e = el("text", {x, y, "font-size":s, fill:fill || "#d8d8dc", "text-anchor":anchor || "middle",
+      "font-family":"IBM Plex Mono, monospace", "font-weight":w || 500}, svg);
+    e.textContent = txt; return e;
+  };
+  t(P.plate.w/2, 9.6, 3.2, "ELEMENTS", "#e0a54a", "middle", 600);
+  /* pots + rings */
+  P.pots.forEach((p, i) => {
+    const spec = pg.rings[i];
+    const g = el("g", interactive ? {"data-id":p.id, tabindex:0, role:"button", "aria-label":p.id + " " + (spec.n || "unused")} : {}, svg);
+    const cols = ringColors(spec);
+    for (let k = 0; k < P.ring.leds; k++){
+      const h = P.ring.start_hour + k * P.ring.step_hours;
+      const [x, y] = hourXY(p.x, p.y, P.ring.r, h);
+      const c = cols[k];
+      el("circle", {cx:x, cy:y, r:0.95, fill: c ? led(c) : "#101012", opacity: c ? 1 : 0.8}, g);
+      if (c && Math.max(...c) > 0x40) el("circle", {cx:x, cy:y, r:1.8, fill:led(c), opacity:0.18}, g);
+    }
+    el("circle", {cx:p.x, cy:p.y, r:6.6, fill:"#2b2b2f", stroke:"#46464c", "stroke-width":0.3}, g);
+    el("circle", {cx:p.x, cy:p.y, r:5.2, fill:"#35353a"}, g);
+    const [ix, iy] = hourXY(p.x, p.y, 4.4, P.ring.start_hour + (spec.k === "level" ? spec.v : 0.5) * (P.ring.arc_leds - 1) * P.ring.step_hours);
+    el("line", {x1:p.x, y1:p.y, x2:ix, y2:iy, stroke:"#e8e8ec", "stroke-width":0.7, "stroke-linecap":"round"}, g);
+    el("circle", {class:"hit", cx:p.x, cy:p.y, r:11.6, fill:"transparent", stroke:"none"}, g);
+    if (spec.n) t(p.x, p.y + P.labels.knob_dy, 2.5, spec.n, "#d8d8dc");
+  });
+  /* buttons */
+  P.buttons.forEach(b => {
+    const g = el("g", interactive ? {"data-id":b.id, tabindex:0, role:"button", "aria-label":b.id} : {}, svg);
+    const c = led(pg.b[b.id]);
+    [-1, 1].forEach(s => {
+      el("circle", {cx:b.x + s * b.halo, cy:b.y, r:0.95, fill:c}, g);
+      el("circle", {cx:b.x + s * b.halo, cy:b.y, r:1.9, fill:c, opacity:0.2}, g);
+    });
+    el("circle", {cx:b.x, cy:b.y, r:b.hole/2 + 0.6, fill:"#2b2b2f", stroke:"#55555c", "stroke-width":0.3}, g);
+    el("circle", {cx:b.x, cy:b.y, r:b.hole/2, fill:"#3c3c42"}, g);
+    el("circle", {class:"hit", cx:b.x, cy:b.y, r:5.6, fill:"transparent", stroke:"none"}, g);
+    t(b.x, b.y + P.labels.button_dy, 2.2, b.id, "#9a9aa2");
+  });
+  /* usb */
+  const gu = el("g", interactive ? {"data-id":"USB", tabindex:0, role:"button", "aria-label":"Front USB-C"} : {}, svg);
+  el("rect", {x:P.usb.x - P.usb.w/2, y:P.usb.y - P.usb.h/2, width:P.usb.w, height:P.usb.h, rx:P.usb.r, fill:"#050506", stroke:"#46464c", "stroke-width":0.3}, gu);
+  el("rect", {class:"hit", x:P.usb.x - P.usb.w/2 - 1, y:P.usb.y - P.usb.h/2 - 1, width:P.usb.w + 2, height:P.usb.h + 2, fill:"transparent", stroke:"none"}, gu);
+  /* jacks */
+  const JN = {J1:"BLOW",J2:"STRIKE",J3:"GATE",J4:"STRG",J5:"V/OCT",J6:"FM",J7:"GEOM",J8:"BRGT",J9:"MAIN",J10:"AUX"};
+  P.jacks.forEach(j => {
+    const g = el("g", interactive ? {"data-id":j.id, tabindex:0, role:"button", "aria-label":j.id + " " + JN[j.id]} : {}, svg);
+    el("circle", {cx:j.x, cy:j.y, r:3.4, fill:"#2e2e33", stroke:"#5a5a61", "stroke-width":0.35}, g);
+    el("circle", {cx:j.x, cy:j.y, r:j.hole/2, fill:"#050506"}, g);
+    el("circle", {class:"hit", cx:j.x, cy:j.y, r:5, fill:"transparent", stroke:"none"}, g);
+    t(j.x, j.y - 4.6, 1.85, JN[j.id], "#c9c9cf");
+  });
+  t(P.labels.in[0], P.labels.in[1], 2.2, "IN", "#9a9aa2");
+  t(P.labels.out[0], P.labels.out[1], 2.2, "OUT", "#9a9aa2");
+}
+
+const panelSvg = document.getElementById("panelSvg");
+const heroSvg  = document.getElementById("heroSvg");
+let page = 0, sel = null;
+const ro = {k:document.getElementById("roK"), t:document.getElementById("roT"), s:document.getElementById("roS"), d:document.getElementById("roD")};
+
+function show(id){
+  let row;
+  if (INFO[id]) { const r = INFO[id][page]; row = [r[1], r[0], r[2], r[3] || "Not used on this page."]; }
+  else if (BTN[id]) { const b = BTN[id]; row = ["Button", b[0], b[1], b[2]]; }
+  else if (JACK[id]) { const j = JACK[id]; row = ["Jack", j[0], j[1], j[2]]; }
+  if (!row) return;
+  ro.k.textContent = row[0]; ro.t.textContent = row[1]; ro.s.textContent = row[2]; ro.d.textContent = row[3];
+}
+function wire(){
+  panelSvg.querySelectorAll("[data-id]").forEach(g => {
+    const id = g.getAttribute("data-id");
+    g.addEventListener("mouseenter", () => show(id));
+    g.addEventListener("focus", () => show(id));
+    g.addEventListener("click", () => {
+      panelSvg.querySelectorAll(".sel").forEach(x => x.classList.remove("sel"));
+      g.classList.add("sel"); sel = id; show(id);
+    });
+    g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); g.dispatchEvent(new Event("click")); } });
+  });
+  panelSvg.addEventListener("mouseleave", () => { if (sel) show(sel); });
+}
+function render(){
+  draw(panelSvg, page, true); wire();
+  if (sel){ const g = panelSvg.querySelector('[data-id="' + sel + '"]'); if (g){ g.classList.add("sel"); show(sel); } }
+}
+document.querySelectorAll(".tg[data-page]").forEach(b => b.addEventListener("click", () => {
+  page = +b.dataset.page;
+  document.querySelectorAll(".tg[data-page]").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+  render();
+}));
+draw(heroSvg, 0, false);
+render();
+
+/* ---- the resonator ---------------------------------------------------
+   Resonator::ComputeFilters, vendor/eurorack/elements/dsp/resonator.cc,
+   line for line, with lut_stiffness from elements/resources.cc and
+   lut_4_decades (= 10^(4x) over 257 points). 52 modes: Voice::Init sets
+   the resolution to 52. Frequencies normalized to 32 kHz. */
+const LUT_STIFF = [-0.0625,-0.0615234,-0.0605469,-0.0595703,-0.0585938,-0.0576172,-0.0566406,-0.0556641,-0.0546875,-0.0537109,-0.0527344,-0.0517578,-0.0507812,-0.0498047,-0.0488281,-0.0478516,-0.046875,-0.0458984,-0.0449219,-0.0439453,-0.0429688,-0.0419922,-0.0410156,-0.0400391,-0.0390625,-0.0380859,-0.0371094,-0.0361328,-0.0351562,-0.0341797,-0.0332031,-0.0322266,-0.03125,-0.0302734,-0.0292969,-0.0283203,-0.0273438,-0.0263672,-0.0253906,-0.0244141,-0.0234375,-0.0224609,-0.0214844,-0.0205078,-0.0195312,-0.0185547,-0.0175781,-0.0166016,-0.015625,-0.0146484,-0.0136719,-0.0126953,-0.0117188,-0.0107422,-0.00976562,-0.00878906,-0.0078125,-0.00683594,-0.00585938,-0.00488281,-0.00390625,-0.00292969,-0.00195312,-0.000976562,0,0,0,0,0,0,0,0,0,0,0,0,0,6.02941e-05,0.000367262,0.000683596,0.00100958,0.00134552,0.0016917,0.00204844,0.00241608,0.00279493,0.00318533,0.00358766,0.00400225,0.0044295,0.00486978,0.0053235,0.00579107,0.0062729,0.00676943,0.00728111,0.0078084,0.00835179,0.00891175,0.0094888,0.0100835,0.0106963,0.0113278,0.0119785,0.0126492,0.0133402,0.0140524,0.0147863,0.0155426,0.016322,0.0171252,0.0179528,0.0188057,0.0196847,0.0205905,0.0215239,0.0224857,0.023477,0.0244984,0.0255511,0.0266358,0.0277537,0.0289057,0.0300928,0.0313161,0.0325768,0.033876,0.0352147,0.0365944,0.0380161,0.0394812,0.040991,0.0425469,0.0441502,0.0458025,0.0475052,0.0492598,0.051068,0.0529314,0.0548516,0.0568304,0.0588696,0.060971,0.0631365,0.0653681,0.0676678,0.0700376,0.0724798,0.0749965,0.07759,0.0802626,0.0830168,0.085855,0.0887798,0.0917938,0.0948998,0.0981006,0.101399,0.104798,0.108301,0.111911,0.11563,0.119464,0.123414,0.127485,0.13168,0.136003,0.140458,0.145049,0.14978,0.154655,0.159679,0.164857,0.170192,0.17569,0.181356,0.187195,0.193212,0.199413,0.205802,0.212387,0.219173,0.226165,0.233371,0.240797,0.24845,0.256336,0.264463,0.272837,0.281467,0.290361,0.299526,0.30897,0.318703,0.328732,0.339068,0.349719,0.360695,0.372006,0.383662,0.395674,0.408052,0.420808,0.433953,0.4475,0.461459,0.475845,0.490669,0.505946,0.521689,0.537912,0.55463,0.571859,0.589613,0.607909,0.626763,0.646192,0.666215,0.686848,0.708111,0.730022,0.752602,0.775872,0.799851,0.824561,0.850026,0.876268,0.903311,0.931178,0.959896,0.98949,1,1.00004,1.00026,1.00096,1.00257,1.00564,1.01086,1.01904,1.0311,1.04801,1.07079,1.10046,1.13794,1.18399,1.23909,1.30336,1.37637,1.4571,1.54376,1.63373,1.72352,1.80882,1.88461,1.9454,2,2];
+const SR = 32000;
+function interp(table, x, size){                 /* stmlib::Interpolate */
+  const i = x * size, k = Math.floor(i), f = i - k;
+  const a = table[Math.min(k, table.length - 1)], b = table[Math.min(k + 1, table.length - 1)];
+  return a + (b - a) * f;
+}
+const dec4 = (x) => Math.pow(10, 4 * x);          /* lut_4_decades */
+function computeModes(freq, geometry, brightness, damping, position){
+  let stiffness = interp(LUT_STIFF, geometry, 256);
+  let harmonic = freq, stretch = 1;
+  let q = 500 * dec4(damping * 0.8);
+  let ba = 1 - geometry; ba *= ba; ba *= ba; ba *= ba;
+  const b = brightness * (1 - 0.2 * ba);
+  let qLoss = b * (2 - b) * 0.85 + 0.15;
+  const qRate = geometry * (2 - geometry) * 0.1;
+  const modes = [];
+  let count = 0;
+  for (let i = 0; i < 52; i++){
+    let pf = harmonic * stretch;
+    if (pf >= 0.49) pf = 0.49; else count = i + 1;
+    modes.push({pf, Q: 1 + pf * q, amp: 0.5 + 0.5 * Math.cos(2 * Math.PI * position * i)});
+    stretch += stiffness;
+    stiffness *= stiffness < 0 ? 0.93 : 0.98;
+    qLoss += qRate * (1 - qLoss);
+    harmonic += freq;
+    q *= qLoss;
+  }
+  return modes.slice(0, count);
+}
+
+const $ = (id) => document.getElementById(id);
+const R = {coarse:$("rCoarse"), geom:$("rGeom"), bright:$("rBright"), damp:$("rDamp"), pos:$("rPos")};
+function params(){
+  const coarse = +R.coarse.value;
+  const note = 24.1 + coarse + 19;
+  const hz = 440 * Math.pow(2, (note - 69) / 12);
+  return {coarse, note, hz, geom:+R.geom.value, bright:+R.bright.value, damp:+R.damp.value, pos:+R.pos.value};
+}
+let modes = [], P0 = params();
+function recompute(){
+  P0 = params();
+  modes = computeModes(P0.hz / SR, P0.geom, P0.bright, P0.damp, P0.pos).map(m => {
+    const hz = m.pf * SR;
+    return {...m, hz, tau: m.Q / (Math.PI * hz), gain: Math.tan(Math.PI * m.pf)};
+  });
+  const names = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+  const nr = Math.round(P0.note);
+  $("vCoarse").textContent = P0.coarse + " · note " + P0.note.toFixed(1) + " (" + names[nr % 12] + (Math.floor(nr / 12) - 1) + ") · " + P0.hz.toFixed(0) + " Hz";
+  $("vGeom").textContent = P0.geom.toFixed(2);
+  $("vBright").textContent = P0.bright.toFixed(2);
+  $("vDamp").textContent = P0.damp.toFixed(2);
+  $("vPos").textContent = P0.pos.toFixed(2);
+  const longest = modes.reduce((a, m) => Math.max(a, m.tau), 0);
+  $("modeCount").textContent = modes.length + " modes · longest ring " + (longest < 10 ? longest.toFixed(2) : longest.toFixed(0)) + " s";
+  irDirty = true;
+  drawModes();
+}
+
+/* plot */
+const cv = $("modeCanvas"), cx = cv.getContext("2d");
+let strikeT = -1e9;
+function css(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function drawModes(){
+  const W = cv.width, H = cv.height;
+  const padL = 56, padR = 18, padT = 18, padB = 44;
+  const fMin = 30, fMax = 16000;
+  const xOf = (hz) => padL + (Math.log(hz / fMin) / Math.log(fMax / fMin)) * (W - padL - padR);
+  const acc = css("--acc"), pat = css("--pat"), dim = css("--dim"), line = css("--line"), ink = css("--ink");
+  cx.clearRect(0, 0, W, H);
+  cx.font = "22px 'IBM Plex Mono', monospace";
+  cx.lineWidth = 1;
+  /* grid */
+  [50,100,200,500,1000,2000,5000,10000].forEach(hz => {
+    const x = xOf(hz);
+    cx.strokeStyle = line; cx.beginPath(); cx.moveTo(x, padT); cx.lineTo(x, H - padB); cx.stroke();
+    cx.fillStyle = dim; cx.textAlign = "center";
+    cx.fillText(hz >= 1000 ? (hz / 1000) + "k" : String(hz), x, H - padB + 28);
+  });
+  cx.textAlign = "right"; cx.fillStyle = dim;
+  cx.fillText("Hz", W - padR, H - 8);
+  cx.save(); cx.translate(18, (H - padB + padT) / 2); cx.rotate(-Math.PI / 2); cx.textAlign = "center";
+  cx.fillText("level at the pickup", 0, 0); cx.restore();
+  cx.strokeStyle = line; cx.beginPath(); cx.moveTo(padL, H - padB); cx.lineTo(W - padR, H - padB); cx.stroke();
+  /* modes: stem height = pickup amplitude; a ring-time tail grows right
+     (log of seconds); after a strike each stem glows and fades on its own
+     time constant, so BRIGHTNESS shows as the high modes dying first. */
+  const now = performance.now(), since = (now - strikeT) / 1000;
+  const hMax = H - padB - padT;
+  modes.forEach(m => {
+    if (m.hz < fMin || m.hz > fMax) return;
+    const x = xOf(m.hz), h = Math.max(2, m.amp * hMax), y = H - padB - h;
+    const glow = since >= 0 ? Math.exp(-since / m.tau) : 0;
+    const tail = Math.max(0, Math.min(1, (Math.log10(m.tau) + 2) / 4)) * 60;
+    cx.globalAlpha = 0.28 + 0.5 * glow;
+    cx.fillStyle = pat; cx.fillRect(x, y, tail, 4);
+    cx.globalAlpha = 0.55 + 0.45 * glow;
+    cx.strokeStyle = glow > 0.05 ? ink : acc;
+    cx.lineWidth = 3 + 3 * glow;
+    cx.beginPath(); cx.moveTo(x, H - padB); cx.lineTo(x, y); cx.stroke();
+    cx.fillStyle = acc; cx.beginPath(); cx.arc(x, y, 5 + 4 * glow, 0, 2 * Math.PI); cx.fill();
+  });
+  cx.globalAlpha = 1; cx.lineWidth = 1;
+}
+let animRaf = 0;
+function animate(){
+  drawModes();
+  const since = (performance.now() - strikeT) / 1000;
+  const longest = modes.reduce((a, m) => Math.max(a, m.tau), 0);
+  if (!reduced && since < Math.min(8, longest * 3)) animRaf = requestAnimationFrame(animate);
+}
+
+/* audio */
+let actx = null, ir = null, irDirty = true, conv = null, out = null, noiseSrc = null, noiseGain = null;
+function ensureAudio(){
+  if (actx) return true;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) { $("audioNote").textContent = "This browser has no Web Audio; the plot still works."; return false; }
+  actx = new AC();
+  out = actx.createGain(); out.gain.value = 0.9; out.connect(actx.destination);
+  conv = actx.createConvolver(); conv.normalize = false; conv.connect(out);
+  $("audioNote").textContent = "Playing a " + actx.sampleRate / 1000 + " kHz rendering of the modes above.";
+  return true;
+}
+function buildIR(){
+  if (!irDirty && ir) return ir;
+  const sr = actx.sampleRate;
+  const longest = modes.reduce((a, m) => Math.max(a, m.tau), 0);
+  const dur = Math.max(0.3, Math.min(6, longest * 4.6));
+  const n = Math.floor(dur * sr);
+  const buf = actx.createBuffer(1, n, sr), d = buf.getChannelData(0);
+  modes.forEach(m => {
+    if (m.hz >= sr / 2) return;
+    const w = 2 * Math.PI * m.hz / sr, k = Math.exp(-1 / (m.tau * sr)), a = m.amp * m.gain;
+    /* recursive sine: s[n] = 2cos(w) s[n-1] - s[n-2], scaled by decay */
+    let s1 = 0, s2 = -Math.sin(w), c2 = 2 * Math.cos(w), env = a;
+    for (let i = 0; i < n; i++){
+      const s = c2 * s1 - s2; s2 = s1; s1 = s;
+      d[i] += s * env; env *= k;
+      if (env < 1e-6 * a) break;
+    }
+  });
+  let peak = 0; for (let i = 0; i < n; i++) peak = Math.max(peak, Math.abs(d[i]));
+  const g = peak > 0 ? 0.7 / peak : 0;
+  /* fade the last 30 ms so a cut tail does not click */
+  const fade = Math.floor(0.03 * sr);
+  for (let i = 0; i < n; i++){ d[i] *= g; if (i > n - fade) d[i] *= (n - i) / fade; }
+  ir = buf; irDirty = false; conv.buffer = ir; blowScale = null;
+  return ir;
+}
+let blowScale = null;
+function strike(){
+  strikeT = performance.now();
+  const longest = modes.reduce((a, m) => Math.max(a, m.tau), 0);
+  ringTitle(longest);
+  cancelAnimationFrame(animRaf); animate();
+  if (!ensureAudio()) return;
+  if (actx.state === "suspended") actx.resume();
+  buildIR();
+  const src = actx.createBufferSource(); src.buffer = ir; src.connect(out); src.start();
+}
+function blowOn(){
+  if (!ensureAudio()) return;
+  if (actx.state === "suspended") actx.resume();
+  buildIR();
+  if (noiseSrc) return;
+  const sr = actx.sampleRate, len = sr * 2;
+  const nb = actx.createBuffer(1, len, sr), nd = nb.getChannelData(0);
+  for (let i = 0; i < len; i++) nd[i] = Math.random() * 2 - 1;
+  noiseSrc = actx.createBufferSource(); noiseSrc.buffer = nb; noiseSrc.loop = true;
+  noiseGain = actx.createGain(); noiseGain.gain.value = 0;
+  /* a long ring builds up far more than a short one; keep blow near the
+     strike's loudness whatever DAMPING says */
+  const longest = modes.reduce((a, m) => Math.max(a, m.tau), 0);
+  const lvl = 0.05 / Math.sqrt(Math.max(0.05, longest));
+  noiseGain.gain.setTargetAtTime(lvl, actx.currentTime, 0.08);
+  noiseSrc.connect(noiseGain); noiseGain.connect(conv); noiseSrc.start();
+  strikeT = performance.now(); cancelAnimationFrame(animRaf); animate();
+  $("bBlow").classList.add("on"); $("bBlow").setAttribute("aria-pressed", "true");
+}
+function blowOff(){
+  if (!noiseSrc) return;
+  const s = noiseSrc, g = noiseGain; noiseSrc = null; noiseGain = null;
+  g.gain.setTargetAtTime(0, actx.currentTime, 0.06);
+  setTimeout(() => { try { s.stop(); } catch (e) {} }, 400);
+  $("bBlow").classList.remove("on"); $("bBlow").setAttribute("aria-pressed", "false");
+}
+$("bStrike").addEventListener("click", strike);
+const bb = $("bBlow");
+bb.addEventListener("pointerdown", (e) => { e.preventDefault(); bb.setPointerCapture && bb.setPointerCapture(e.pointerId); blowOn(); });
+["pointerup","pointercancel","lostpointercapture"].forEach(ev => bb.addEventListener(ev, blowOff));
+bb.addEventListener("keydown", (e) => { if ((e.key === " " || e.key === "Enter") && !e.repeat){ e.preventDefault(); blowOn(); } });
+bb.addEventListener("keyup", (e) => { if (e.key === " " || e.key === "Enter") blowOff(); });
+let rt = 0;
+Object.values(R).forEach(r => r.addEventListener("input", () => {
+  recompute();
+  clearTimeout(rt);
+  rt = setTimeout(() => { if (actx) { buildIR(); } }, 120);
+}));
+recompute();
+if (window.matchMedia) matchMedia("(prefers-color-scheme: dark)").addEventListener && matchMedia("(prefers-color-scheme: dark)").addEventListener("change", drawModes);
+new MutationObserver(drawModes).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
+})();
+</script>
+</body>
+</html>

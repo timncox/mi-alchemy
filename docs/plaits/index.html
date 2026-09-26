@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plaits for Alchemy Lab</title>
+<meta name="description" content="Operation manual for Plaits on the Hermetic Modular Alchemy Lab V2: Mutable Instruments' 24-model macro-oscillator on six pots, three buttons and ten jacks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Martian+Mono:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#eceef2; --paper-2:#e1e4ea; --card:#f7f8fa;
+  --ink:#14161c; --ink-2:#434957; --ink-3:#6b7282; --rule:#c9ced8;
+  --b1:#ff7000; --b2:#00b83a; --b3:#e4141c;
+  --b1-ink:#b34e00; --b2-ink:#00782a; --b3-ink:#b40f15;
+  --warn:#9a5a00; --warn-bg:#fbeed6;
+  --focus:#2a5bff;
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Martian Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#101217; --paper-2:#171a21; --card:#1b1f27;
+    --ink:#eaedf3; --ink-2:#b4bac7; --ink-3:#848b9a; --rule:#2c313c;
+    --b1-ink:#ff9a4a; --b2-ink:#3ddc6c; --b3-ink:#ff5a5f;
+    --warn:#ffc266; --warn-bg:#2d2412;
+    --focus:#7a9bff;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#101217; --paper-2:#171a21; --card:#1b1f27;
+  --ink:#eaedf3; --ink-2:#b4bac7; --ink-3:#848b9a; --rule:#2c313c;
+  --b1-ink:#ff9a4a; --b2-ink:#3ddc6c; --b3-ink:#ff5a5f;
+  --warn:#ffc266; --warn-bg:#2d2412;
+  --focus:#7a9bff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.55;font-variation-settings:"wdth" 100;padding-inline:16px;margin:0}
+.wrap{max-width:1120px;margin:0 auto}
+a{color:inherit;text-underline-offset:3px;text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:2px}
+p{margin:0 0 .9em;max-width:66ch}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+code,.mono{font-family:var(--mono);font-size:.82em;letter-spacing:-.01em}
+code{background:var(--paper-2);padding:.08em .35em;border-radius:3px}
+
+/* nav */
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);margin-inline:-16px;padding-inline:16px}
+nav .wrap{display:flex;gap:18px;align-items:center;min-height:48px;overflow-x:auto;scrollbar-width:none}
+nav .wrap::-webkit-scrollbar{display:none}
+nav .brand{font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 125;letter-spacing:.02em;white-space:nowrap}
+nav a{font-size:.86rem;text-decoration:none;color:var(--ink-2);white-space:nowrap}
+nav a:hover{color:var(--ink)}
+
+/* hero */
+header{padding-block:40px 28px}
+.hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:36px;align-items:start}
+.kick{font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:14px}
+.title{font-weight:900;font-variation-settings:"wdth" 125;font-size:clamp(4.2rem,13vw,10.5rem);line-height:.82;letter-spacing:-.02em;text-transform:uppercase}
+.title small{display:block;font-size:.22em;letter-spacing:.02em;font-variation-settings:"wdth" 100;font-weight:600;margin-top:.7em;line-height:1.2;text-transform:none;color:var(--ink-2)}
+.lede{font-size:1.2rem;line-height:1.45;margin-top:22px;max-width:40ch}
+.status{display:inline-flex;gap:8px;align-items:center;margin-top:18px;padding:6px 12px;border:1.5px solid var(--warn);color:var(--warn);background:var(--warn-bg);font-family:var(--mono);font-size:.72rem;letter-spacing:.03em;border-radius:999px}
+.status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--warn)}
+.strip{margin-top:30px}
+.strip .rows{display:grid;gap:5px}
+.strip .row{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}
+.cell{appearance:none;border:0;min-height:58px;padding:7px 7px 6px;text-align:left;color:#fff;font-family:var(--body);font-size:.72rem;line-height:1.15;font-weight:600;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;border-radius:2px;transition:transform .12s}
+.cell b{font-family:var(--mono);font-weight:500;font-size:.66rem;opacity:.9}
+.cell:hover{transform:translateY(-2px)}
+.cell[aria-pressed="true"]{outline:3px solid var(--ink);outline-offset:2px}
+.row.k1 .cell{background:#ff7000;color:#1a0b00}
+.row.k2 .cell{background:#00b83a;color:#001a08}
+.row.k3 .cell{background:#e4141c;color:#fff}
+.stripcap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:10px;font-family:var(--mono);font-size:.7rem;color:var(--ink-3)}
+.heropanel{background:#0c0d11;border-radius:6px;padding:14px;display:flex;justify-content:center}
+.heropanel svg{width:100%;max-width:250px;height:auto;display:block}
+.herocap{font-size:.78rem;color:var(--ink-3);margin-top:8px;text-align:center}
+
+/* sections */
+section{padding-block:56px;border-top:1px solid var(--rule)}
+.sh{font-weight:900;font-variation-settings:"wdth" 125;font-size:clamp(1.9rem,4.4vw,3rem);text-transform:uppercase;letter-spacing:-.01em;line-height:.95;margin-bottom:20px}
+.sh .n{font-family:var(--mono);font-size:.32em;letter-spacing:.06em;color:var(--ink-3);vertical-align:.6em;margin-right:.6em;font-weight:500}
+h3.h{font-size:1.25rem;font-weight:800;font-variation-settings:"wdth" 112;margin:30px 0 10px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px 36px}
+.note{border-left:3px solid var(--ink);padding:4px 0 4px 14px;color:var(--ink-2);font-size:.95rem;max-width:72ch}
+.note.warn{border-color:var(--warn)}
+
+/* panel explorer */
+.tgs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;align-items:center}
+.tg{appearance:none;font:inherit;font-size:.84rem;font-weight:600;padding:7px 13px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);border-radius:999px;cursor:pointer}
+.tg[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.tg.stg{border-style:dashed}
+.tgcap{font-size:.8rem;color:var(--ink-3)}
+.explore{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:28px;align-items:start}
+.panelbox{background:#0c0d11;border-radius:6px;padding:16px}
+.panelbox svg{width:100%;height:auto;display:block}
+.readout{background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:20px 22px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 64px)}
+.rk{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.readout h3{font-size:1.7rem;font-weight:900;font-variation-settings:"wdth" 118;margin:4px 0 2px;text-transform:uppercase}
+.rs{font-family:var(--mono);font-size:.74rem;color:var(--ink-2);margin-bottom:12px}
+.rd{max-width:60ch}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.meta span{font-family:var(--mono);font-size:.68rem;background:var(--paper-2);padding:3px 8px;border-radius:3px;color:var(--ink-2)}
+.meta b{color:var(--ink);font-weight:500}
+svg .hole{cursor:pointer}
+svg .hole:focus{outline:none}
+svg .hole:focus-visible .hit,svg .hole.sel .hit{stroke:#fff;stroke-width:.35;stroke-dasharray:1 .8}
+svg .hit{fill:transparent}
+svg .legend{font-family:"Archivo",sans-serif;font-weight:900;font-size:3.1px;fill:#d9dce4;text-anchor:middle;letter-spacing:.2px}
+svg .plabel{font-family:"Martian Mono",monospace;font-size:1.75px;fill:#9aa0ad;text-anchor:middle}
+svg .plabel.lit{fill:#eef0f5}
+svg .jlabel{font-family:"Martian Mono",monospace;font-size:1.55px;fill:#b9bdc8;text-anchor:middle}
+
+/* model ring */
+.ringlab{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:32px;align-items:center}
+.ringbox{background:#0c0d11;border-radius:50%;aspect-ratio:1;max-width:340px;width:100%;display:grid;place-items:center}
+.ringbox svg{width:88%;height:auto}
+.slider{width:100%;accent-color:var(--ink);margin:14px 0 4px}
+.mname{font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 118;font-size:clamp(1.8rem,4vw,2.6rem);line-height:1;text-transform:uppercase;margin:6px 0 4px}
+.mbank{font-family:var(--mono);font-size:.74rem;font-weight:700;letter-spacing:.04em}
+.htm{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:16px 0 12px}
+.htm dt{font-family:var(--mono);font-size:.72rem;font-weight:700;padding-top:3px}
+.htm dd{margin:0}
+.leds{font-family:var(--mono);font-size:.74rem;color:var(--ink-2);border-top:1px dashed var(--rule);padding-top:10px}
+
+/* tables */
+.tbl{overflow-x:auto;margin-top:8px}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--rule)}
+th{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+td.z{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.bank th{font-family:var(--display);font-size:1rem;font-weight:900;font-variation-settings:"wdth" 118;letter-spacing:0;text-transform:uppercase;padding-top:22px;color:var(--ink)}
+tr.bank th i{display:inline-block;width:14px;height:14px;border-radius:2px;margin-right:8px;vertical-align:-1px}
+td .env{font-family:var(--mono);font-size:.64rem;color:var(--ink-3);display:block;margin-top:2px}
+
+/* pitch calc */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+.ctl{display:grid;gap:14px}
+.ctl label{display:grid;gap:4px;font-size:.86rem;font-weight:600}
+.ctl label span{font-family:var(--mono);font-size:.74rem;font-weight:400;color:var(--ink-2)}
+.ctl input[type=range]{width:100%;accent-color:var(--ink)}
+.ctl select{font:inherit;font-size:.9rem;padding:6px 8px;background:var(--card);color:var(--ink);border:1px solid var(--rule);border-radius:4px}
+.big{font-family:var(--display);font-weight:900;font-variation-settings:"wdth" 125;font-size:clamp(3rem,8vw,5.2rem);line-height:.9;font-variant-numeric:tabular-nums}
+.bigsub{font-family:var(--mono);font-size:.8rem;color:var(--ink-2);margin-top:8px}
+
+.glance td:first-child{font-family:var(--mono);white-space:nowrap;font-size:.82rem}
+footer{padding-block:40px 60px;border-top:1px solid var(--rule);font-size:.9rem;color:var(--ink-2)}
+footer .sib{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 18px}
+footer .sib a{font-family:var(--display);font-weight:800;font-variation-settings:"wdth" 118;text-transform:uppercase;text-decoration:none;border:1.5px solid var(--ink);color:var(--ink);padding:6px 12px;border-radius:999px}
+footer .sib a:hover{background:var(--ink);color:var(--paper)}
+ul.plain{padding-left:1.1em;margin:0 0 1em;max-width:72ch}
+ul.plain li{margin-bottom:.45em}
+
+@media (max-width:860px){
+  .hero,.explore,.ringlab,.calc{grid-template-columns:minmax(0,1fr)}
+  .heropanel{max-width:320px}
+  .readout{position:static}
+  .ringbox{max-width:300px;margin-inline:auto}
+  .strip .row{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .cell{min-height:50px}
+}
+</style>
+
+<nav aria-label="Sections"><div class="wrap">
+  <span class="brand">PLAITS</span>
+  <a href="#what">What it does</a>
+  <a href="#panel">Panel</a>
+  <a href="#model">Model ring</a>
+  <a href="#models">24 models</a>
+  <a href="#pitch">Pitch</a>
+  <a href="#lpg">Triggers + LPG</a>
+  <a href="#jacks">Jacks</a>
+  <a href="#lights">Lights</a>
+  <a href="#card">Card</a>
+  <a href="#status">Status</a>
+</div></nav>
+
+<header id="top"><div class="wrap hero">
+  <div>
+    <div class="kick">Firmware for the Hermetic Modular Alchemy Lab V2 · mi-alchemy v0.1.0</div>
+    <h1 class="title">Plaits<small>24 synthesis models behind four knobs, on the Alchemy Lab</small></h1>
+    <p class="lede">Mutable Instruments' macro-oscillator, unmodified, running at its native 48 kHz. Pick a model, set the pitch, and shape it with HARMONICS, TIMBRE and MORPH. A trigger hands the sound to Plaits' low-pass gate and decay envelope.</p>
+    <div class="status">Built and native-tested · not yet flashed or heard</div>
+    <div class="strip" aria-label="The 24 models, by bank">
+      <div class="rows" id="strip"></div>
+      <div class="stripcap"><span>Orange: Plaits 1.2 models · green: the classics · red: noise, physical models, drums</span><span>Tap a model to open it on the ring below</span></div>
+    </div>
+  </div>
+  <div>
+    <div class="heropanel"><svg id="heroSvg" viewBox="-4 -4 69 137" role="img" aria-label="Plaits for Alchemy Lab panel, PLAY page, MODEL on Virtual analog"></svg></div>
+    <div class="herocap">The PLAY page as the firmware draws it, with MODEL on its first-boot model, Virtual analog.</div>
+  </div>
+</div></header>
+
+<main>
+<section id="what"><div class="wrap">
+  <h2 class="sh">What it does</h2>
+  <div class="cols">
+    <div>
+      <p>This is Plaits, Emilie Gillet's macro-oscillator for Mutable Instruments, compiled for the Alchemy Lab. All 24 models are here: the eight added in Plaits 1.2, the eight pitched classics, and the eight noise, physical-model and drum models. The DSP is <code>plaits::Voice</code> from the eurorack repository, byte for byte. The firmware around it does what Plaits' own <code>ui.cc</code> and <code>settings.cc</code> did, on six pots, three buttons and ten jacks.</p>
+      <p>Untriggered, the model drones. Once a trigger arrives, on J3 or from B1, Plaits' low-pass gate closes between hits and its internal decay envelope runs, shaped by DECAY and LPG COLOUR.</p>
+    </div>
+    <div>
+      <p>The original has four big knobs, three attenuverters, two model buttons and a set of hidden settings reached by holding a button and turning a knob. Here the performance controls sit on the PLAY page. The attenuverters and the hidden settings move to a SETUP page you hold B3 to see. A single MODEL selector replaces the two model buttons, and B2 jumps between banks.</p>
+      <p class="note">Out on J9, the model's auxiliary output on J10. The inputs J1 and J2 are unused: they are AC-coupled, and Plaits' FM input needs DC.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="panel"><div class="wrap">
+  <h2 class="sh">The panel</h2>
+  <p>Pick a page, then hover or tap any pot, button or jack. The rings are drawn the way the firmware draws them: selectors as dots, levels as arcs, bipolar controls fanning out from a white centre.</p>
+  <div class="tgs" role="group" aria-label="Page">
+    <button class="tg" id="tgPlay" data-page="0" aria-pressed="true">Play page</button>
+    <button class="tg" id="tgSetup" data-page="1" aria-pressed="false">Setup page · hold B3</button>
+    <button class="tg stg" id="tgSet1" data-page="2" aria-pressed="false">Settings 1 · hold B2+B3</button>
+    <button class="tg stg" id="tgSet2" data-page="3" aria-pressed="false">Settings 2 · Firmware</button>
+  </div>
+  <div class="explore">
+    <div class="panelbox"><svg id="panelSvg" viewBox="-4 -4 69 137" role="img" aria-label="Interactive Alchemy Lab panel diagram"></svg></div>
+    <div class="readout" id="ro" aria-live="polite">
+      <div class="rk" id="roK">Select a control</div>
+      <h3 id="roT">The panel</h3>
+      <div class="rs" id="roS">6 pots × 2 pages · 3 buttons · 10 jacks</div>
+      <div class="rd" id="roD">Front view, left to right and top to bottom: P1, B1, P2 on the first row; P3, B2, P4; P5, B3, P6. Below them the USB-C port and the ten jacks, inputs on the left and outputs on the right.</div>
+      <div class="meta" id="roM"></div>
+    </div>
+  </div>
+
+  <h3 class="h">Buttons</h3>
+  <div class="cols">
+    <div><p><b>B1 · STRIKE.</b> A press is a trigger, and holding it holds the gate, just as a gate on J3 would. It strikes the drums and physical models, clocks the Chiptune arpeggiator, and opens the low-pass gate. It is ORed with J3.</p></div>
+    <div><p><b>B2 · BANK.</b> A tap jumps MODEL to the same position in the next bank: model 9 goes to 17, 17 to 1, 1 to 9. The stored value moves, so the ring follows and the change is saved, and the MODEL pot has to catch its new value before it takes over again.</p></div>
+    <div><p><b>B3 · SETUP.</b> Hold it to show the SETUP page on the pots. Let go and you're back on PLAY. B2 stands down while B3 is held, so the Settings chord (B2 + B3 for two seconds) never jumps a bank on the way in.</p></div>
+  </div>
+</div></section>
+
+<section id="model"><div class="wrap">
+  <h2 class="sh">The model ring</h2>
+  <div class="ringlab">
+    <div>
+      <div class="ringbox"><svg id="bigRing" viewBox="-13 -13 26 26" role="img" aria-label="MODEL ring"></svg></div>
+      <label for="mslider" class="mono" style="display:block;margin-top:16px;color:var(--ink-2)">MODEL pot position</label>
+      <input type="range" id="mslider" class="slider" min="0" max="1000" step="1" value="354">
+    </div>
+    <div>
+      <div class="mbank" id="mBank">CLASSIC · MODEL 9 OF 24</div>
+      <div class="mname" id="mName">Virtual analog</div>
+      <dl class="htm" id="mHtm"></dl>
+      <div class="leds" id="mLeds"></div>
+    </div>
+  </div>
+  <p style="margin-top:22px">Twenty-four models share one pot, and the ring's lit arc is 13 LEDs, so MODEL moves one model about every 4 % of travel and most LEDs cover two models. The firmware draws the ring itself, from the model that is playing:</p>
+  <ul class="plain">
+    <li><b>Every LED is dim</b> in the colour of the bank its models belong to: orange for 1.2, green for the classics, red for noise and drums. The three banks always show as three stretches of the arc.</li>
+    <li><b>One LED is bright:</b> the model that is sounding, in its bank's colour, at LED floor((model + 0.5) × 13 / 24). It is drawn from the engine itself, not from the pot, so the ring and the sound always agree.</li>
+    <li><b>B2's colour</b> repeats the bank. Model names are in the web programmer and in the table below.</li>
+  </ul>
+</div></section>
+
+<section id="models"><div class="wrap">
+  <h2 class="sh">The 24 models</h2>
+  <p>What HARMONICS, TIMBRE and MORPH do on each model, from how each engine in the vendored source uses them. Models marked <em>own envelope</em> render their own amplitude envelope, so Plaits skips the low-pass gate on them. That flag is set in <code>voice.cc</code>.</p>
+  <div class="tbl"><table id="modelTable">
+    <thead><tr><th>Zone</th><th>Model</th><th>HARMONICS</th><th>TIMBRE</th><th>MORPH</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+</div></section>
+
+<section id="pitch"><div class="wrap">
+  <h2 class="sh">Pitch</h2>
+  <p>FREQUENCY sets the pitch, over the range picked by OCTAVE on the SETUP page, and J5 adds 1 V per octave. The formulas are Plaits' own <code>ui.cc</code>, except FINE, below. Try them:</p>
+  <div class="calc">
+    <div class="ctl">
+      <label for="cOct">OCTAVE (Setup P1) <span>Plaits' HARMONICS-hold range setting, 11 zones</span>
+        <select id="cOct"></select></label>
+      <label for="cFreq">FREQUENCY (Play P2) <span id="cFreqV">noon</span>
+        <input type="range" id="cFreq" min="-1000" max="1000" step="1" value="0"></label>
+      <label for="cFine">FINE (Setup P2) <span id="cFineV">0.00 st</span>
+        <input type="range" id="cFine" min="-1000" max="1000" step="1" value="0"></label>
+      <label for="cVoct">J5 · V/Oct <span id="cVoctV">0.00 V</span>
+        <input type="range" id="cVoct" min="-500" max="500" step="1" value="0"></label>
+    </div>
+    <div>
+      <div class="rk">note</div>
+      <div class="big" id="cNote">C4</div>
+      <div class="bigsub" id="cDetail"></div>
+      <p class="note" style="margin-top:18px">Plaits' pitch maths assumes its original codec rate, 47,872.34 Hz (<code>dsp.h</code>). The Lab runs at 48 kHz, which would put every note 4.6 cents sharp, so the firmware subtracts 12·log2(48000 / 47872.34) = 0.046 semitones and notes land in tune. What remains is libDaisy's clock, which runs the codec about 250 ppm fast: roughly 0.4 cents sharp, not corrected.</p>
+    </div>
+  </div>
+  <div class="tbl" style="margin-top:24px"><table>
+    <thead><tr><th>OCTAVE</th><th>What FREQUENCY does</th></tr></thead>
+    <tbody>
+      <tr><td class="z">LFO</td><td>Sub-audio: note −48.4 at the left to +11.6 at the right. The whole sweep is 60 semitones.</td></tr>
+      <tr><td class="z">C0 … C7</td><td>Fixes the octave. FREQUENCY spans ±7 semitones around it.</td></tr>
+      <tr><td class="z">Octaves</td><td>FREQUENCY steps in octaves, 9 steps with hysteresis, centred on C4.</td></tr>
+      <tr><td class="z">Free</td><td>The factory default: an 8-octave sweep, note 12 to 108, with C4 at noon.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note warn" style="margin-top:18px"><b>FINE is not upstream's.</b> On a real Plaits, fine tune (hold FREQUENCY and turn) only works in the Octaves range and spans ±7 semitones. Here FINE is a ±1 semitone trim that works in every range. Octaves mode uses fine tune's centre.</p>
+</div></section>
+
+<section id="lpg"><div class="wrap">
+  <h2 class="sh">Triggers and the low-pass gate</h2>
+  <div class="cols">
+    <div>
+      <p>A real Plaits sends a probe signal through its normalled jacks to tell a patched cable from an empty jack. The Alchemy Lab has no probe, so the firmware decides each "patched" flag another way.</p>
+      <p><b>TRIGGER</b> is a Settings switch (Settings 1, P2):</p>
+      <ul class="plain">
+        <li><b>Auto</b> (default): drones until the first trigger on J3 or B1 since power-up, then stays gated until the next power-up.</li>
+        <li><b>Drone</b>: never gated.</li>
+        <li><b>Triggered</b>: always gated, silent between hits.</li>
+      </ul>
+      <p>A timeout back to drone was considered and rejected, because the gate would then open by itself after a quiet spell.</p>
+    </div>
+    <div>
+      <p><b>LEVEL CV</b> (Settings 1, P5, off by default). When on, J4 drives the low-pass gate directly, replacing the internal envelope: an envelope, or a VCA CV. 0 V on J4 is then silence, which is why it defaults to off.</p>
+      <p><b>TIMBRE and MORPH</b> (J6, J7) count as patched while more than 50 mV has been seen there in the last two seconds. The flag only chooses what the attenuverter scales: the CV when patched, the internal envelope when not. A wrong guess is audible but harmless.</p>
+      <p><b>FM</b> is never patched: this port has no FM jack. So once the module is triggered, the FM attenuverter sets how far the internal envelope sweeps the pitch. On the Speech model it sets the prosody.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="jacks"><div class="wrap">
+  <h2 class="sh">Jacks and CV</h2>
+  <p>Every CV jack is read directly in the audio callback, with Plaits' own default calibration scaled to the Lab's ±5 V inputs. None of them goes through the SDK's CV matrix, so they cannot be re-routed from the web programmer.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Jack</th><th>Does</th><th>Scaling and reading</th></tr></thead>
+    <tbody>
+      <tr><td class="z">J1, J2</td><td>Unused</td><td>AC-coupled codec inputs. Plaits' FM input needs DC, so they stay free.</td></tr>
+      <tr><td class="z">J3</td><td>TRIGGER</td><td>Gate on above 1.5 V, off below 0.5 V, read every 24-frame block (0.5 ms). Plaits adds its own 1 ms trigger delay.</td></tr>
+      <tr><td class="z">J4</td><td>LEVEL</td><td>0.2 per volt, 0 to 1. Only with Settings LEVEL CV on.</td></tr>
+      <tr><td class="z">J5</td><td>V/Oct</td><td>12 semitones per volt from the calibrated jack, smoothed as <code>ui.cc</code> smooths it.</td></tr>
+      <tr><td class="z">J6</td><td>TIMBRE CV</td><td>0.32 per volt, times the TIMBRE attenuverter.</td></tr>
+      <tr><td class="z">J7</td><td>MORPH CV</td><td>0.32 per volt, times the MORPH attenuverter.</td></tr>
+      <tr><td class="z">J8</td><td>HARMONICS CV</td><td>0.2 per volt, added directly. Plaits has no attenuverter here either.</td></tr>
+      <tr><td class="z">J9</td><td>OUT</td><td>The model's main output.</td></tr>
+      <tr><td class="z">J10</td><td>AUX</td><td>The model's auxiliary output: a variant, a sub, or a raw signal, depending on the model.</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="lights"><div class="wrap">
+  <h2 class="sh">Reading the lights</h2>
+  <div class="cols">
+    <div><p><b>MODEL ring.</b> The three banks as dim stretches of colour, with the playing model's LED bright, as described above.</p><p><b>Other rings.</b> The SDK draws them from the knobs. FREQUENCY, FINE and the attenuverters are bipolar and fan out from a white centre dot, so noon is off. OCTAVE is an 11-dot selector.</p></div>
+    <div><p><b>B1</b> is white while the trigger (J3 or B1) is high. Otherwise it glows dim, brighter as the output gets louder.</p><p><b>B2</b> shows the active bank: orange, green or red. It turns red when the audio callback averages over 80 % CPU.</p><p><b>B3</b> has a dim Setup tint while you're on PLAY.</p></div>
+    <div><p><b>P1 at boot.</b> For 2.5 s after power-up, the P1 ring shows the previous session's worst audio-block load. Green is under 75 %, amber is under 90 %, and red is 90 % or more. A single dim blue dot means there is no data yet, as on the first boot after a flash. CPU is the main thing to watch on this build.</p></div>
+  </div>
+</div></section>
+
+<section id="card"><div class="wrap">
+  <h2 class="sh">Firmware on the card</h2>
+  <div class="cols">
+    <div>
+      <p>The image is <code>plaits_alchemy.bin</code>. Put it in the <code>/alchemy</code> folder on the Lab's SD card, beside any other Alchemy firmware, and pick it from Settings page 2 (the Firmware page):</p>
+      <ul class="plain">
+        <li>P1 FILE picks the file.</li>
+        <li>P2 FLASH writes it: turn it below 85 %, then past 95 %. It checks the file, writes it, verifies it and reboots.</li>
+        <li>P3 DFU is the same gesture, and reboots into the bootloader instead.</li>
+      </ul>
+      <p>The same picker is in Clouds, Elements and Marbles for Alchemy Lab, and in Mark, Belt and Smack.</p>
+    </div>
+    <div>
+      <p><b>Where it saves.</b> Plaits keeps its working state in its own QSPI preset slot, <b>11</b> (counting from 0), and saves about five seconds after the last change, when no button is held. Switching to another firmware and back leaves Plaits as you left it. On return, each pot has to catch its saved value before it takes over.</p>
+      <p>Across the card the home slots are Clouds 8, Elements 9, Marbles 10, Plaits 11, Smack 12, Mark 13, Belt 14 and Relay 15. That leaves slots 0–7 for presets you save by hand.</p>
+      <p><b>First boot after a flash:</b> Plaits' factory state. MODEL is on Virtual analog, OCTAVE on Free, decay at noon, LPG colour fully VCFA, attenuverters off.</p>
+    </div>
+  </div>
+  <h3 class="h">Settings at a glance</h3>
+  <div class="tbl"><table class="glance">
+    <thead><tr><th>Page · pot</th><th>Control</th><th>Choices and default</th></tr></thead>
+    <tbody>
+      <tr><td>1 · P1</td><td>BRIGHTNESS</td><td>5–100 %, default 30 %, applied as you turn</td></tr>
+      <tr><td>1 · P2</td><td>TRIGGER</td><td>Auto · Drone · Triggered, default Auto</td></tr>
+      <tr><td>1 · P3</td><td>PRESET SLOT</td><td>16 slots, 0–15. Picks the slot for P4.</td></tr>
+      <tr><td>1 · P4</td><td>PRESET ACTION</td><td>Fully left saves, fully right loads</td></tr>
+      <tr><td>1 · P5</td><td>LEVEL CV</td><td>Off · On, default Off</td></tr>
+      <tr><td>1 · P6</td><td>nothing</td><td></td></tr>
+      <tr><td>2 · P1–P3</td><td>FILE · FLASH · DFU</td><td>The SD firmware picker</td></tr>
+    </tbody>
+  </table></div>
+  <p style="margin-top:14px">Hold B2 + B3 for two seconds to open Settings. B1 steps to the next page, and a press of B2 or B3 leaves.</p>
+</div></section>
+
+<section id="status"><div class="wrap">
+  <h2 class="sh">Status</h2>
+  <div class="cols">
+    <div>
+      <h3 class="h" style="margin-top:0">What is proven</h3>
+      <ul class="plain">
+        <li>The firmware builds: a 451 KB image, 93 % of the SRAM region. The engine is compiled for size (<code>-Os</code>) to fit. At <code>-O2</code> it fits too, but leaves only about 13 KB.</li>
+        <li>A native test renders all 24 models for one second each, drone and triggered: none is silent and none sits at the rails.</li>
+        <li>The slowest model, Particle, took about 2 µs per 12-frame call on a desktop CPU under sanitizers, against a 250 µs budget. That only bounds the problem; it is not a measurement on the Lab.</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="h" style="margin-top:0">Not yet tested on the module</h3>
+      <ul class="plain">
+        <li>Nothing has been flashed or heard.</li>
+        <li>CPU on the Lab's Cortex-M7 at <code>-Os</code>. Watch B2 and the P1 boot readout, especially on the 6-op FM models, Particle and Inharmonic string.</li>
+        <li>Output level against a real Plaits. Full scale maps to the codec's full scale, which may be hot or quiet.</li>
+        <li>The CV scaling on J4 and J6–J8, taken from Plaits' default calibration.</li>
+        <li>Finding models by ear with 24 zones on one pot.</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="h" style="margin-top:0">Left out</h3>
+      <ul class="plain">
+        <li>User wavetables and DX7 banks sent as audio. The 6-op models use their built-in patches, as on a fresh Plaits.</li>
+        <li>The FM jack, the MODEL CV, and Plaits' own calibration procedure. The Lab's factory CV calibration is used instead.</li>
+        <li>The Launchpad, USB-audio and controller modes of the other Alchemy firmwares. This build is HostLink only. It never writes the card's USB setting, so the other firmwares keep theirs.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <p><b>Plaits</b> is by Emilie Gillet for Mutable Instruments, MIT licence, from <a href="https://github.com/pichenettes/eurorack">pichenettes/eurorack</a>. This port, the Alchemy Lab shim and this manual are in <a href="https://github.com/timncox/mi-alchemy">timncox/mi-alchemy</a>. The Alchemy Lab and its SDK are by <a href="https://hermeticmodular.com/modules/alchemy-lab">Hermetic Modular</a>.</p>
+  <div class="sib" aria-label="The other ports">
+    <a href="../">All four</a><a href="../clouds/">Clouds</a><a href="../elements/">Elements</a><a href="../marbles/">Marbles</a>
+  </div>
+  <p class="mono" style="font-size:.7rem;color:var(--ink-3)">Panel geometry generated from the SDK's KiCad front-panel template by tools/emit_panel_geometry.py. J3–J8 are numbered in reading order: top row J3 J4 J5, bottom row J6 J7 J8.</p>
+</div></footer>
+
+<script>
+/* == BEGIN GENERATED GEOMETRY -- tools/emit_panel_geometry.py == */
+const PANEL = {
+ "source": "lib/alchemy-sdk/panel/front-panel-template.kicad_pcb",
+ "units": "mm, front view, origin top-left of the plate, y down",
+ "plate": {
+  "w": 60.96,
+  "h": 128.5,
+  "hp": 12.0
+ },
+ "mount": [
+  {
+   "x": 4.537,
+   "y": 1.297,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  },
+  {
+   "x": 51.312,
+   "y": 1.311,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  },
+  {
+   "x": 4.537,
+   "y": 123.8,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  },
+  {
+   "x": 51.323,
+   "y": 123.812,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  }
+ ],
+ "rails": [
+  7.23,
+  122.18
+ ],
+ "pots": [
+  {
+   "id": "P1",
+   "x": 12.758,
+   "y": 21.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P2",
+   "x": 47.758,
+   "y": 21.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P3",
+   "x": 12.758,
+   "y": 49.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P4",
+   "x": 47.758,
+   "y": 49.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P5",
+   "x": 12.758,
+   "y": 77.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P6",
+   "x": 47.758,
+   "y": 77.304,
+   "hole": 3.6
+  }
+ ],
+ "ring": {
+  "r": 10.09,
+  "leds": 16,
+  "start_hour": 7.5,
+  "step_hours": 0.75,
+  "arc_leds": 13
+ },
+ "buttons": [
+  {
+   "id": "B1",
+   "x": 30.257,
+   "y": 21.31,
+   "hole": 3.1,
+   "halo": 4.0
+  },
+  {
+   "id": "B2",
+   "x": 30.257,
+   "y": 49.312,
+   "hole": 3.1,
+   "halo": 4.0
+  },
+  {
+   "id": "B3",
+   "x": 30.257,
+   "y": 77.32,
+   "hole": 3.1,
+   "halo": 4.0
+  }
+ ],
+ "usb": {
+  "x": 25.317,
+  "y": 89.274,
+  "w": 10.034,
+  "h": 4.044,
+  "r": 2.022
+ },
+ "jacks": [
+  {
+   "id": "J1",
+   "x": 6.699,
+   "y": 100.093,
+   "hole": 3.2
+  },
+  {
+   "id": "J2",
+   "x": 6.699,
+   "y": 113.053,
+   "hole": 3.2
+  },
+  {
+   "id": "J3",
+   "x": 18.51,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J4",
+   "x": 30.286,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J5",
+   "x": 42.014,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J6",
+   "x": 18.51,
+   "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J7",
+   "x": 30.286,
+   "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J8",
+   "x": 42.014,
+   "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J9",
+   "x": 53.901,
+   "y": 100.126,
+   "hole": 3.2
+  },
+  {
+   "id": "J10",
+   "x": 53.889,
+   "y": 113.036,
+   "hole": 3.2
+  }
+ ],
+ "jack_order_assumed": "J3..J8 in reading order; the printed panel is the authority",
+ "labels": {
+  "knob_dy": 14.0,
+  "button_dy": 10.63,
+  "in": [
+   5.556,
+   120.642
+  ],
+  "out": [
+   51.53,
+   120.642
+  ]
+ }
+};
+/* == END GENERATED GEOMETRY == */
+
+const NS = "http://www.w3.org/2000/svg";
+const C = {
+  b1:"#ff7000", b2:"#00ff40", b3:"#ff1010",
+  dim:"#181818", notch:"#ffffff", white:"#ffffff",
+  freqU:"#ffc060", freqD:"#60c0ff", harm:"#60ffc0", timbre:"#ff60a0", morph:"#c060ff", decay:"#ffff80",
+  oct:"#40c0ff", attP:"#ff9020", attN:"#2090ff", colour:"#80ffff", setup:"#103040",
+  idle:"#000030", bright:"#ffc040", orange:"#ff8000", green:"#00ff00",
+  slot:"#40a0ff", act:"#ffffff", pick:"#00ff60", flash:"#ffff00", dfu:"#a060ff",
+};
+const BANK = [C.b1, C.b2, C.b3];
+const BANKNAME = ["Plaits 1.2", "Classic", "Noise + drums"];
+
+/* The 24 models: firmware labels (kModelLabels) and what each engine does
+   with HARMONICS / TIMBRE / MORPH. `env` = already_enveloped in voice.cc. */
+const MODELS = [
+  ["VA + VCF", "Filter slope and resonance: 12 dB to 24 dB, resonance rising away from noon", "Filter cutoff", "Waveform: square to saw, with the pulse width, and a sub-oscillator at the extremes"],
+  ["Phase distortion", "Frequency ratio of the modulator", "Amount of distortion", "Asymmetry (pulse width) of the modulator"],
+  ["6-op FM 1", "Which patch in the built-in bank", "Brightness", "Envelope and modulation stretch", 1],
+  ["6-op FM 2", "Which patch in the second built-in bank", "Brightness", "Envelope and modulation stretch", 1],
+  ["6-op FM 3", "Which patch in the third built-in bank", "Brightness", "Envelope and modulation stretch", 1],
+  ["Wave terrain", "Which terrain (the 2-D waveform surface)", "Radius of the orbit read across it", "Offset of the orbit"],
+  ["String machine", "Chord", "Filter and ensemble (chorus) character", "Registration: the mix of organ and string voices"],
+  ["Chiptune", "Chord", "Arpeggio pattern (triggers clock it); chord inversion when not arpeggiating", "Pulse width of the square voices"],
+  ["Virtual analog", "Detuning between the two oscillators", "Shape of the first oscillator (square to narrow pulse); cross-modulation past noon", "Shape of the second oscillator (saw to pulse)"],
+  ["Waveshaping", "Waveshaper curve", "Wavefolder amount", "Waveform asymmetry"],
+  ["2-op FM", "Frequency ratio between carrier and modulator", "Modulation index", "Feedback: into the modulator on one side, into the carrier on the other"],
+  ["Formant / grain", "Frequency ratio between the two formants", "Formant frequency", "Formant width and shape"],
+  ["Harmonic", "Number of bumps in the spectrum", "Index of the most prominent harmonic", "Shape of the bumps"],
+  ["Wavetable", "Bank of wavetables", "Row within the bank", "Column within the bank"],
+  ["Chords", "Chord type", "Inversion and transposition", "Waveform"],
+  ["Speech", "Synthesis method and word bank", "Formant shift", "Phoneme or word; the MORPH attenuverter sets word speed"],
+  ["Swarm", "Amount of pitch spread between the voices", "Grain density", "Grain duration and overlap"],
+  ["Filtered noise", "Filter response: low-pass to band-pass to high-pass", "Clock frequency of the noise", "Filter resonance"],
+  ["Particle", "Amount of frequency randomisation", "Particle density", "Filter: resonant band-pass one way, diffusion (all-pass) the other"],
+  ["Inharmonic string", "Inharmonicity, or the material", "Excitation brightness and dust density", "Decay time", 1],
+  ["Modal resonator", "Inharmonicity, or the material", "Brightness and excitation", "Decay time", 1],
+  ["Bass drum", "Attack sharpness, self-FM, then overdrive", "Brightness", "Decay", 1],
+  ["Snare drum", "Snappiness: the balance toward noise", "Tone", "Decay", 1],
+  ["Hi-hat", "Noisiness: metallic to noise", "Tone (high-pass)", "Decay", 1],
+];
+
+/* ---------- SDK ring rendering ---------- */
+function el(n, a, parent) { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (parent) parent.appendChild(e); return e; }
+function hourXY(cx, cy, r, hour) { const a = hour / 12 * Math.PI * 2; return [cx + r * Math.sin(a), cy - r * Math.cos(a)]; }
+
+/* RingFrame::Base / BaseZone, Distributed geometry: the selected zone is
+   nearest-rounded, zones >= 16 are not drawn (16-bit avail mask). */
+function distPos(z, n, N) { if (n <= 1) return 0; return Math.min(N - 1, Math.floor(z / (n - 1) * (N - 1) + 0.5)); }
+function sdkSelector(n, v, on) {
+  const N = PANEL.ring.arc_leds, out = new Array(PANEL.ring.leds).fill(null);
+  const zone = Math.min(n - 1, Math.floor(Math.max(0, Math.min(1, v)) * (n - 1) + 0.5));
+  for (let z = 0; z < n && z < 16; z++) out[distPos(z, n, N)] = z === zone ? on : C.dim;
+  return { out, zone };
+}
+/* the knob's own value (SelectorTransform): floor(v * n) */
+function engineOf(v) { return Math.min(23, Math.max(0, Math.floor(v * 24))); }
+const DIMS = new Set();
+function dimOf(hex) { const d = "#" + [1, 3, 5].map(k => Math.floor(parseInt(hex.substr(k, 2), 16) / 10).toString(16).padStart(2, "0")).join(""); DIMS.add(d); return d; }
+/* ModelRing() in plaits_alchemy.cpp: a Custom ring drawn from the engine
+   that is playing. Each LED dim in the bank colour of the model at the
+   middle of its share of the travel; the playing model's LED bright. */
+function modelRing(v) {
+  const n = PANEL.ring.arc_leds, out = new Array(PANEL.ring.leds).fill(null), e = engineOf(v);
+  for (let i = 0; i < n; i++) { const m = Math.min(23, Math.floor((i + 0.5) * 24 / n)); out[i] = dimOf(BANK[Math.floor(m / 8)]); }
+  const led = Math.min(n - 1, Math.floor((e + 0.5) * n / 24));
+  out[led] = BANK[Math.floor(e / 8)];
+  return { out, e, led };
+}
+function ringColours(ring, v) {
+  const N = PANEL.ring.arc_leds, out = new Array(PANEL.ring.leds).fill(null);
+  if (ring.style === "model") return modelRing(v).out;
+  if (ring.style === "level") { const n = Math.round(v * N); for (let i = 0; i < N; i++) out[i] = i < n ? ring.c : C.dim; }
+  else if (ring.style === "sel") return sdkSelector(ring.n, v, ring.c).out;
+  else if (ring.style === "bipolar") {
+    const mid = (N - 1) / 2, to = Math.round(v * (N - 1));
+    for (let i = 0; i < N; i++) out[i] = C.dim;
+    const lo = Math.min(to, Math.round(mid)), hi = Math.max(to, Math.round(mid));
+    for (let i = lo; i <= hi; i++) out[i] = to >= mid ? ring.p : ring.n;
+    out[Math.round(mid)] = C.white;
+  } else if (ring.style === "none") { /* dark */ }
+  return out;
+}
+function drawRing(g, cx, cy, cols, big) {
+  const geo = PANEL.ring, R = big ? 10 : geo.r, s = big ? 1.25 : 1;
+  for (let i = 0; i < geo.leds; i++) {
+    const hour = (geo.start_hour + geo.step_hours * i) % 12, [x, y] = hourXY(cx, cy, R, hour);
+    const arc = i < geo.arc_leds, c = cols[i], lit = arc && c && c !== C.dim && !DIMS.has(c);
+    if (lit) el("circle", { cx:x, cy:y, r:1.55 * s, fill:c, opacity:.25 }, g);
+    el("circle", { cx:x, cy:y, r:.72 * s, fill: arc ? (c || "#0e0d13") : "#101014", opacity: arc ? 1 : .55 }, g);
+  }
+}
+function drawKnob(g, cx, cy, v) {
+  el("circle", { cx, cy, r:6.2, fill:"#0f0e14", stroke:"rgba(255,255,255,.10)", "stroke-width":.25 }, g);
+  el("circle", { cx, cy, r:5.4, fill:"#1b1d24" }, g);
+  const hour = PANEL.ring.start_hour + v * (PANEL.ring.step_hours * (PANEL.ring.arc_leds - 1));
+  const [x1, y1] = hourXY(cx, cy, 2.2, hour), [x2, y2] = hourXY(cx, cy, 5.0, hour);
+  el("line", { x1, y1, x2, y2, stroke:"#eef0f5", "stroke-width":.7, "stroke-linecap":"round" }, g);
+}
+function drawButton(g, b, halo) {
+  if (halo && halo !== C.idle) el("circle", { cx:b.x, cy:b.y, r:b.halo + 1.6, fill:halo, opacity:.22 }, g);
+  el("circle", { cx:b.x, cy:b.y, r:b.halo, fill: halo || "#101018", opacity: halo ? .85 : 1 }, g);
+  el("circle", { cx:b.x, cy:b.y, r:b.hole, fill:"#0d0c12", stroke:"rgba(255,255,255,.14)", "stroke-width":.25 }, g);
+  el("circle", { cx:b.x, cy:b.y, r:2.2, fill:"#1c1a24" }, g);
+}
+function drawJack(g, j, dead) {
+  el("circle", { cx:j.x, cy:j.y, r:3.9, fill:"#0f0e14", stroke:"rgba(255,255,255,.12)", "stroke-width":.25, opacity: dead ? .5 : 1 }, g);
+  el("circle", { cx:j.x, cy:j.y, r:j.hole, fill:"#1b1923", opacity: dead ? .5 : 1 }, g);
+  el("circle", { cx:j.x, cy:j.y, r:1.5, fill:"#050507" }, g);
+}
+
+/* ---------- the pages ---------- */
+const RING = {
+  model:{style:"model"},
+  bip:(p, n) => ({style:"bipolar", p, n}),
+  lvl:(c) => ({style:"level", c}),
+  sel:(n, c) => ({style:"sel", n, c}),
+  none:{style:"none"},
+};
+const PAGES = [
+  { name:"PLAY", halos:[C.idle, C.b2, C.setup], pots:[
+    { name:"MODEL", ring:RING.model, v:8.5/24, sub:"24-zone selector · B2 jumps banks",
+      d:"The synthesis model. Zones 1–8 are the Plaits 1.2 models, 9–16 the pitched classics, 17–24 noise, physical models and drums. The ring shows the three banks dim and the playing model bright. It stands in for the two model buttons of the real Plaits.",
+      meta:["patch <b>engine</b>","CV <b>none</b>","first boot <b>Virtual analog</b>"] },
+    { name:"FREQUENCY", ring:RING.bip(C.freqU, C.freqD), v:.5, sub:"pitch · range set by OCTAVE · + J5 V/Oct",
+      d:"Pitch. In the default Free range it sweeps 8 octaves with C4 at noon. OCTAVE on the Setup page fixes an octave, quantises to octaves, or drops to LFO rates. The Pitch section below has the formulas.",
+      meta:["patch <b>note</b>","CV <b>J5, 12 st/V</b>"] },
+    { name:"HARMONICS", ring:RING.lvl(C.harm), v:.45, sub:"0–1 · per model · + J8",
+      d:"The first of the three sound controls. On most models it chooses the spectrum's structure: the frequency ratio, the chord, the filter response, the patch. The table of 24 models says what it does on each.",
+      meta:["patch <b>harmonics</b>","CV <b>J8, 0.2/V, direct</b>"] },
+    { name:"TIMBRE", ring:RING.lvl(C.timbre), v:.55, sub:"0–1 · per model · + J6 through its attenuverter",
+      d:"The second sound control, usually brightness: the cutoff, the modulation index, the fold, the density. J6 adds to it through the TIMBRE attenuverter on the Setup page.",
+      meta:["patch <b>timbre</b>","CV <b>J6, 0.32/V × att</b>"] },
+    { name:"MORPH", ring:RING.lvl(C.morph), v:.4, sub:"0–1 · per model · + J7 through its attenuverter",
+      d:"The third sound control: waveform, asymmetry, decay, or position within a table. J7 adds to it through the MORPH attenuverter.",
+      meta:["patch <b>morph</b>","CV <b>J7, 0.32/V × att</b>"] },
+    { name:"DECAY", ring:RING.lvl(C.decay), v:.5, sub:"0–1 · the envelope once triggered",
+      d:"The decay of the low-pass gate and of the internal envelope, used once the module is triggered. On the real Plaits this is the hidden setting under hold-MORPH-and-turn.",
+      meta:["patch <b>decay</b>","first boot <b>noon</b>"] },
+  ], buttons:["STRIKE","BANK","SETUP"] },
+  { name:"SETUP", halos:[C.idle, C.b2, null], pots:[
+    { name:"OCTAVE", ring:RING.sel(11, C.oct), v:10.5/11, sub:"LFO · C0 … C7 · Octaves · Free",
+      d:"FREQUENCY's range, 11 zones: LFO, C0 to C7 (a fixed octave, FREQUENCY ±7 semitones), Octaves (FREQUENCY steps in octaves) and Free (the 8-octave sweep, the factory default). Plaits' hold-HARMONICS-and-turn setting, with ui.cc's formulas unchanged.",
+      meta:["first boot <b>Free</b>"] },
+    { name:"FINE", ring:RING.bip(C.freqU, C.freqD), v:.5, sub:"±1 semitone · every range",
+      d:"Fine tune, a ±1 semitone trim in every OCTAVE range. This differs from upstream, where fine tune only works in the Octaves range and spans ±7 semitones.",
+      meta:["first boot <b>0</b>"] },
+    { name:"FM", ring:RING.bip(C.attP, C.attN), v:.5, sub:"attenuverter · noon = off",
+      d:"The FM attenuverter. This port has no FM jack, so once triggered it sets how far the internal envelope sweeps the pitch, either way. On Speech it sets the prosody.",
+      meta:["patch <b>frequency_modulation_amount</b>"] },
+    { name:"TIMBRE ATT", ring:RING.bip(C.attP, C.attN), v:.5, sub:"attenuverter · noon = off",
+      d:"Scales J6 into TIMBRE while a CV is present there (above 50 mV in the last two seconds). Otherwise it scales the internal envelope's pull on TIMBRE.",
+      meta:["patch <b>timbre_modulation_amount</b>"] },
+    { name:"MORPH ATT", ring:RING.bip(C.attP, C.attN), v:.5, sub:"attenuverter · noon = off",
+      d:"Scales J7 into MORPH, or the internal envelope's pull on MORPH when nothing is there. On Speech it sets the word speed.",
+      meta:["patch <b>morph_modulation_amount</b>"] },
+    { name:"LPG COLOUR", ring:RING.lvl(C.colour), v:0, sub:"VCFA at the left · VCA at the right",
+      d:"The low-pass gate's character: fully left it filters as it closes (VCFA, bright), fully right it is a plain VCA. Plaits' hold-TIMBRE-and-turn setting.",
+      meta:["patch <b>lpg_colour</b>","first boot <b>VCFA</b>"] },
+  ], buttons:["STRIKE","BANK","SETUP"] },
+  { name:"SETTINGS 1", halos:[C.orange, null, null], pots:[
+    { name:"BRIGHTNESS", ring:RING.lvl(C.bright), v:.26, sub:"5–100 % · default 30 %",
+      d:"LED brightness, applied as you turn.", meta:["SDK <b>UseBrightness</b>"] },
+    { name:"TRIGGER", ring:RING.sel(3, C.white), v:.17, sub:"Auto · Drone · Triggered",
+      d:"Auto (the default) drones until the first trigger on J3 or B1 since power-up, then gates. Drone is never gated. Triggered is always gated and silent between hits.",
+      meta:["Settings <b>page 1, pot 2</b>"] },
+    { name:"PRESET SLOT", ring:RING.sel(16, C.slot), v:.03, sub:"16 slots, 0–15",
+      d:"Picks the slot the next pot saves to or loads from. Plaits' own working state lives in slot 11, and saving by hand into 8–15 overwrites a firmware's working state.",
+      meta:["SDK <b>UsePresets</b>"] },
+    { name:"PRESET ACTION", ring:RING.bip(C.act, C.act), v:.5, sub:"left: save · right: load",
+      d:"Turn fully left to save into the chosen slot, fully right to load from it.", meta:["SDK <b>UsePresets</b>"] },
+    { name:"LEVEL CV", ring:RING.sel(2, C.white), v:.25, sub:"Off · On",
+      d:"On: J4 drives the low-pass gate directly, replacing the internal envelope, and 0 V is silence. Off (the default): J4 is ignored.",
+      meta:["Settings <b>page 1, pot 5</b>"] },
+    { name:"—", ring:RING.none, v:0, sub:"nothing", d:"Not used on this page.", meta:[] },
+  ], buttons:["NEXT PAGE","LEAVE","LEAVE"] },
+  { name:"SETTINGS 2", halos:[C.orange, null, null], pots:[
+    { name:"FILE", ring:RING.sel(7, C.pick), v:.8, sub:"the .bin files in /alchemy",
+      d:"Picks a firmware file on the card, one dot per .bin, the chosen one bright. The drawing shows seven: the four ports in this repository and Mark, Belt and Smack.",
+      meta:["picker <b>pot 0</b>"] },
+    { name:"FLASH", ring:RING.lvl(C.flash), v:0, sub:"dip below ~85 %, then past ~95 %",
+      d:"Writes the chosen file into the firmware slot, verifies it and reboots into it. The dip arms it, so a pot parked at maximum cannot fire on entry. If the file is the firmware already running, it writes nothing.",
+      meta:["picker <b>pot 1</b>"] },
+    { name:"DFU", ring:RING.lvl(C.dfu), v:0, sub:"same gesture",
+      d:"Reboots into the bootloader's update mode for a USB flash.", meta:["picker <b>pot 2</b>"] },
+    { name:"—", ring:RING.none, v:0, sub:"nothing", d:"Not used on this page.", meta:[] },
+    { name:"—", ring:RING.none, v:0, sub:"nothing", d:"Not used on this page.", meta:[] },
+    { name:"—", ring:RING.none, v:0, sub:"nothing", d:"Not used on this page.", meta:[] },
+  ], buttons:["NEXT PAGE","LEAVE","LEAVE"] },
+];
+const BUTTONS = {
+  STRIKE:{ d:"A press is a trigger; held, it is the gate. ORed with J3. It strikes the physical models and drums, clocks the Chiptune arpeggiator, and opens the low-pass gate. Lit white while the trigger is high, otherwise dim and brighter with the output.", s:"B1 · press / hold", meta:["modulation <b>trigger</b>"] },
+  BANK:{ d:"A tap jumps MODEL to the same model in the next bank (1.2 → classic → noise + drums → 1.2). Its LEDs show the active bank in that bank's colour, and turn red when the audio callback averages over 80 % CPU.", s:"B2 · tap", meta:["LED <b>bank colour</b>"] },
+  SETUP:{ d:"Hold to show the Setup page on the pots. B2 + B3 held for two seconds opens Settings; B2 stands down while B3 is held, so the chord never jumps a bank.", s:"B3 · hold", meta:[] },
+  "NEXT PAGE":{ d:"In Settings, B1 steps to the next page when you let go of it. It is lit orange while Settings is open.", s:"B1 in Settings", meta:[] },
+  LEAVE:{ d:"In Settings, a press of B2 or B3 leaves and returns to the Play page. Every Settings value except the picker's is saved in slot 11 about five seconds later.", s:"B2 / B3 in Settings", meta:[] },
+};
+const JACKS = {
+  J1:["IN L","Unused. AC-coupled codec input; Plaits' FM input needs DC, so it stays free.",true],
+  J2:["IN R","Unused, as J1.",true],
+  J3:["TRIG","Trigger / gate: on above 1.5 V, off below 0.5 V, read every 0.5 ms. Strikes the model and, once seen, hands the sound to the low-pass gate (in TRIGGER Auto).",false],
+  J4:["LEVEL","Level CV into the low-pass gate, 0.2 per volt. Only with Settings LEVEL CV on; then 0 V is silence.",false],
+  J5:["V/OCT","Pitch, 12 semitones per volt from the calibrated jack, added to FREQUENCY.",false],
+  J6:["TIMBRE","TIMBRE CV, 0.32 per volt, through the TIMBRE attenuverter. Counts as patched while above 50 mV in the last two seconds.",false],
+  J7:["MORPH","MORPH CV, 0.32 per volt, through the MORPH attenuverter. Same patched rule as J6.",false],
+  J8:["HARM","HARMONICS CV, 0.2 per volt, added directly.",false],
+  J9:["OUT","The model's main output.",false],
+  J10:["AUX","The model's auxiliary output: a variant, a sub, or a raw signal, depending on the model.",false],
+};
+
+function holeLabel(key, st) { const x = describe(key, st); return x ? key + ": " + x.t : key; }
+function drawPanel(svg, st, onHover) {
+  svg.textContent = "";
+  const P = PANEL, page = PAGES[st.page];
+  const plate = el("g", {}, svg);
+  el("rect", { x:0, y:0, width:P.plate.w, height:P.plate.h, rx:1.2, fill:"#16181e", stroke:"rgba(234,237,243,.16)", "stroke-width":.3 }, plate);
+  for (const m of P.mount) el("rect", { x:m.x, y:m.y, width:m.w, height:m.h, rx:m.r, fill:"#0b0c10", stroke:"rgba(255,255,255,.12)", "stroke-width":.2 }, plate);
+  /* the three bank colours as the plate's rails */
+  P.rails.forEach((y, k) => { const w = (P.plate.w - 4) / 3; for (let b = 0; b < 3; b++) el("line", { x1:2 + b * w + .3, y1:y, x2:2 + (b + 1) * w - .3, y2:y, stroke:BANK[b], "stroke-width":.35, opacity:.55 }, plate); });
+  el("text", { x:P.plate.w / 2, y:P.rails[0] - 2.2, class:"legend" }, plate).textContent = "PLAITS";
+
+  const mk = (key) => {
+    const g = el("g", Object.assign({ class:"hole" + (st.sel === key ? " sel" : ""), "data-key":key },
+      onHover ? { tabindex:"0", role:"button", "aria-label":holeLabel(key, st) } : {}), svg);
+    if (onHover) {
+      g.addEventListener("mouseenter", () => onHover(key, false));
+      g.addEventListener("click", (e) => { e.stopPropagation(); onHover(key, true); });
+      g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onHover(key, true); const n = svg.querySelector('[data-key="' + key + '"]'); if (n) n.focus(); } });
+      g.addEventListener("focus", () => onHover(key, false));
+    }
+    return g;
+  };
+  P.pots.forEach((p, i) => {
+    const k = page.pots[i], v = st.values[st.page][i], g = mk("P" + (i + 1));
+    drawRing(g, p.x, p.y, ringColours(k.ring, v), false);
+    drawKnob(g, p.x, p.y, v);
+    el("text", { x:p.x, y:p.y + P.labels.knob_dy, class:"plabel lit" }, g).textContent = k.name;
+    el("circle", { cx:p.x, cy:p.y, r:P.ring.r + 2.2, class:"hit" }, g);
+  });
+  P.buttons.forEach((b, i) => {
+    const g = mk("B" + (i + 1));
+    let halo = page.halos[i];
+    if (st.page === 0 && i === 1) halo = BANK[Math.floor(engineOf(st.values[0][0]) / 8)];
+    drawButton(g, b, halo);
+    el("text", { x:b.x, y:b.y + P.labels.button_dy, class:"plabel" }, g).textContent = page.buttons[i];
+    el("circle", { cx:b.x, cy:b.y, r:b.halo + 2.2, class:"hit" }, g);
+  });
+  { const u = P.usb, g = mk("USB");
+    el("rect", { x:u.x, y:u.y, width:u.w, height:u.h, rx:u.r, fill:"#08080b", stroke:"rgba(255,255,255,.16)", "stroke-width":.25 }, g);
+    el("rect", { x:u.x - 1, y:u.y - 1, width:u.w + 2, height:u.h + 2, rx:u.r + 1, class:"hit" }, g); }
+  const rows = [...new Set(P.jacks.map(j => Math.round(j.y)))].sort((a, b) => a - b);
+  P.jacks.forEach(j => {
+    const g = mk(j.id), info = JACKS[j.id];
+    drawJack(g, j, info[2]);
+    const top = Math.round(j.y) === rows[0];
+    el("text", { x:j.x, y:j.y + (top ? 6.9 : 7.6), class:"jlabel" }, g).textContent = info[0];
+    el("circle", { cx:j.x, cy:j.y, r:5.2, class:"hit" }, g);
+  });
+  el("text", { x:P.labels.in[0] + 1.2, y:P.labels.in[1] + 3.2, class:"legend" }, plate).textContent = "IN";
+  el("text", { x:P.labels.out[0] - 1.2, y:P.labels.out[1] + 3.2, class:"legend" }, plate).textContent = "OUT";
+}
+
+const st = { page:0, values:PAGES.map(p => p.pots.map(k => k.v)), sel:null };
+drawPanel(document.getElementById("heroSvg"), { page:0, values:st.values, sel:null });
+
+const psvg = document.getElementById("panelSvg");
+const ro = { k:roK, t:roT, s:roS, d:roD, m:roM };
+const roDefault = { k:ro.k.textContent, t:ro.t.textContent, s:ro.s.textContent, d:ro.d.textContent };
+let pinned = null;
+function describe(key, s) {
+  s = s || st;
+  if (!key) return null;
+  const page = PAGES[s.page];
+  if (key[0] === "P") { const k = page.pots[+key[1] - 1]; return { k:key + " · " + page.name, t:k.name, s:k.sub, d:k.d, m:k.meta }; }
+  if (key[0] === "B") { const n = page.buttons[+key[1] - 1], b = BUTTONS[n]; return { k:key + " · " + b.s, t:n, s:"", d:b.d, m:b.meta }; }
+  if (key === "USB") return { k:"USB-C", t:"USB", s:"HostLink to the computer", d:"The front USB-C talks HostLink to the web programmer, for presets, the manual and the SD card's files. This build does not host a Launchpad, is not a USB audio interface, and never writes the card's USB setting.", m:[] };
+  const j = JACKS[key]; return { k:key, t:j[0], s:"", d:j[1], m:[] };
+}
+function showReadout(key) {
+  const x = describe(key);
+  if (!x) { ro.k.textContent = roDefault.k; ro.t.textContent = roDefault.t; ro.s.textContent = roDefault.s; ro.d.textContent = roDefault.d; ro.m.innerHTML = ""; return; }
+  ro.k.textContent = x.k; ro.t.textContent = x.t; ro.s.textContent = x.s; ro.d.textContent = x.d;
+  ro.m.innerHTML = (x.m || []).map(m => "<span>" + m + "</span>").join("");
+}
+function onHover(key, click) { if (click) { pinned = key; st.sel = key; redraw(); } showReadout(key); }
+function redraw() { drawPanel(psvg, st, onHover); }
+psvg.addEventListener("mouseleave", () => showReadout(pinned));
+document.querySelectorAll(".tg[data-page]").forEach(b => b.addEventListener("click", () => {
+  st.page = +b.dataset.page;
+  document.querySelectorAll(".tg[data-page]").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+  redraw(); showReadout(pinned);
+}));
+redraw();
+
+/* ---------- the model ring ---------- */
+const big = document.getElementById("bigRing"), ms = document.getElementById("mslider");
+function nameOf(e) { return MODELS[e][0]; }
+function renderModel(v, push) {
+  big.textContent = "";
+  const r = modelRing(v);
+  drawRing(big, 0, 0, r.out, true);
+  el("text", { x:0, y:1.4, "text-anchor":"middle", "font-family":"Archivo,sans-serif", "font-weight":"900", "font-size":"4.4", fill:BANK[Math.floor(r.e / 8)] }, big).textContent = r.e + 1;
+  el("text", { x:0, y:4.6, "text-anchor":"middle", "font-family":"Martian Mono,monospace", "font-size":"1.3", fill:"#9aa0ad" }, big).textContent = "OF 24";
+  const m = MODELS[r.e], b = Math.floor(r.e / 8);
+  mBank.textContent = BANKNAME[b].toUpperCase() + " · MODEL " + (r.e + 1) + " OF 24";
+  mBank.style.color = ["var(--b1-ink)","var(--b2-ink)","var(--b3-ink)"][b];
+  mName.textContent = m[0];
+  mHtm.innerHTML = "<dt>HARMONICS</dt><dd>" + m[1] + "</dd><dt>TIMBRE</dt><dd>" + m[2] + "</dd><dt>MORPH</dt><dd>" + m[3] + "</dd>" + (m[4] ? "<dt>LPG</dt><dd>Own envelope: the low-pass gate is skipped</dd>" : "");
+  const share = [];
+  for (let m = 0; m < 24; m++) if (Math.min(12, Math.floor((m + 0.5) * 13 / 24)) === r.led) share.push(m + 1);
+  mLeds.textContent = "Bright LED " + (r.led + 1) + " of 13 · that LED covers model" + (share.length > 1 ? "s " + share.join(" and ") : " " + share[0]);
+  document.querySelectorAll(".cell").forEach(c => c.setAttribute("aria-pressed", +c.dataset.e === r.e ? "true" : "false"));
+  if (push) { st.values[0][0] = v; redraw(); }
+}
+ms.addEventListener("input", () => renderModel(ms.value / 1000, true));
+
+/* the hero strip */
+{
+  const strip = document.getElementById("strip");
+  for (let b = 0; b < 3; b++) {
+    const row = document.createElement("div"); row.className = "row k" + (b + 1);
+    for (let i = 0; i < 8; i++) {
+      const e = b * 8 + i, c = document.createElement("button");
+      c.className = "cell"; c.dataset.e = e; c.type = "button";
+      c.innerHTML = "<b>" + String(e + 1).padStart(2, "0") + "</b>" + MODELS[e][0];
+      c.setAttribute("aria-label", "Model " + (e + 1) + ", " + MODELS[e][0]);
+      c.addEventListener("click", () => { const v = (e + 0.5) / 24; ms.value = Math.round(v * 1000); renderModel(v, true); document.getElementById("model").scrollIntoView(); });
+      row.appendChild(c);
+    }
+    strip.appendChild(row);
+  }
+}
+renderModel(ms.value / 1000, false);
+
+/* the table */
+{
+  const tb = document.querySelector("#modelTable tbody");
+  let html = "";
+  for (let b = 0; b < 3; b++) {
+    html += '<tr class="bank"><th colspan="5"><i style="background:' + BANK[b] + '"></i>' + BANKNAME[b] + " · zones " + (b * 8 + 1) + "–" + (b * 8 + 8) + "</th></tr>";
+    for (let i = 0; i < 8; i++) { const e = b * 8 + i, m = MODELS[e];
+      html += '<tr><td class="z">' + (e + 1) + "</td><td><b>" + m[0] + "</b>" + (m[4] ? '<span class="env">own envelope</span>' : "") + "</td><td>" + m[1] + "</td><td>" + m[2] + "</td><td>" + m[3] + "</td></tr>"; }
+  }
+  tb.innerHTML = html;
+}
+
+/* ---------- pitch: compute_note() from plaits_alchemy.cpp ---------- */
+const OCT = ["LFO","C0","C1","C2","C3","C4","C5","C6","C7","Octaves","Free"];
+cOct.innerHTML = OCT.map((o, i) => '<option value="' + i + '"' + (i === 10 ? " selected" : "") + ">" + o + "</option>").join("");
+const NOTE = ["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
+function computeNote(t, oct, fine) {
+  let n;
+  if (oct === 0) n = -48.37 + t * 60;
+  else if (oct === 9) n = 60 + 12 * (Math.min(8, Math.max(0, Math.floor((0.5 * t + 0.5) * 9))) - 4);
+  else if (oct === 10) n = 60 + t * 48;
+  else n = t * 7 + oct * 12;
+  return n + fine;
+}
+function calc() {
+  const t = cFreq.value / 1000, fine = cFine.value / 1000, v = cVoct.value / 100, oct = +cOct.value;
+  cFreqV.textContent = t === 0 ? "noon" : (t > 0 ? "+" : "") + t.toFixed(2) + " of full travel";
+  cFineV.textContent = (fine >= 0 ? "+" : "") + fine.toFixed(2) + " st";
+  cVoctV.textContent = (v >= 0 ? "+" : "") + v.toFixed(2) + " V";
+  const n = computeNote(t, oct, fine) + 12 * v;
+  const nn = Math.round(n), cents = Math.round((n - nn) * 100);
+  const hz = 440 * Math.pow(2, (n - 69) / 12), lab = hz * 1.00025;
+  cNote.textContent = NOTE[((nn % 12) + 12) % 12] + (Math.floor(nn / 12) - 1);
+  cDetail.textContent = "note " + n.toFixed(2) + (cents ? " (" + (cents > 0 ? "+" : "") + cents + " ct)" : "") + " · " + hz.toFixed(hz < 10 ? 3 : 2) + " Hz · about " + lab.toFixed(hz < 10 ? 3 : 2) + " Hz from the Lab's 250 ppm-fast clock" + (oct === 9 ? " · quantiser hysteresis ignored" : "");
+}
+[cOct, cFreq, cFine, cVoct].forEach(x => x.addEventListener("input", calc));
+calc();
+</script>

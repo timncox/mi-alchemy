@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clouds for Alchemy Lab</title>
+<meta name="description" content="Operation manual for Clouds, Mutable Instruments' texture synthesizer, as firmware for the Hermetic Modular Alchemy Lab V2.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  /* cyanotype: Prussian-blue ink on pale paper, the grains in cyan, freeze in amber */
+  --paper:#eef3f3; --paper2:#e2eaeb; --ink:#0c2236; --ink2:#35506a; --muted:#5d7488;
+  --prussian:#123a5e; --line:#c3d2d8; --grain:#1f8fb0; --grain-hi:#0b6c8c;
+  --freeze:#c8780a; --freeze-bg:#f6e7cc; --plate:#0f2233; --plate-ink:#cfe6ee;
+  --card:#f6f9f9; --focus:#1f8fb0; --warn:#9a4a00; --ok:#1d6e4a;
+  --canvas-bg:#0f2a42; --canvas-ink:#d7eef4;
+  --display:"Young Serif", "Iowan Old Style", Georgia, serif;
+  --body:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#081725; --paper2:#0c2032; --ink:#dcecf1; --ink2:#a9c3cf; --muted:#7f9aa8;
+    --prussian:#9fd4e6; --line:#1c3a52; --grain:#58c6e2; --grain-hi:#8adcf0;
+    --freeze:#f0a93d; --freeze-bg:#2e2210; --plate:#0b1a28; --plate-ink:#cfe6ee;
+    --card:#0d1f30; --focus:#58c6e2; --warn:#f0a060; --ok:#6fd3a0;
+    --canvas-bg:#06131f; --canvas-ink:#d7eef4;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#081725; --paper2:#0c2032; --ink:#dcecf1; --ink2:#a9c3cf; --muted:#7f9aa8;
+  --prussian:#9fd4e6; --line:#1c3a52; --grain:#58c6e2; --grain-hi:#8adcf0;
+  --freeze:#f0a93d; --freeze-bg:#2e2210; --plate:#0b1a28; --plate-ink:#cfe6ee;
+  --card:#0d1f30; --focus:#58c6e2; --warn:#f0a060; --ok:#6fd3a0;
+  --canvas-bg:#06131f; --canvas-ink:#d7eef4;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:clamp(16px,4vw,40px)}
+a{color:var(--grain-hi)} a:hover{color:var(--prussian)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:3px}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;color:var(--prussian);margin:0}
+p{margin:0}
+code{font:500 .86em var(--mono);background:var(--paper2);padding:.08em .35em;border-radius:3px}
+.eyebrow{font:500 12px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* masthead */
+header.top{border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:14px;flex-wrap:wrap}
+header.top nav{display:flex;gap:18px;flex-wrap:wrap;font:500 13px var(--mono)}
+header.top nav a{text-decoration:none;color:var(--ink2)} header.top nav a:hover{color:var(--grain-hi)}
+.hero{padding-block:clamp(28px,5vw,56px) 24px}
+.hero .grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:end}
+.hero h1{font-size:clamp(64px,12vw,148px);line-height:.86;letter-spacing:-.02em}
+.hero h1 span{display:block;font:500 clamp(13px,1.4vw,15px)/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:18px}
+.hero .lede{font-size:clamp(17px,1.8vw,20px);line-height:1.5;color:var(--ink2);max-width:36em}
+.status{display:inline-flex;gap:10px;align-items:center;margin-top:18px;padding:8px 12px;border:1px solid var(--freeze);background:var(--freeze-bg);color:var(--ink);border-radius:4px;font:500 13px/1.35 var(--mono)}
+.status i{width:9px;height:9px;border-radius:50%;background:var(--freeze);flex:none}
+
+/* the grain chamber */
+.chamber{margin-top:26px;background:var(--canvas-bg);color:var(--canvas-ink);border-radius:6px;overflow:hidden}
+.chamber canvas{display:block;width:100%;height:clamp(220px,32vw,340px)}
+.ctl{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px 18px;padding:16px 18px 18px;border-top:1px solid rgba(215,238,244,.12)}
+.ctl label{display:flex;flex-direction:column;gap:6px;font:500 11px/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#9fc4d2}
+.ctl output{font:500 12px var(--mono);letter-spacing:0;text-transform:none;color:#e9f6fa}
+.ctl input[type=range]{width:100%;accent-color:#58c6e2}
+.ctl select{font:500 12px var(--mono);background:#0b2236;color:#e9f6fa;border:1px solid rgba(215,238,244,.25);border-radius:3px;padding:4px}
+.cbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:0 18px 16px}
+.cbtn{font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:9px 12px;border-radius:3px;border:1px solid rgba(215,238,244,.35);background:transparent;color:#e9f6fa;cursor:pointer}
+.cbtn[aria-pressed="true"]{background:#f0a93d;border-color:#f0a93d;color:#1b1206}
+.cnote{font:400 12px/1.45 var(--mono);color:#8fb3c1;flex:1 1 280px}
+.cstat{font:500 12px var(--mono);color:#e9f6fa}
+
+/* sections */
+section{padding-block:clamp(40px,6vw,72px);border-top:1px solid var(--line)}
+section h2{font-size:clamp(30px,4.2vw,46px);line-height:1.05;margin-bottom:6px}
+.sub{font:500 12px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
+.prose{max-width:68ch;display:flex;flex-direction:column;gap:14px}
+.prose p{color:var(--ink2)}
+.prose strong{color:var(--ink)}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;margin-top:22px}
+.four{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:22px}
+.four > div{background:var(--card);padding:16px;display:flex;flex-direction:column;gap:6px}
+.four h3{font-size:22px}
+.four .k{font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.four p{font-size:14.5px;color:var(--ink2)}
+
+/* panel */
+.toggles{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px}
+.tg{font:600 12.5px/1 var(--mono);padding:9px 12px;border-radius:3px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.tg[aria-pressed="true"]{background:var(--prussian);border-color:var(--prussian);color:var(--paper)}
+.drawing{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:clamp(18px,3vw,36px);align-items:start}
+.plate{background:var(--plate);border-radius:6px;padding:14px}
+.plate svg{display:block;width:100%;height:auto}
+.plate svg .hole{cursor:pointer;outline:none}
+.plate svg .hit{fill:transparent}
+.plate svg .hole.sel .hit,.plate svg .hole:focus .hit{fill:rgba(88,198,226,.16);stroke:#58c6e2;stroke-width:.35}
+.plate svg .plabel{font:600 2.35px var(--mono);fill:#8fb3c1;text-anchor:middle;letter-spacing:.05px}
+.plate svg .plabel.lit{fill:#e3f2f7}
+.plate svg .jlabel{font:600 1.9px var(--mono);fill:#9fc4d2;text-anchor:middle}
+.plate svg .legend{font:600 2.6px var(--mono);fill:#6f93a3;text-anchor:middle;letter-spacing:.3px}
+.readout{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:18px 20px;display:flex;flex-direction:column;gap:8px;position:sticky;top:calc(env(safe-area-inset-top, 0px) + 12px)}
+.readout .rk{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.readout h3{font-size:28px}
+.readout .rs{font:500 13px var(--mono);color:var(--grain-hi)}
+.readout .rd{color:var(--ink2)}
+.readout .meta{display:flex;flex-wrap:wrap;gap:6px 14px;font:400 12.5px var(--mono);color:var(--muted)}
+.readout .meta b{color:var(--ink);font-weight:500}
+.hint{font-size:13px;color:var(--muted)}
+
+/* tables */
+.tbl{overflow-x:auto;margin-top:18px;border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:560px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 11.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--paper2)}
+tr:last-child td{border-bottom:0}
+td.m{font:500 13px var(--mono);white-space:nowrap;color:var(--prussian)}
+td{color:var(--ink2)}
+.sw{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;margin-right:6px;box-shadow:0 0 0 1px rgba(0,0,0,.2)}
+
+/* lists */
+ul.clean{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;max-width:72ch}
+ul.clean li{padding-left:22px;position:relative;color:var(--ink2)}
+ul.clean li::before{content:"";position:absolute;left:4px;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--grain)}
+ul.clean.todo li::before{background:transparent;border:1.5px solid var(--freeze)}
+pre.card{font:400 13.5px/1.6 var(--mono);background:var(--paper2);border:1px solid var(--line);border-radius:6px;padding:14px 16px;overflow-x:auto;color:var(--ink)}
+.fam{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:20px}
+.fam a{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink);background:var(--card)}
+.fam a b{font:400 20px var(--display);color:var(--prussian)}
+.fam a span{font-size:13px;color:var(--muted)}
+.fam a[aria-current="page"]{border-color:var(--grain)}
+footer{border-top:1px solid var(--line);padding-block:28px 40px;font-size:13px;color:var(--muted)}
+footer .wrap{display:flex;flex-direction:column;gap:6px}
+
+@media (max-width:860px){
+  .hero .grid,.drawing,.cols{grid-template-columns:minmax(0,1fr)}
+  .ctl{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .four,.fam{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .readout{position:static}
+  .drawing .plate{max-width:360px}
+}
+@media (max-width:480px){
+  .ctl{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .four,.fam{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto!important} }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="eyebrow">mi-alchemy · Alchemy Lab V2 firmware</div>
+  <nav aria-label="Sections">
+    <a href="#panel">Panel</a><a href="#modes">Modes</a><a href="#jacks">Jacks</a><a href="#lights">Lights</a><a href="#card">Install</a><a href="#status">Status</a>
+  </nav>
+</div></header>
+
+<div class="hero"><div class="wrap">
+  <div class="grid">
+    <h1>Clouds<span>texture synthesizer · 32 kHz · home slot 8</span></h1>
+    <div>
+      <p class="lede">Clouds records what you patch into J1 and J2 into a short buffer and plays it back as
+        a cloud of tiny grains: smeared, pitched, frozen, stretched or turned into spectral mist.
+        This is Mutable Instruments' DSP, unchanged, running on the Alchemy Lab's six pots and
+        three buttons.</p>
+      <div class="status" role="note"><i aria-hidden="true"></i>Built and native-tested. Not yet flashed or heard.</div>
+    </div>
+  </div>
+
+  <div class="chamber" id="chamber">
+    <canvas id="cloud" aria-label="Animated illustration of grains being read from the recording buffer"></canvas>
+    <div class="ctl" role="group" aria-label="Grain illustration controls">
+      <label for="kPos">Position <output id="oPos"></output><input id="kPos" type="range" min="0" max="1" step="0.001" value="0.3"></label>
+      <label for="kSize">Size <output id="oSize"></output><input id="kSize" type="range" min="0" max="1" step="0.001" value="0.45"></label>
+      <label for="kPitch">Pitch <output id="oPitch"></output><input id="kPitch" type="range" min="0" max="1" step="0.001" value="0.5"></label>
+      <label for="kDens">Density <output id="oDens"></output><input id="kDens" type="range" min="0" max="1" step="0.001" value="0.92"></label>
+      <label for="kTex">Texture <output id="oTex"></output><input id="kTex" type="range" min="0" max="1" step="0.001" value="0.5"></label>
+      <label for="kQual">Quality <output id="oQual"></output>
+        <select id="kQual"><option value="0">16-bit stereo</option><option value="1">16-bit mono</option><option value="2">8-bit stereo</option><option value="3">8-bit mono</option></select></label>
+    </div>
+    <div class="cbar">
+      <button class="cbtn" id="bFreeze" type="button" aria-pressed="false">B1 · Freeze</button>
+      <button class="cbtn" id="bSeed" type="button">B2 · Seed</button>
+      <span class="cstat" id="cStat" aria-live="polite"></span>
+      <span class="cnote">An illustration, silent: the granular mode's scheduler from <code>granular_sample_player.h</code>
+        redrawn in the browser. Grain rate, regular versus random seeding, grain length
+        (<code>lut_grain_size</code>), pitch (<code>lut_quantized_pitch</code>) and where each grain starts
+        follow the firmware's code. The waveform is a stand-in for your input.</span>
+    </div>
+  </div>
+</div></div>
+
+<main>
+<section id="what"><div class="wrap">
+  <h2>What it does</h2>
+  <div class="sub">Four ways to take a recording apart</div>
+  <div class="prose">
+    <p>Everything Clouds plays comes out of a recording buffer that the input keeps writing into,
+      about one second of 16-bit stereo. <strong>POSITION</strong> says where in that second to read,
+      <strong>SIZE</strong> how long each piece is, <strong>PITCH</strong> how far to transpose it and
+      <strong>DENSITY</strong> how many pieces play at once. <strong>TEXTURE</strong> shapes them and
+      <strong>BLEND</strong> mixes the result with the dry input.</p>
+    <p><strong>FREEZE</strong> stops the recording. The buffer holds what it has, and you play that
+      snapshot for as long as you like. A gate on J3 does the same, so a sequencer can freeze and release it.</p>
+    <p>The original Clouds used one BLEND knob for four jobs: dry/wet, stereo spread, feedback and
+      reverb, chosen with a button. Here each of those four has its own pot. That is why this
+      firmware has a second page.</p>
+  </div>
+</div></section>
+
+<section id="panel"><div class="wrap">
+  <h2>The panel</h2>
+  <div class="sub">Drawn at true scale from the SDK's KiCad template · click any control</div>
+  <div class="prose"><p>Every hole sits where it sits on an Alchemy Lab. The rings show what the firmware
+    draws for the example values. Hold B3 and the pots become the Setup page; hold B2 and B3 together
+    for two seconds and Settings opens.</p></div>
+  <div class="toggles" role="group" aria-label="Panel page">
+    <button class="tg" data-page="0" aria-pressed="true" type="button">Play page</button>
+    <button class="tg" data-page="1" aria-pressed="false" type="button">Setup · hold B3</button>
+    <button class="tg" data-page="2" aria-pressed="false" type="button">Settings 1 · hold B2+B3</button>
+    <button class="tg" data-page="3" aria-pressed="false" type="button">Settings 2 · firmware</button>
+  </div>
+  <div class="drawing">
+    <div class="plate"><svg id="panelSvg" viewBox="-4 -4 69 137" role="img" aria-label="Alchemy Lab panel running Clouds"></svg></div>
+    <div class="readout" id="ro" aria-live="polite">
+      <div class="rk" id="roK">Select a control</div>
+      <h3 id="roT">The panel</h3>
+      <div class="rs" id="roS">6 pots × 2 pages · 3 buttons · 10 jacks · 102 LEDs</div>
+      <div class="rd" id="roD">Hover or click any pot, button or jack. Audio in and out, the front USB-C and the
+        light rings are fixed Alchemy Lab hardware. Everything else is what this firmware makes of them.</div>
+      <div class="meta" id="roM"><div>plate <b>60.96 × 128.5 mm</b> · 12 HP</div><div>rings <b>16 LEDs</b>, 13 in the arc</div></div>
+      <div class="hint">The six CV jacks between IN and OUT are numbered here in reading order (J3 J4 J5 on top,
+        J6 J7 J8 below). The template does not say which is which: the numbers printed on your panel are the authority.</div>
+    </div>
+  </div>
+
+  <div class="tbl"><table>
+    <thead><tr><th>Pot</th><th>Play page</th><th>Setup page (hold B3)</th></tr></thead>
+    <tbody>
+      <tr><td class="m">P1 · top left</td><td><b>Position</b>: where grains read from, now to oldest</td><td><b>Mode</b>: Granular · Stretch · Looping delay · Spectral</td></tr>
+      <tr><td class="m">P2 · top right</td><td><b>Size</b>: grain size, loop length, FFT window</td><td><b>Quality</b>: 16-bit stereo · 16-bit mono · 8-bit stereo · 8-bit mono</td></tr>
+      <tr><td class="m">P3 · middle left</td><td><b>Pitch</b>: −24 to +24 semitones, detents near noon, plus J5</td><td><b>Spread</b>: how far grains scatter across the stereo field</td></tr>
+      <tr><td class="m">P4 · middle right</td><td><b>Density</b>: noon silent, CCW regular, CW random</td><td><b>Feedback</b>: output back into the buffer</td></tr>
+      <tr><td class="m">P5 · bottom left</td><td><b>Texture</b>: grain envelope; past 3 o'clock, a diffuser</td><td><b>Reverb</b>: the built-in reverb</td></tr>
+      <tr><td class="m">P6 · bottom right</td><td><b>Blend</b>: dry / wet</td><td><b>In gain</b>: −12 to +12 dB, 0 dB at noon</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Button</th><th>Does</th></tr></thead>
+    <tbody>
+      <tr><td class="m">B1 · Freeze</td><td>Hold to freeze while held; tap (under 0.3 s) to latch freeze on or off. The J3 gate freezes too.</td></tr>
+      <tr><td class="m">B2 · Seed</td><td>Fires a grain now, the same as a trigger on J4. Stands down while B3 is held, so B2 + B3 can open Settings.</td></tr>
+      <tr><td class="m">B3 · Setup</td><td>Hold to show the Setup page. Each pot has to catch its stored value before it takes over, so nothing jumps.</td></tr>
+      <tr><td class="m">B2 + B3 · 2 s</td><td>Opens Settings: page 1 is brightness and presets, page 2 is the SD-card firmware picker. B1 steps between them; B2 or B3 leaves.</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="modes"><div class="wrap">
+  <h2>Modes and quality</h2>
+  <div class="sub">Setup P1 and P2 · both saved with the working state</div>
+  <div class="four">
+    <div><span class="k">Mode 1</span><h3>Granular</h3><p>The classic cloud: up to 32 to 57 overlapping grains (more at lower quality). DENSITY sets how many; below noon they come at a steady rate, above noon at random. TEXTURE morphs each grain's envelope and, past 3 o'clock, adds a diffuser.</p></div>
+    <div><span class="k">Mode 2</span><h3>Stretch</h3><p>A pitch-shifter and time-stretcher (WSOLA): two overlapping windows aligned by a correlation search, so pitch and speed come apart without the usual flutter. TEXTURE is a low-pass left of noon, high-pass right of it.</p></div>
+    <div><span class="k">Mode 3</span><h3>Looping delay</h3><p>A delay line whose loop you can freeze and scan. SIZE sets the loop length and POSITION the delay time; FEEDBACK does what it does on a tape delay. TEXTURE filters as in Stretch.</p></div>
+    <div><span class="k">Mode 4</span><h3>Spectral</h3><p>A phase vocoder. The sound is taken apart as frequency bins: TEXTURE quantizes them, DENSITY sets how often the spectrum refreshes, SIZE warps it. The FFT work runs in the main loop, like on the original.</p></div>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>Quality</th><th>Buffer</th><th>Grains</th><th>Sound</th></tr></thead>
+    <tbody>
+      <tr><td class="m">16-bit stereo</td><td>about 1 s</td><td>32</td><td>clean, the default</td></tr>
+      <tr><td class="m">16-bit mono</td><td>about 2 s</td><td>40</td><td>clean, mono in</td></tr>
+      <tr><td class="m">8-bit stereo</td><td>about 2 s</td><td>46</td><td>µ-law, the gritty lo-fi Clouds</td></tr>
+      <tr><td class="m">8-bit mono</td><td>about 4 s</td><td>57</td><td>µ-law, longest memory</td></tr>
+    </tbody>
+  </table></div>
+  <p class="hint" style="margin-top:10px">Grain counts are the firmware's own: 32 for stereo or 40 for mono, times 23/16 at 8 bits (<code>granular_processor.cc</code>). Changing mode or quality resets the buffer.</p>
+</div></section>
+
+<section id="jacks"><div class="wrap">
+  <h2>Jacks and CV</h2>
+  <div class="sub">Two audio pairs, two gates, V/Oct and three CVs</div>
+  <div class="tbl"><table>
+    <thead><tr><th>Jack</th><th>Signal</th><th>How it is read</th></tr></thead>
+    <tbody>
+      <tr><td class="m">J1 · J2</td><td>Audio in, left and right</td><td>Codec input. Use IN GAIN (Setup P6) if it records too hot or too quiet.</td></tr>
+      <tr><td class="m">J3</td><td>Freeze gate</td><td>Read raw once per 1 ms audio block; high above 1.5 V, low below 0.5 V. ORs with B1.</td></tr>
+      <tr><td class="m">J4</td><td>Trigger: seed a grain</td><td>Same reading. The edge is held one block, as upstream holds it for its ADC, so the grain lands with the CV that came with it.</td></tr>
+      <tr><td class="m">J5</td><td>V/Oct → pitch</td><td>Calibrated volts × 12 semitones, added to the PITCH knob. Jumps over half a semitone land at once; smaller moves glide.</td></tr>
+      <tr><td class="m">J6 · J7 · J8</td><td>CV → Position · Size · Density</td><td>Through the SDK's CV matrix, summed with the pot. Re-route them in the web programmer if you want Texture or Blend instead.</td></tr>
+      <tr><td class="m">J9 · J10</td><td>Audio out, left and right</td><td>Codec output.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="hint" style="margin-top:10px">Clouds had CV inputs for Texture and Blend. The Lab has six CV jacks, so those two are left to re-routing.</p>
+</div></section>
+
+<section id="lights"><div class="wrap">
+  <h2>Reading the lights</h2>
+  <div class="sub">Rings from the SDK, buttons from this firmware</div>
+  <div class="tbl"><table>
+    <thead><tr><th>Light</th><th>Means</th></tr></thead>
+    <tbody>
+      <tr><td class="m"><span class="sw" style="background:#fff"></span>B1 white</td><td>Frozen, by B1 or by the J3 gate. Dim blue when not.</td></tr>
+      <tr><td class="m"><span class="sw" style="background:#00c000"></span>B2 green</td><td>The input meter: brighter as the input gets louder.</td></tr>
+      <tr><td class="m"><span class="sw" style="background:#ff8000"></span>B2 amber</td><td>Input above 70 % of full scale.</td></tr>
+      <tr><td class="m"><span class="sw" style="background:#ff0000"></span>B2 red</td><td>The input is clipping, or the audio callback is averaging over 80 % of the CPU.</td></tr>
+      <tr><td class="m"><span class="sw" style="background:#fff"></span>B2 white flash</td><td>A grain was seeded from B2 (60 ms).</td></tr>
+      <tr><td class="m"><span class="sw" style="background:#103040"></span>B3 dim teal</td><td>Setup is one hold away.</td></tr>
+      <tr><td class="m"><span class="sw" style="background:#00ff00"></span>P1 ring at boot</td><td>For 2.5 s: the previous session's worst CPU load. Green under 75 %, amber to 90 %, red above; one dim blue dot means no data yet (first boot after a flash).</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="card"><div class="wrap">
+  <h2>Installing</h2>
+  <div class="sub">From the SD card, no computer needed</div>
+  <div class="cols">
+    <div class="prose">
+      <p>Copy the firmware into the card's <code>alchemy</code> folder next to the others. Open Settings on
+        whatever firmware is running (hold B2 + B3 for two seconds), press B1 to reach the firmware page,
+        choose the file with P1 and fire P2: turn it below about 85 %, then past 95 %. It writes, verifies
+        and reboots into Clouds.</p>
+      <p>Clouds keeps its knobs in <strong>preset slot 8</strong> (counting from 0) and saves five seconds
+        after the last change, with your hands off the buttons. Switching to another firmware and back
+        brings Clouds' settings back; the pots catch before they take over. Slots 0–7 are left for presets
+        you save by hand.</p>
+    </div>
+    <pre class="card">/alchemy/
+  clouds_alchemy.bin     this firmware
+  elements_alchemy.bin
+  marbles_alchemy.bin
+  plaits_alchemy.bin
+  …the rest of your firmwares
+
+build it yourself:
+  make libdaisy
+  make FW=clouds  →  build-clouds/clouds_alchemy.bin</pre>
+  </div>
+  <p class="hint" style="margin-top:14px">v0.1 uses the front USB-C for HostLink only (the web programmer, presets and the card). It does not host a Launchpad or act as an audio interface, and it never changes the card's shared USB setting, so your other firmwares keep theirs.</p>
+</div></section>
+
+<section id="status"><div class="wrap">
+  <h2>Where it stands</h2>
+  <div class="sub">Honest status, 2026-09-26</div>
+  <div class="cols">
+    <div>
+      <h3 style="font-size:22px;margin-bottom:12px">Done</h3>
+      <ul class="clean">
+        <li>Builds: 387 KB of the Lab's 480 KB program memory. The two buffers (116 KB and 64 KB) sit in fast on-chip RAM.</li>
+        <li>Native test suite green: all 4 modes × 4 qualities render, freeze holds the buffer, the pitch curve spans ±24 semitones.</li>
+        <li>That test found an upstream bug: on eurorack's master branch, Stretch mode goes silent after its first window. The one missing line is restored here and sent upstream as <a href="https://github.com/pichenettes/eurorack/pull/72">pichenettes/eurorack #72</a>.</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="font-size:22px;margin-bottom:12px">Not yet tested</h3>
+      <ul class="clean todo">
+        <li>It has not been flashed or heard on a module.</li>
+        <li>CPU load on the Lab's processor is unmeasured. It should be light (Clouds ran on a slower chip), but Spectral mode shares the main loop with the lights and HostLink.</li>
+        <li>Input level against Clouds' original ±10 V range is unverified.</li>
+        <li>Freeze, seed and V/Oct from real gates and CV.</li>
+      </ul>
+    </div>
+  </div>
+  <h3 style="font-size:22px;margin:28px 0 12px">Left out, compared with a real Clouds</h3>
+  <ul class="clean">
+    <li>Saving the audio buffer to flash (hold both buttons on the original). Presets hold the knobs only.</li>
+    <li>CV inputs for Texture and Blend, unless you re-route J6–J8.</li>
+    <li>The Parasites alternate firmware's extra modes. This is stock Clouds.</li>
+  </ul>
+</div></section>
+
+<section id="built"><div class="wrap">
+  <h2>How it is built</h2>
+  <div class="sub">A port, not a rewrite</div>
+  <div class="prose">
+    <p>The DSP is <code>clouds::GranularProcessor</code> from Mutable Instruments' eurorack repository at
+      commit 08460a6, compiled unchanged apart from the one restored line. It runs at its own 32 kHz with its
+      own 32-sample block, so the parameter smoothing reads once a millisecond exactly as the original's did.
+      The firmware around it does what the original's <code>cv_scaler.cc</code> and <code>ui.cc</code> did:
+      the same smoothing coefficients, the same pitch curve, the same dry/wet scaling.</p>
+    <p>Source: <a href="https://github.com/timncox/mi-alchemy">github.com/timncox/mi-alchemy</a>
+      (<code>src/clouds/</code>). Clouds is by Emilie Gillet, Mutable Instruments, MIT licence. The Alchemy
+      SDK and hardware are Hermetic Modular's.</p>
+  </div>
+</div></section>
+
+<section id="family"><div class="wrap">
+  <h2>The rest of them</h2>
+  <div class="sub">Four Mutable Instruments modules, one repository</div>
+  <div class="fam">
+    <a href="./" aria-current="page"><b>Clouds</b><span>texture synthesizer</span></a>
+    <a href="../elements/"><b>Elements</b><span>modal voice</span></a>
+    <a href="../marbles/"><b>Marbles</b><span>random sampler</span></a>
+    <a href="../plaits/"><b>Plaits</b><span>macro oscillator</span></a>
+  </div>
+  <p class="hint" style="margin-top:14px"><a href="../">All four, on one page</a></p>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <div>Clouds for Alchemy Lab · mi-alchemy v0.1.0 · MIT</div>
+  <div>Mutable Instruments Clouds © Emilie Gillet. Not affiliated with Mutable Instruments or Hermetic Modular.</div>
+</div></footer>
+
+<script>
+/* == BEGIN GENERATED GEOMETRY -- tools/emit_panel_geometry.py == */
+const PANEL = {
+ "source": "lib/alchemy-sdk/panel/front-panel-template.kicad_pcb",
+ "units": "mm, front view, origin top-left of the plate, y down",
+ "plate": {
+  "w": 60.96,
+  "h": 128.5,
+  "hp": 12.0
+ },
+ "mount": [
+  {
+   "x": 4.537,
+   "y": 1.297,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  },
+  {
+   "x": 51.312,
+   "y": 1.311,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  },
+  {
+   "x": 4.537,
+   "y": 123.8,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  },
+  {
+   "x": 51.323,
+   "y": 123.812,
+   "w": 5.1,
+   "h": 3.4,
+   "r": 1.7
+  }
+ ],
+ "rails": [
+  7.23,
+  122.18
+ ],
+ "pots": [
+  {
+   "id": "P1",
+   "x": 12.758,
+   "y": 21.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P2",
+   "x": 47.758,
+   "y": 21.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P3",
+   "x": 12.758,
+   "y": 49.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P4",
+   "x": 47.758,
+   "y": 49.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P5",
+   "x": 12.758,
+   "y": 77.304,
+   "hole": 3.6
+  },
+  {
+   "id": "P6",
+   "x": 47.758,
+   "y": 77.304,
+   "hole": 3.6
+  }
+ ],
+ "ring": {
+  "r": 10.09,
+  "leds": 16,
+  "start_hour": 7.5,
+  "step_hours": 0.75,
+  "arc_leds": 13
+ },
+ "buttons": [
+  {
+   "id": "B1",
+   "x": 30.257,
+   "y": 21.31,
+   "hole": 3.1,
+   "halo": 4.0
+  },
+  {
+   "id": "B2",
+   "x": 30.257,
+   "y": 49.312,
+   "hole": 3.1,
+   "halo": 4.0
+  },
+  {
+   "id": "B3",
+   "x": 30.257,
+   "y": 77.32,
+   "hole": 3.1,
+   "halo": 4.0
+  }
+ ],
+ "usb": {
+  "x": 25.317,
+  "y": 89.274,
+  "w": 10.034,
+  "h": 4.044,
+  "r": 2.022
+ },
+ "jacks": [
+  {
+   "id": "J1",
+   "x": 6.699,
+   "y": 100.093,
+   "hole": 3.2
+  },
+  {
+   "id": "J2",
+   "x": 6.699,
+   "y": 113.053,
+   "hole": 3.2
+  },
+  {
+   "id": "J3",
+   "x": 18.51,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J4",
+   "x": 30.286,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J5",
+   "x": 42.014,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J6",
+   "x": 18.51,
+   "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J7",
+   "x": 30.286,
+   "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J8",
+   "x": 42.014,
+   "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J9",
+   "x": 53.901,
+   "y": 100.126,
+   "hole": 3.2
+  },
+  {
+   "id": "J10",
+   "x": 53.889,
+   "y": 113.036,
+   "hole": 3.2
+  }
+ ],
+ "jack_order_assumed": "J3..J8 in reading order; the printed panel is the authority",
+ "labels": {
+  "knob_dy": 14.0,
+  "button_dy": 10.63,
+  "in": [
+   5.556,
+   120.642
+  ],
+  "out": [
+   51.53,
+   120.642
+  ]
+ }
+};
+/* == END GENERATED GEOMETRY == */
+</script>
+<script>
+"use strict";
+const LUT = {"lut_grain_size":[1024.0,1035.0,1046.0,1057.0,1069.0,1080.0,1092.0,1104.0,1116.0,1128.0,1141.0,1153.0,1166.0,1178.0,1191.0,1204.0,1217.0,1231.0,1244.0,1257.0,1271.0,1285.0,1299.0,1313.0,1327.0,1342.0,1357.0,1371.0,1386.0,1401.0,1417.0,1432.0,1448.0,1463.0,1479.0,1495.0,1512.0,1528.0,1545.0,1562.0,1579.0,1596.0,1613.0,1631.0,1649.0,1667.0,1685.0,1703.0,1722.0,1740.0,1759.0,1779.0,1798.0,1817.0,1837.0,1857.0,1878.0,1898.0,1919.0,1940.0,1961.0,1982.0,2004.0,2025.0,2048.0,2070.0,2092.0,2115.0,2138.0,2161.0,2185.0,2209.0,2233.0,2257.0,2282.0,2307.0,2332.0,2357.0,2383.0,2409.0,2435.0,2462.0,2488.0,2515.0,2543.0,2571.0,2599.0,2627.0,2655.0,2684.0,2714.0,2743.0,2773.0,2803.0,2834.0,2865.0,2896.0,2927.0,2959.0,2991.0,3024.0,3057.0,3090.0,3124.0,3158.0,3192.0,3227.0,3262.0,3298.0,3334.0,3370.0,3407.0,3444.0,3481.0,3519.0,3558.0,3596.0,3635.0,3675.0,3715.0,3756.0,3796.0,3838.0,3880.0,3922.0,3965.0,4008.0,4051.0,4096.0,4140.0,4185.0,4231.0,4277.0,4323.0,4371.0,4418.0,4466.0,4515.0,4564.0,4614.0,4664.0,4715.0,4766.0,4818.0,4870.0,4924.0,4977.0,5031.0,5086.0,5142.0,5198.0,5254.0,5311.0,5369.0,5428.0,5487.0,5547.0,5607.0,5668.0,5730.0,5792.0,5855.0,5919.0,5983.0,6049.0,6114.0,6181.0,6248.0,6316.0,6385.0,6455.0,6525.0,6596.0,6668.0,6741.0,6814.0,6888.0,6963.0,7039.0,7116.0,7193.0,7271.0,7351.0,7431.0,7512.0,7593.0,7676.0,7760.0,7844.0,7930.0,8016.0,8103.0,8192.0,8281.0,8371.0,8462.0,8554.0,8647.0,8742.0,8837.0,8933.0,9030.0,9129.0,9228.0,9328.0,9430.0,9533.0,9637.0,9741.0,9848.0,9955.0,10063.0,10173.0,10284.0,10396.0,10509.0,10623.0,10739.0,10856.0,10974.0,11094.0,11214.0,11336.0,11460.0,11585.0,11711.0,11838.0,11967.0,12098.0,12229.0,12363.0,12497.0,12633.0,12771.0,12910.0,13051.0,13193.0,13336.0,13482.0,13628.0,13777.0,13927.0,14078.0,14232.0,14387.0,14543.0,14702.0,14862.0,15024.0,15187.0,15353.0,15520.0,15689.0,15860.0,16032.0,16207.0,16384.0],"lut_quantized_pitch":[-24.0,-23.9589,-23.9073,-23.8451,-23.7725,-23.6896,-23.5964,-23.493,-23.3797,-23.2565,-23.1237,-22.9815,-22.8301,-22.6698,-22.5009,-22.3236,-22.1382,-21.9451,-21.7447,-21.5372,-21.3231,-21.1028,-20.8766,-20.645,-20.4084,-20.1673,-19.9221,-19.6732,-19.4212,-19.1665,-18.9096,-18.6509,-18.3911,-18.1304,-17.8696,-17.6089,-17.3491,-17.0904,-16.8335,-16.5788,-16.3268,-16.0779,-15.8327,-15.5916,-15.355,-15.1234,-14.8972,-14.6769,-14.4628,-14.2553,-14.0549,-13.8618,-13.6764,-13.4991,-13.3302,-13.1699,-13.0185,-12.8763,-12.7435,-12.6203,-12.507,-12.4036,-12.3104,-12.2275,-12.1549,-12.0927,-12.0411,-12.0,-12.0,-11.9829,-11.9614,-11.9355,-11.9052,-11.8707,-11.8318,-11.7888,-11.7415,-11.6902,-11.6349,-11.5756,-11.5126,-11.4458,-11.3754,-11.3015,-11.2243,-11.1438,-11.0603,-10.9738,-10.8846,-10.7928,-10.6986,-10.6021,-10.5035,-10.403,-10.3009,-10.1972,-10.0922,-9.986,-9.879,-9.7712,-9.6629,-9.5543,-9.4457,-9.3371,-9.2288,-9.121,-9.014,-8.9078,-8.8028,-8.6991,-8.597,-8.4965,-8.3979,-8.3014,-8.2072,-8.1154,-8.0262,-7.9397,-7.8562,-7.7757,-7.6985,-7.6246,-7.5542,-7.4874,-7.4244,-7.3651,-7.3098,-7.2585,-7.2112,-7.1682,-7.1293,-7.0948,-7.0645,-7.0386,-7.0171,-7.0,-7.0,-6.9899,-6.9772,-6.962,-6.9443,-6.924,-6.9012,-6.876,-6.8484,-6.8183,-6.786,-6.7513,-6.7144,-6.6753,-6.6341,-6.5908,-6.5456,-6.4985,-6.4496,-6.399,-6.3467,-6.2929,-6.2376,-6.181,-6.1231,-6.0641,-6.0041,-5.9431,-5.8813,-5.8189,-5.7558,-5.6923,-5.6284,-5.5642,-5.5,-5.4358,-5.3716,-5.3077,-5.2442,-5.1811,-5.1187,-5.0569,-4.9959,-4.9359,-4.8769,-4.819,-4.7624,-4.7071,-4.6533,-4.601,-4.5504,-4.5015,-4.4544,-4.4092,-4.3659,-4.3247,-4.2856,-4.2487,-4.214,-4.1817,-4.1516,-4.124,-4.0988,-4.076,-4.0557,-4.038,-4.0228,-4.0101,-4.0,-4.0,-3.9966,-3.9923,-3.9871,-3.981,-3.9741,-3.9664,-3.9578,-3.9483,-3.938,-3.927,-3.9151,-3.9025,-3.8892,-3.8751,-3.8603,-3.8449,-3.8288,-3.8121,-3.7948,-3.7769,-3.7586,-3.7397,-3.7204,-3.7007,-3.6806,-3.6602,-3.6394,-3.6184,-3.5972,-3.5758,-3.5542,-3.5326,-3.5109,-3.4891,-3.4674,-3.4458,-3.4242,-3.4028,-3.3816,-3.3606,-3.3398,-3.3194,-3.2993,-3.2796,-3.2603,-3.2414,-3.2231,-3.2052,-3.1879,-3.1712,-3.1551,-3.1397,-3.1249,-3.1108,-3.0975,-3.0849,-3.073,-3.062,-3.0517,-3.0422,-3.0336,-3.0259,-3.019,-3.0129,-3.0077,-3.0034,-3.0,-3.0,-2.9932,-2.9845,-2.9742,-2.9621,-2.9483,-2.9327,-2.9155,-2.8966,-2.8761,-2.854,-2.8303,-2.805,-2.7783,-2.7501,-2.7206,-2.6897,-2.6575,-2.6241,-2.5895,-2.5539,-2.5171,-2.4794,-2.4408,-2.4014,-2.3612,-2.3203,-2.2789,-2.2369,-2.1944,-2.1516,-2.1085,-2.0652,-2.0217,-1.9783,-1.9348,-1.8915,-1.8484,-1.8056,-1.7631,-1.7211,-1.6797,-1.6388,-1.5986,-1.5592,-1.5206,-1.4829,-1.4461,-1.4105,-1.3759,-1.3425,-1.3103,-1.2794,-1.2499,-1.2217,-1.195,-1.1697,-1.146,-1.1239,-1.1034,-1.0845,-1.0673,-1.0517,-1.0379,-1.0258,-1.0155,-1.0068,-1.0,-1.0,-0.997,-0.9932,-0.9886,-0.9833,-0.9772,-0.9704,-0.9628,-0.9545,-0.9455,-0.9358,-0.9254,-0.9143,-0.9026,-0.8902,-0.8773,-0.8637,-0.8496,-0.8349,-0.8197,-0.804,-0.7879,-0.7713,-0.7543,-0.7369,-0.7192,-0.7012,-0.6829,-0.6644,-0.6457,-0.6267,-0.6077,-0.5885,-0.5693,-0.55,-0.5307,-0.5115,-0.4923,-0.4733,-0.4543,-0.4356,-0.4171,-0.3988,-0.3808,-0.3631,-0.3457,-0.3287,-0.3121,-0.296,-0.2803,-0.2651,-0.2504,-0.2363,-0.2227,-0.2098,-0.1974,-0.1857,-0.1746,-0.1642,-0.1545,-0.1455,-0.1372,-0.1296,-0.1228,-0.1167,-0.1114,-0.1068,-0.103,-0.1,-0.1,-0.0997,-0.0992,-0.0987,-0.0981,-0.0974,-0.0966,-0.0958,-0.0948,-0.0938,-0.0927,-0.0915,-0.0903,-0.0889,-0.0875,-0.086,-0.0845,-0.0829,-0.0812,-0.0795,-0.0777,-0.0759,-0.074,-0.072,-0.0701,-0.0681,-0.066,-0.0639,-0.0618,-0.0597,-0.0576,-0.0554,-0.0533,-0.0511,-0.0489,-0.0467,-0.0446,-0.0424,-0.0403,-0.0382,-0.0361,-0.034,-0.0319,-0.0299,-0.028,-0.026,-0.0241,-0.0223,-0.0205,-0.0188,-0.0171,-0.0155,-0.014,-0.0125,-0.0111,-0.0097,-0.0085,-0.0073,-0.0062,-0.0052,-0.0042,-0.0034,-0.0026,-0.0019,-0.0013,-0.0008,-0.0003,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0003,0.0008,0.0013,0.0019,0.0025,0.0033,0.0041,0.0051,0.0061,0.0071,0.0083,0.0095,0.0108,0.0122,0.0136,0.0151,0.0167,0.0183,0.02,0.0218,0.0236,0.0254,0.0273,0.0292,0.0312,0.0332,0.0352,0.0373,0.0394,0.0415,0.0436,0.0457,0.0479,0.05,0.0521,0.0543,0.0564,0.0585,0.0606,0.0627,0.0648,0.0668,0.0688,0.0708,0.0727,0.0746,0.0764,0.0782,0.08,0.0817,0.0833,0.0849,0.0864,0.0878,0.0892,0.0905,0.0917,0.0929,0.0939,0.0949,0.0959,0.0967,0.0975,0.0981,0.0987,0.0992,0.0997,0.1,0.1,0.1031,0.107,0.1116,0.1171,0.1233,0.1303,0.138,0.1465,0.1558,0.1657,0.1764,0.1877,0.1998,0.2124,0.2257,0.2396,0.2541,0.2691,0.2847,0.3008,0.3173,0.3343,0.3516,0.3694,0.3875,0.4058,0.4245,0.4434,0.4625,0.4818,0.5012,0.5207,0.5402,0.5598,0.5793,0.5988,0.6182,0.6375,0.6566,0.6755,0.6942,0.7125,0.7306,0.7484,0.7657,0.7827,0.7992,0.8153,0.8309,0.8459,0.8604,0.8743,0.8876,0.9002,0.9123,0.9236,0.9343,0.9442,0.9535,0.962,0.9697,0.9767,0.9829,0.9884,0.993,0.9969,1.0,1.0,1.0068,1.0155,1.0258,1.0379,1.0517,1.0673,1.0845,1.1034,1.1239,1.146,1.1697,1.195,1.2217,1.2499,1.2794,1.3103,1.3425,1.3759,1.4105,1.4461,1.4829,1.5206,1.5592,1.5986,1.6388,1.6797,1.7211,1.7631,1.8056,1.8484,1.8915,1.9348,1.9783,2.0217,2.0652,2.1085,2.1516,2.1944,2.2369,2.2789,2.3203,2.3612,2.4014,2.4408,2.4794,2.5171,2.5539,2.5895,2.6241,2.6575,2.6897,2.7206,2.7501,2.7783,2.805,2.8303,2.854,2.8761,2.8966,2.9155,2.9327,2.9483,2.9621,2.9742,2.9845,2.9932,3.0,3.0,3.0034,3.0076,3.0127,3.0186,3.0253,3.0329,3.0413,3.0505,3.0606,3.0713,3.0829,3.0952,3.1082,3.122,3.1364,3.1515,3.1672,3.1835,3.2003,3.2178,3.2357,3.2541,3.273,3.2923,3.312,3.332,3.3523,3.3729,3.3937,3.4147,3.4359,3.4572,3.4786,3.5,3.5214,3.5428,3.5641,3.5853,3.6063,3.6271,3.6477,3.668,3.688,3.7077,3.727,3.7459,3.7643,3.7822,3.7997,3.8165,3.8328,3.8485,3.8636,3.878,3.8918,3.9048,3.9171,3.9287,3.9394,3.9495,3.9587,3.9671,3.9747,3.9814,3.9873,3.9924,3.9966,4.0,4.0,4.0103,4.0232,4.0387,4.0569,4.0776,4.1009,4.1267,4.1551,4.1859,4.2191,4.2546,4.2925,4.3325,4.3748,4.4191,4.4654,4.5137,4.5638,4.6157,4.6692,4.7243,4.7808,4.8387,4.8979,4.9582,5.0195,5.0817,5.1447,5.2084,5.2726,5.3373,5.4022,5.4674,5.5326,5.5978,5.6627,5.7274,5.7916,5.8553,5.9183,5.9805,6.0418,6.1021,6.1613,6.2192,6.2757,6.3308,6.3843,6.4362,6.4863,6.5346,6.5809,6.6252,6.6675,6.7075,6.7454,6.7809,6.8141,6.8449,6.8733,6.8991,6.9224,6.9431,6.9613,6.9768,6.9897,7.0,7.0,7.0171,7.0386,7.0645,7.0948,7.1293,7.1682,7.2112,7.2585,7.3098,7.3651,7.4244,7.4874,7.5542,7.6246,7.6985,7.7757,7.8562,7.9397,8.0262,8.1154,8.2072,8.3014,8.3979,8.4965,8.597,8.6991,8.8028,8.9078,9.014,9.121,9.2288,9.3371,9.4457,9.5543,9.6629,9.7712,9.879,9.986,10.0922,10.1972,10.3009,10.403,10.5035,10.6021,10.6986,10.7928,10.8846,10.9738,11.0603,11.1438,11.2243,11.3015,11.3754,11.4458,11.5126,11.5756,11.6349,11.6902,11.7415,11.7888,11.8318,11.8707,11.9052,11.9355,11.9614,11.9829,12.0,12.0,12.0404,12.0911,12.1519,12.2229,12.304,12.395,12.4959,12.6065,12.7266,12.8562,12.9948,13.1425,13.2988,13.4636,13.6366,13.8175,14.0059,14.2016,14.4041,14.6132,14.8285,15.0496,15.2761,15.5075,15.7435,15.9837,16.2275,16.4747,16.7246,16.9768,17.231,17.4865,17.743,18.0,18.257,18.5135,18.769,19.0232,19.2754,19.5253,19.7725,20.0163,20.2565,20.4925,20.7239,20.9504,21.1715,21.3868,21.5959,21.7984,21.9941,22.1825,22.3634,22.5364,22.7012,22.8575,23.0052,23.1438,23.2734,23.3935,23.5041,23.605,23.696,23.7771,23.8481,23.9089,23.9596,24.0]};
+
+/* ---------- shared helpers ---------- */
+function interp(t, x, size){           /* stmlib::Interpolate */
+  const s = x * size, i = Math.floor(s), f = s - i;
+  const a = t[Math.min(i, t.length - 1)], b = t[Math.min(i + 1, t.length - 1)];
+  return a + (b - a) * f;
+}
+const semis = (st) => Math.pow(2, st / 12);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+/* ---------- the grain chamber ---------- */
+(() => {
+  const cv = document.getElementById("cloud"), ctx = cv.getContext("2d");
+  const k = id => document.getElementById(id);
+  const ui = { pos:k("kPos"), size:k("kSize"), pitch:k("kPitch"), dens:k("kDens"), tex:k("kTex"), qual:k("kQual") };
+  const SR = 32000, BLOCK = 32;
+  const FRAMES = [29696, 59392, 59392, 118784];     /* ≈ the buffer at each quality */
+  const GRAINS = [32, 40, 46, 57];                   /* (stereo ? 32 : 40) * (8bit ? 23 : 16) >> 4 */
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let frozen = false, seed = false, head = 0, phasor = 0, hint = 1024, numGrains = 0;
+  const grains = [];
+  let W = 0, H = 0, dpr = 1;
+
+  function resize(){
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  new ResizeObserver(resize).observe(cv); resize();
+
+  function params(){
+    const q = +ui.qual.value, d = +ui.dens.value, tex = +ui.tex.value;
+    let overlap = 0;
+    if (d >= 0.53) overlap = (d - 0.53) * 2.12; else if (d <= 0.47) overlap = (0.47 - d) * 2.12;
+    return {
+      q, pos:+ui.pos.value, size:+ui.size.value, tex,
+      pitch: interp(LUT.lut_quantized_pitch, +ui.pitch.value, 1024),
+      deterministic: d < 0.5, overlap, ov3: overlap * overlap * overlap,
+      grainLen: interp(LUT.lut_grain_size, +ui.size.value, 256),
+      window: tex < 0.75 ? tex * 1.333 : 1,
+      frames: FRAMES[q], maxGrains: GRAINS[q],
+    };
+  }
+
+  /* one audio block of the scheduler, as GranularSamplePlayer::Play */
+  function block(p){
+    const target = p.maxGrains * p.ov3;
+    const prob = p.deterministic ? -1 : target / hint;
+    const space = hint / target;
+    if (!p.deterministic) phasor = -1000;
+    for (let t = 0; t < BLOCK; t++){
+      phasor += 1;
+      const probabilistic = Math.random() < prob && target > numGrains;
+      const deterministic = phasor >= space;
+      if ((probabilistic || deterministic || seed) && grains.length < p.maxGrains){
+        spawn(p); phasor = 0; seed = false;
+      }
+    }
+    if (!frozen) head = (head + BLOCK) % p.frames;
+    numGrains += ((grains.length > numGrains) ? 0.9 : 0.2) * (grains.length - numGrains) * 0.05;
+  }
+
+  /* ScheduleGrain: where it starts and how long it lasts */
+  function spawn(p){
+    const ratio = semis(p.pitch);
+    let len = p.grainLen;
+    if (ratio > 1) len = Math.min(len, p.frames * 0.25 / ratio);
+    const eatenPlay = len * ratio, available = p.frames - eatenPlay - len;
+    const start = head - (p.pos * available + eatenPlay);
+    grains.push({ start, len, ratio, age:0, pan: 0.5 + 0.9 * (Math.random() - 0.5), window:p.window, hue: p.pitch });
+    hint += 0.1 * (len - hint);
+  }
+
+  /* a stand-in input: two slow partials and a pulse, drawn into the buffer strip */
+  function inputAt(i){
+    const s = i / SR;
+    return 0.55 * Math.sin(2 * Math.PI * 3.1 * s) * Math.sin(2 * Math.PI * 0.7 * s + 1) + 0.35 * Math.sin(2 * Math.PI * 11 * s) * Math.exp(-((s * 1.6) % 1) * 3);
+  }
+
+  function envelope(u, w){
+    /* w 0 = boxcar-ish, 1 = smooth bell: an illustration of window_shape */
+    const hann = 0.5 - 0.5 * Math.cos(2 * Math.PI * u);
+    const box = Math.min(1, Math.min(u, 1 - u) * 14);
+    return box * (1 - w) + hann * w;
+  }
+
+  let last = performance.now(), acc = 0;
+  function frame(now){
+    const p = params();
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    acc += dt * SR / BLOCK * 0.25;               /* quarter speed so grains can be followed */
+    let n = 0;
+    while (acc >= 1 && n < 400){ block(p); acc -= 1; n++; }
+    for (const g of grains) g.age += dt * SR * 0.25;
+    for (let i = grains.length - 1; i >= 0; i--) if (grains[i].age >= grains[i].len) grains.splice(i, 1);
+    draw(p);
+    if (!reduce) requestAnimationFrame(frame);
+  }
+
+  function draw(p){
+    const css = getComputedStyle(document.documentElement);
+    ctx.clearRect(0, 0, W, H);
+    const top = 34, bot = H - 30, mid = (top + bot) / 2, amp = (bot - top) / 2;
+    const x = (f) => ((((f % p.frames) + p.frames) % p.frames) / p.frames) * W;
+
+    /* buffer strip: the waveform, oldest on the right as POSITION reads it */
+    ctx.strokeStyle = "rgba(215,238,244,.16)"; ctx.lineWidth = 1; ctx.beginPath();
+    for (let px = 0; px < W; px += 2){
+      const f = head - (1 - px / W) * p.frames;
+      const age = (head - f) / p.frames;
+      const y = mid - clamp(inputAt(f), -1, 1) * amp * 0.42;
+      px === 0 ? ctx.moveTo(W - px, y) : ctx.lineTo(W - px, y);
+      void age;
+    }
+    ctx.stroke();
+
+    /* grains: a window-shaped cloud over the stretch of buffer each one reads */
+    for (const g of grains){
+      const u = g.age / g.len, e = envelope(u, g.window);
+      const readFrom = g.start + g.age * g.ratio;
+      const pxOld = (head - readFrom) / p.frames;          /* 0 now, 1 oldest */
+      const cx = W - clamp(pxOld, 0, 1) * W;
+      const wpx = Math.max(3, (g.len / p.frames) * W * 0.5);
+      const cy = top + g.pan * (bot - top);
+      const warm = g.hue > 0.5 ? "240,169,61" : g.hue < -0.5 ? "120,170,255" : "88,198,226";
+      const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, wpx);
+      grd.addColorStop(0, "rgba(" + warm + "," + (0.55 * e).toFixed(3) + ")");
+      grd.addColorStop(1, "rgba(" + warm + ",0)");
+      ctx.fillStyle = grd;
+      ctx.beginPath(); ctx.ellipse(cx, cy, wpx, Math.max(3, wpx * 0.45), 0, 0, Math.PI * 2); ctx.fill();
+    }
+
+    /* the record head and the readout */
+    ctx.fillStyle = frozen ? "#f0a93d" : "rgba(215,238,244,.8)";
+    ctx.fillRect(W - 2, top - 8, 2, bot - top + 16);
+    ctx.font = "500 11px " + css.getPropertyValue("--mono");
+    ctx.fillStyle = "rgba(215,238,244,.7)";
+    ctx.textAlign = "right"; ctx.fillText(frozen ? "FROZEN · nothing is recorded" : "now · record head", W - 8, 20);
+    ctx.textAlign = "left"; ctx.fillText("oldest · " + (p.frames / SR).toFixed(2) + " s ago", 8, 20);
+    ctx.fillText(p.overlap === 0 ? "noon: no grains" : (p.deterministic ? "regular" : "random") + " · " + grains.length + " grains playing", 8, H - 10);
+  }
+
+  function labels(){
+    const p = params();
+    k("oPos").textContent = (p.pos * 100).toFixed(0) + "%";
+    k("oSize").textContent = (p.grainLen / SR * 1000).toFixed(0) + " ms";
+    k("oPitch").textContent = (p.pitch > 0 ? "+" : "") + p.pitch.toFixed(0) + " st";
+    k("oDens").textContent = p.overlap === 0 ? "none" : (p.deterministic ? "regular " : "random ") + Math.round(p.ov3 * p.maxGrains);
+    k("oTex").textContent = p.tex >= 0.75 ? "smooth + diffuser" : (p.window * 100).toFixed(0) + "% smooth";
+    k("oQual").textContent = p.maxGrains + " grains";
+    k("cStat").textContent = frozen ? "Frozen: the buffer holds what it had." : "";
+  }
+  for (const el of Object.values(ui)) el.addEventListener("input", labels);
+  k("bFreeze").addEventListener("click", (e) => { frozen = !frozen; e.currentTarget.setAttribute("aria-pressed", frozen); labels(); });
+  k("bSeed").addEventListener("click", () => { seed = true; });
+  labels();
+  /* warm up so the first still frame already shows a cloud */
+  { const p = params(); for (let i = 0; i < 1200; i++) { block(p); for (const g of grains) g.age += BLOCK; for (let j = grains.length - 1; j >= 0; j--) if (grains[j].age >= grains[j].len) grains.splice(j, 1); } }
+  if (reduce) { draw(params()); for (const el of [...Object.values(ui), k("bFreeze"), k("bSeed")]) el.addEventListener("input", () => draw(params())); }
+  else requestAnimationFrame((t) => { last = t; frame(t); });
+})();
+
+/* ---------- the panel ---------- */
+const C = {
+  pos:"#40c0ff", size:"#60ffc0", pitchU:"#ff9020", pitchD:"#2090ff", densU:"#ffff80", densD:"#c060ff",
+  tex:"#ff60a0", blend:"#ffc060", mode:"#00ff60", qual:"#ff4040", spread:"#80ffff", fb:"#ff8000",
+  verb:"#8080ff", gain:"#ffffff", dim:"#181818", setup:"#103040", idle:"#000030", white:"#ffffff",
+  orange:"#ff5000", gold:"#ffc040", green:"#00ff00",
+};
+const MODES = ["Granular", "Stretch", "Looping delay", "Spectral"];
+const QUALS = ["16-bit stereo", "16-bit mono", "8-bit stereo", "8-bit mono"];
+const SETTINGS_JACK = "Keeps working: the audio callback runs the whole time Settings is open. Knob values freeze where they were until Settings closes.";
+
+const PAGES = [
+  { name:"PLAY", halos:[C.idle, "#00a000", C.setup], pots:[
+    { name:"POSITION", ring:{style:"level", c:C.pos}, v:.3, sub:"now → oldest · CV on J6",
+      d:"Where in the recording buffer each grain starts: fully left reads what just came in, fully right the oldest audio. In Looping delay it is the delay time.",
+      meta:["engine <b>position</b>","smoothing <b>0.05 @ 1 kHz</b>","CV <b>J6</b>"] },
+    { name:"SIZE", ring:{style:"level", c:C.size}, v:.45, sub:"grain 32–512 ms · CV on J7",
+      d:"Grain length in Granular mode (lut_grain_size: 1,024 to 16,384 samples), the window size in Stretch, the loop length in Looping delay and the FFT warp in Spectral.",
+      meta:["engine <b>size</b>","smoothing <b>0.01</b>","CV <b>J7</b>"] },
+    { name:"PITCH", ring:{style:"bipolar", p:C.pitchU, n:C.pitchD}, v:.5, sub:"−24 … +24 semitones · + J5 V/Oct",
+      d:"Transposition through Clouds' own quantized pitch curve: semitone detents around noon, wider steps toward the ends, two octaves either way. J5 adds 1 V per octave on top.",
+      meta:["curve <b>lut_quantized_pitch</b>","range <b>±48 st with CV</b>","V/Oct <b>J5</b>"] },
+    { name:"DENSITY", ring:{style:"bipolar", p:C.densU, n:C.densD}, v:.8, sub:"noon none · CCW regular · CW random · CV on J8",
+      d:"How many grains play. Between 0.47 and 0.53 of travel, none. Turning counter-clockwise from there seeds grains at a steady rate; clockwise seeds them at random. Further from noon, more grains.",
+      meta:["engine <b>density</b>","dead zone <b>0.47–0.53</b>","CV <b>J8</b>"] },
+    { name:"TEXTURE", ring:{style:"level", c:C.tex}, v:.5, sub:"envelope · diffuser past 3 o'clock",
+      d:"In Granular mode the grain envelope, from a hard-edged box to a smooth bell; past three-quarters of travel the envelope stays smooth and a diffuser comes in. In Stretch and Looping delay it is a filter: low-pass left of noon, high-pass right. In Spectral it quantizes the spectrum.",
+      meta:["engine <b>texture</b>","smoothing <b>0.01</b>"] },
+    { name:"BLEND", ring:{style:"level", c:C.blend}, v:.5, sub:"dry / wet",
+      d:"The mix of the dry input and the cloud, scaled as the original (×1.05 − 0.025), so both ends are fully dry and fully wet.",
+      meta:["engine <b>dry_wet</b>","smoothing <b>0.05</b>"] },
+  ], buttons:[
+    { name:"FREEZE", sub:"hold · tap to latch", d:"Hold to freeze the buffer while held; tap under 0.3 s to latch freeze on or off. A gate on J3 freezes too. White while frozen.", meta:["light <b>white = frozen</b>","gate <b>J3</b>"] },
+    { name:"SEED", sub:"tap", d:"Fires a grain now, the same as a trigger on J4. Its light is the input meter: green, amber above 70 %, red at clip or when the CPU averages over 80 %, and a white flash on each seed. It stands down while B3 is held.", meta:["light <b>input meter</b>","trigger <b>J4</b>"] },
+    { name:"SETUP", sub:"hold", d:"Hold to show the Setup page on the pots. Every pot has to catch its stored value first, so nothing jumps. Dim teal while the Play page is showing. With B2, held two seconds, it opens Settings.", meta:["hold <b>Setup page</b>","with B2 <b>Settings, 2 s</b>"] },
+  ]},
+  { name:"SETUP", halos:[C.idle, "#00a000", null], pots:[
+    { name:"MODE", ring:{style:"sel", c:C.mode, n:4}, v:.125, sub:"Granular · Stretch · Looping delay · Spectral",
+      d:"Which of Clouds' four processors runs. Switching resets the filters, and to or from Spectral, the buffer.",
+      meta:["engine <b>set_playback_mode</b>","ring <b>4 dots</b>","default <b>Granular</b>"] },
+    { name:"QUALITY", ring:{style:"sel", c:C.qual, n:4}, v:.125, sub:"16-bit stereo · 16-bit mono · 8-bit stereo · 8-bit mono",
+      d:"The buffer's format. Mono and 8-bit µ-law each double how much time it holds; 8-bit also brings the lo-fi sound. Changing it clears the buffer.",
+      meta:["engine <b>set_quality</b>","ring <b>4 dots</b>","default <b>16-bit stereo</b>"] },
+    { name:"SPREAD", ring:{style:"level", c:C.spread}, v:.5, sub:"0–100 %",
+      d:"How far each grain is thrown across the stereo field at random.",
+      meta:["engine <b>stereo_spread</b>","default <b>50 %</b>"] },
+    { name:"FEEDBACK", ring:{style:"level", c:C.fb}, v:0, sub:"0–100 %",
+      d:"How much of the output is written back into the buffer.",
+      meta:["engine <b>feedback</b>","default <b>0</b>"] },
+    { name:"REVERB", ring:{style:"level", c:C.verb}, v:.3, sub:"0–100 %",
+      d:"The built-in reverb on the output.",
+      meta:["engine <b>reverb</b>","default <b>30 %</b>"] },
+    { name:"IN GAIN", ring:{style:"bipolar", p:C.gain, n:C.gain}, v:.5, sub:"−12 … +12 dB · 0 dB at noon",
+      d:"Gain on J1 and J2 before the buffer. The input meter on B2 follows the gained signal.",
+      meta:["curve <b>4^(2x−1)</b>","default <b>0 dB</b>"] },
+  ]},
+  { name:"SETTINGS 1", settings:true, halos:[C.orange, null, null], pots:[
+    { name:"BRIGHTNESS", ring:{style:"level", c:C.gold}, v:.26, sub:"5–100 % · acts at once",
+      d:"How bright every LED is. The one Settings value that acts as you turn. Saved in Clouds' slot, 8.", meta:["SDK <b>UseBrightness</b>"] },
+    { name:"—", ring:{style:"off"}, v:0, sub:"nothing here", d:"Nothing on this pot for Clouds.", meta:[] },
+    { name:"PRESET SLOT", ring:{style:"level", c:C.gold}, v:.53, sub:"slots 0–15 · for P4",
+      d:"Chooses the slot P4 saves into or loads from. Slot 8 is Clouds' own working state; 12–15 belong to Smack, Mark, Belt and Relay. Slots 0–7 are free for your presets.", meta:["SDK <b>UsePresets</b>"] },
+    { name:"PRESET ACTION", ring:{style:"bipolar", p:C.orange, n:C.orange}, v:.5, sub:"fully left save · fully right load · hold 3 s",
+      d:"Hold the pot fully left for three seconds to save to the slot on P3, fully right to load. Bring it back through the middle to re-arm. Loading another firmware's slot is refused.", meta:["save <b>left, 3 s</b>","load <b>right, 3 s</b>"] },
+    { name:"—", ring:{style:"off"}, v:0, sub:"nothing here", d:"Nothing on this pot for Clouds.", meta:[] },
+    { name:"—", ring:{style:"off"}, v:0, sub:"nothing here", d:"Nothing on this pot for Clouds. (There is no USB-port setting in this firmware.)", meta:[] },
+  ]},
+  { name:"SETTINGS 2", settings:true, halos:[C.orange, null, null], pots:[
+    { name:"FILE", ring:{style:"files", n:4, sel:0}, v:.1, sub:"the .bin files in /alchemy",
+      d:"Chooses a firmware file on the card: one dot per file, the chosen one bright green. A single red LED means no card; orange, no alchemy folder or no .bin files.", meta:["ring <b>one dot per file</b>"] },
+    { name:"FLASH", ring:{style:"level", c:"#401800"}, v:.15, sub:"dip below ~85 %, then past ~95 %",
+      d:"Writes the chosen file, verifies it and reboots into it. The dip below 85 % arms it, so a pot parked at the top cannot fire. If the file is already running, nothing is written.", meta:["arm <b>below 85 %</b>","fire <b>past 95 %</b>"] },
+    { name:"DFU", ring:{style:"level", c:"#300840"}, v:.15, sub:"same gesture · to the bootloader",
+      d:"Reboots into the bootloader's USB update mode and stays there: the escape hatch for a firmware without a picker.", meta:["arm <b>below 85 %</b>"] },
+    { name:"—", ring:{style:"off"}, v:0, sub:"nothing here", d:"Nothing here on the firmware page.", meta:[] },
+    { name:"—", ring:{style:"off"}, v:0, sub:"nothing here", d:"Nothing here on the firmware page.", meta:[] },
+    { name:"—", ring:{style:"off"}, v:0, sub:"nothing here", d:"Nothing here on the firmware page.", meta:[] },
+  ]},
+];
+const SETTINGS_BUTTONS = [
+  { name:"NEXT PAGE", sub:"on release · orange", d:"Steps between Settings page 1 and the firmware page each time it is let go. Lit orange the whole time Settings is open.", meta:["light <b>orange</b>"] },
+  { name:"LEAVE", sub:"on press", d:"Closes Settings. The press that leaves does nothing else; the pots have to catch again.", meta:["light <b>off</b>"] },
+  { name:"LEAVE", sub:"on press", d:"Also closes Settings, on the press.", meta:["light <b>off</b>"] },
+];
+const JACKS = {
+  J1:{ name:"IN L", sub:"audio in, left", d:"Left input, into the buffer through IN GAIN.", meta:["kind <b>codec in</b>"] },
+  J2:{ name:"IN R", sub:"audio in, right", d:"Right input. In the mono qualities the two are summed.", meta:["kind <b>codec in</b>"] },
+  J3:{ name:"FREEZE", sub:"gate in", d:"High freezes the buffer, as holding B1 does. Read raw once per 1 ms block: high above 1.5 V, low below 0.5 V.", meta:["assert <b>1.5 V</b>","release <b>0.5 V</b>"] },
+  J4:{ name:"TRIGGER", sub:"gate in · seeds a grain", d:"A rising edge seeds a grain, like B2. The level is also passed as Clouds' gate. The edge is held one block, as upstream held it for its ADC latency.", meta:["acts as <b>B2</b>"] },
+  J5:{ name:"V/OCT", sub:"pitch CV, 1 V/oct", d:"Calibrated volts × 12, added to PITCH, up to ±48 semitones in all. Jumps over half a semitone land at once; smaller moves glide.", meta:["read <b>per block</b>","range <b>±5 V</b>"] },
+  J6:{ name:"CV POSITION", sub:"±5 V, summed with P1", d:"Adds to POSITION through the SDK's CV matrix. Re-routable in the web programmer.", meta:["drives <b>PLAY P1</b>"] },
+  J7:{ name:"CV SIZE", sub:"±5 V, summed with P2", d:"Adds to SIZE.", meta:["drives <b>PLAY P2</b>"] },
+  J8:{ name:"CV DENSITY", sub:"±5 V, summed with P4", d:"Adds to DENSITY: sweep it through noon to bring the cloud in and out.", meta:["drives <b>PLAY P4</b>"] },
+  J9:{ name:"OUT L", sub:"audio out, left", d:"Left output: the blend of dry and cloud, with reverb.", meta:["kind <b>codec out</b>"] },
+  J10:{ name:"OUT R", sub:"audio out, right", d:"Right output.", meta:["kind <b>codec out</b>"] },
+};
+const JACKLEGEND = { J1:"IN L", J2:"IN R", J3:"FRZ", J4:"TRIG", J5:"V/OCT", J6:"POS", J7:"SIZE", J8:"DENS", J9:"OUT L", J10:"OUT R" };
+const USB = { name:"USB-C", sub:"HostLink · DFU", d:"The web programmer, presets and the SD card's files, from the front. Hold B3 at power-on for the bootloader's DFU mode. This firmware does not host a Launchpad or act as an audio interface.", meta:["running <b>HostLink</b>"] };
+
+const NS = "http://www.w3.org/2000/svg";
+function el(n, a, parent){ const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (parent) parent.appendChild(e); return e; }
+function hourXY(cx, cy, r, hour){ const a = hour / 12 * Math.PI * 2; return [cx + r * Math.sin(a), cy - r * Math.cos(a)]; }
+function ringColours(ring, v){
+  const g = PANEL.ring, N = g.arc_leds, out = new Array(g.leds).fill(null);
+  if (ring.style === "level"){ const n = Math.round(v * N); for (let i = 0; i < N; i++) out[i] = i < n ? ring.c : C.dim; }
+  else if (ring.style === "sel"){ const z = Math.min(ring.n - 1, Math.floor(v * ring.n)); for (let q = 0; q < ring.n; q++) out[Math.round(q * (N - 1) / (ring.n - 1))] = q === z ? ring.c : C.dim; }
+  else if (ring.style === "bipolar"){
+    const mid = (N - 1) / 2, to = Math.round(v * (N - 1));
+    for (let i = 0; i < N; i++) out[i] = C.dim;
+    const lo = Math.min(to, Math.round(mid)), hi = Math.max(to, Math.round(mid));
+    for (let i = lo; i <= hi; i++) out[i] = to >= mid ? ring.p : ring.n;
+    out[Math.round(mid)] = C.white;
+  } else if (ring.style === "files"){ for (let q = 0; q < ring.n; q++) out[Math.round(q * (N - 1) / (ring.n - 1))] = q === ring.sel ? C.green : "#0a3010"; }
+  return out;
+}
+function drawRing(g, cx, cy, ring, v){
+  const geo = PANEL.ring, cols = ringColours(ring, v);
+  for (let i = 0; i < geo.leds; i++){
+    const [x, y] = hourXY(cx, cy, geo.r, (geo.start_hour + geo.step_hours * i) % 12);
+    const arc = i < geo.arc_leds, c = cols[i], lit = arc && c && c !== C.dim;
+    if (lit) el("circle", { cx:x, cy:y, r:1.55, fill:c, opacity:.22 }, g);
+    el("circle", { cx:x, cy:y, r:.72, fill: arc ? (c || "#0c1a26") : "#0c1822", opacity: arc ? 1 : .6 }, g);
+  }
+}
+function drawKnob(g, cx, cy, v){
+  el("circle", { cx, cy, r:6.2, fill:"#0b1824", stroke:"rgba(207,230,238,.12)", "stroke-width":.25 }, g);
+  el("circle", { cx, cy, r:5.4, fill:"#16293a" }, g);
+  const hour = PANEL.ring.start_hour + v * (PANEL.ring.step_hours * (PANEL.ring.arc_leds - 1));
+  const [x1, y1] = hourXY(cx, cy, 2.2, hour), [x2, y2] = hourXY(cx, cy, 5.0, hour);
+  el("line", { x1, y1, x2, y2, stroke:"#e3f2f7", "stroke-width":.7, "stroke-linecap":"round" }, g);
+}
+function drawButton(g, b, halo){
+  if (halo && halo !== C.idle) el("circle", { cx:b.x, cy:b.y, r:b.halo + 1.6, fill:halo, opacity:.22 }, g);
+  el("circle", { cx:b.x, cy:b.y, r:b.halo, fill: halo || "#0c1822", opacity: halo ? .85 : 1 }, g);
+  el("circle", { cx:b.x, cy:b.y, r:b.hole, fill:"#081520", stroke:"rgba(207,230,238,.16)", "stroke-width":.25 }, g);
+  el("circle", { cx:b.x, cy:b.y, r:2.2, fill:"#16293a" }, g);
+}
+function drawJack(g, j){
+  el("circle", { cx:j.x, cy:j.y, r:3.9, fill:"#0b1824", stroke:"rgba(207,230,238,.14)", "stroke-width":.25 }, g);
+  el("circle", { cx:j.x, cy:j.y, r:j.hole, fill:"#16293a" }, g);
+  el("circle", { cx:j.x, cy:j.y, r:1.5, fill:"#03080d" }, g);
+}
+function describe(key, page){
+  const pg = PAGES[page];
+  if (key[0] === "P"){ const p = pg.pots[+key.slice(1) - 1]; return { k:key + " · " + pg.name, t:p.name, s:p.sub, d:p.d, m:p.meta }; }
+  if (key[0] === "B"){ const b = (pg.settings ? SETTINGS_BUTTONS : PAGES[0].buttons)[+key.slice(1) - 1]; return { k:key + " · " + pg.name, t:b.name, s:b.sub, d:b.d, m:b.meta }; }
+  if (key === "USB") return { k:"USB-C", t:USB.name, s:USB.sub, d:USB.d, m:USB.meta };
+  const j = JACKS[key]; return { k:key, t:j.name, s:j.sub, d:pg.settings ? SETTINGS_JACK : j.d, m:j.meta };
+}
+const st = { page:0, sel:null };
+function drawPanel(svg){
+  svg.textContent = "";
+  const P = PANEL, page = PAGES[st.page];
+  const plate = el("g", {}, svg);
+  el("rect", { x:0, y:0, width:P.plate.w, height:P.plate.h, rx:1.2, fill:"#102536", stroke:"rgba(207,230,238,.18)", "stroke-width":.3 }, plate);
+  for (const m of P.mount) el("rect", { x:m.x, y:m.y, width:m.w, height:m.h, rx:m.r, fill:"#07131d", stroke:"rgba(207,230,238,.12)", "stroke-width":.2 }, plate);
+  for (const y of P.rails) el("line", { x1:2, y1:y, x2:P.plate.w - 2, y2:y, stroke:"rgba(88,198,226,.28)", "stroke-width":.25 }, plate);
+  el("text", { x:P.plate.w / 2, y:P.rails[0] - 2.2, class:"legend" }, plate).textContent = "CLOUDS";
+  const mk = (key) => {
+    const d = describe(key, st.page);
+    const g = el("g", { class:"hole" + (st.sel === key ? " sel" : ""), "data-key":key, tabindex:"0", role:"button", "aria-label":key + ": " + d.t }, svg);
+    g.addEventListener("mouseenter", () => show(key));
+    g.addEventListener("focus", () => show(key));
+    g.addEventListener("click", (e) => { e.stopPropagation(); select(key); });
+    g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); select(key); } });
+    return g;
+  };
+  P.pots.forEach((p, i) => {
+    const k = page.pots[i], g = mk("P" + (i + 1));
+    drawRing(g, p.x, p.y, k.ring, k.v);
+    drawKnob(g, p.x, p.y, k.v);
+    el("text", { x:p.x, y:p.y + P.labels.knob_dy, class:"plabel lit" }, g).textContent = k.name;
+    el("circle", { cx:p.x, cy:p.y, r:P.ring.r + 2.2, class:"hit" }, g);
+  });
+  P.buttons.forEach((b, i) => {
+    const g = mk("B" + (i + 1));
+    drawButton(g, b, page.halos[i]);
+    el("text", { x:b.x, y:b.y + P.labels.button_dy, class:"plabel" }, g).textContent = (page.settings ? SETTINGS_BUTTONS : PAGES[0].buttons)[i].name;
+    el("circle", { cx:b.x, cy:b.y, r:b.halo + 2.2, class:"hit" }, g);
+  });
+  { const u = P.usb, g = mk("USB");
+    el("rect", { x:u.x, y:u.y, width:u.w, height:u.h, rx:u.r, fill:"#050c12", stroke:"rgba(207,230,238,.16)", "stroke-width":.25 }, g);
+    el("rect", { x:u.x - 1, y:u.y - 1, width:u.w + 2, height:u.h + 2, rx:u.r + 1, class:"hit" }, g); }
+  const rows = [...new Set(P.jacks.map(j => Math.round(j.y)))].sort((a, b) => a - b);
+  P.jacks.forEach(j => {
+    const g = mk(j.id); drawJack(g, j);
+    el("text", { x:j.x, y:j.y + (Math.round(j.y) === rows[0] ? 6.9 : 7.6), class:"jlabel" }, g).textContent = JACKLEGEND[j.id];
+    el("circle", { cx:j.x, cy:j.y, r:5.2, class:"hit" }, g);
+  });
+  /* no IN / OUT legends: the jack labels already say IN L and OUT R, and the
+     legends would sit on the bottom row's labels */
+}
+const ro = { k:document.getElementById("roK"), t:document.getElementById("roT"), s:document.getElementById("roS"), d:document.getElementById("roD"), m:document.getElementById("roM") };
+function show(key){
+  const d = describe(key, st.page);
+  ro.k.textContent = d.k; ro.t.textContent = d.t; ro.s.textContent = d.s; ro.d.textContent = d.d;
+  ro.m.innerHTML = (d.m || []).map(x => "<div>" + x + "</div>").join("");
+}
+function select(key){ st.sel = key; drawPanel(psvg); show(key); const n = psvg.querySelector('[data-key="' + key + '"]'); if (n) n.focus({ preventScroll:true }); }
+const psvg = document.getElementById("panelSvg");
+document.querySelectorAll(".tg[data-page]").forEach(b => b.addEventListener("click", () => {
+  st.page = +b.dataset.page;
+  document.querySelectorAll(".tg[data-page]").forEach(x => x.setAttribute("aria-pressed", x === b));
+  drawPanel(psvg); if (st.sel) show(st.sel);
+}));
+drawPanel(psvg);
+</script>
+</body>
+</html>

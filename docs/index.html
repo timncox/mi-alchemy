@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>mi-alchemy</title>
+<meta name="description" content="Mutable Instruments Clouds, Elements, Marbles and Plaits as firmwares for the Hermetic Modular Alchemy Lab V2.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Libre+Franklin:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* A deliberately single-theme page: the rack. Every colour is set here. */
+:root {
+  color-scheme: dark;
+  --case:    #121416;   /* the case behind the modules            */
+  --rail:    #2a2e33;   /* rails and screws                       */
+  --panel:   #c9ccd0;   /* anodized aluminium faceplate           */
+  --panel-2: #b4b8bd;   /* faceplate edge                         */
+  --ink:     #16181b;   /* panel lettering                        */
+  --text:    #e3e5e8;   /* body text on the case                  */
+  --muted:   #9aa1a9;
+  --line:    #2c3136;
+  --clouds:   #2f7fc1;
+  --elements: #9a6a14;
+  --marbles:  #b8336a;
+  --plaits:   #c2561a;
+  --link:    #9cc9ff;
+  --display: "Chakra Petch", "Arial Narrow", system-ui, sans-serif;
+  --body:    "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+  --mono:    "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html { background: var(--case); }
+body {
+  margin: 0;
+  background: var(--case);
+  color: var(--text);
+  font: 400 16px/1.6 var(--body);
+  padding-inline: 16px;
+  padding-block: 0 64px;
+}
+a { color: var(--link); text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
+.wrap { max-width: 1040px; margin: 0 auto; }
+
+header { padding-block: 56px 28px; display: grid; gap: 12px; }
+.eyebrow {
+  font: 500 12px/1 var(--display); letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+}
+h1 {
+  margin: 0; font: 700 clamp(44px, 9vw, 92px)/.9 var(--display); letter-spacing: -.01em;
+  text-wrap: balance;
+}
+.lede { margin: 0; max-width: 62ch; color: var(--muted); font-size: 18px; }
+.lede b { color: var(--text); font-weight: 600; }
+
+/* ---- the rack ---- */
+.rack {
+  margin-block: 12px 40px;
+  background: var(--case);
+  border-block: 14px solid var(--rail);
+  padding: 10px;
+  overflow-x: auto;
+}
+.row {
+  display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 6px;
+  min-width: 0;
+}
+.plate {
+  position: relative; display: grid; grid-template-rows: auto auto 1fr auto; gap: 10px;
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  color: var(--ink); text-decoration: none;
+  padding: 26px 16px 22px; min-height: 380px; border-radius: 3px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.plate::before, .plate::after {   /* mounting screws */
+  content: ""; position: absolute; left: 50%; width: 10px; height: 10px; margin-left: -5px;
+  border-radius: 50%; background: var(--rail); box-shadow: inset 0 0 0 2px #444a51;
+}
+.plate::before { top: 7px; }
+.plate::after  { bottom: 7px; }
+.plate:hover, .plate:focus-visible { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,.45); outline: none; }
+.plate .name { font: 700 34px/1 var(--display); letter-spacing: .01em; }
+.plate .kind { font: 500 11px/1.3 var(--display); letter-spacing: .14em; text-transform: uppercase; }
+.plate p { margin: 0; font-size: 14px; line-height: 1.5; }
+.plate dl {
+  margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 3px 10px;
+  font: 500 12px/1.4 var(--mono); font-variant-numeric: tabular-nums;
+  border-top: 1px solid rgba(0,0,0,.25); padding-top: 10px;
+}
+.plate dt { opacity: .7; }
+.plate dd { margin: 0; }
+.plate .go { font: 700 12px/1 var(--display); letter-spacing: .14em; text-transform: uppercase; }
+.clouds   .name, .clouds   .go { color: var(--clouds); }
+.elements .name, .elements .go { color: var(--elements); }
+.marbles  .name, .marbles  .go { color: var(--marbles); }
+.plaits   .name, .plaits   .go { color: var(--plaits); }
+
+@media (max-width: 760px) {
+  .row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .plate { min-height: 0; }
+}
+@media (max-width: 420px) {
+  .row { grid-template-columns: 1fr; }
+}
+
+/* ---- text sections ---- */
+section { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding-block: 22px; border-top: 1px solid var(--line); }
+h2 { margin: 0; font: 700 22px/1.2 var(--display); letter-spacing: .02em; }
+section p, section li { max-width: 68ch; }
+section p { margin: 0; }
+ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+code, pre { font-family: var(--mono); font-size: 14px; }
+pre {
+  margin: 0; padding: 14px 16px; background: #1b1e21; border: 1px solid var(--line);
+  border-radius: 4px; overflow-x: auto; line-height: 1.55;
+}
+.status {
+  display: inline-block; font: 700 12px/1 var(--display); letter-spacing: .12em; text-transform: uppercase;
+  color: #ffd27a; border: 1px solid #6b5520; padding: 7px 10px; border-radius: 3px;
+  justify-self: start; max-width: 100%; line-height: 1.4;
+}
+footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .plate { transition: none; } .plate:hover { transform: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Firmware for the Hermetic Modular Alchemy Lab V2</div>
+  <h1>mi-alchemy</h1>
+  <p class="lede">Four Mutable Instruments modules, <b>Clouds, Elements, Marbles and Plaits</b>, running on one
+  12HP panel. Put all four on the SD card and switch between them from the Lab's own firmware picker.
+  The sound engines are Emilie Gillet's original code, unmodified apart from one restored line.</p>
+</header>
+
+<div class="rack" role="list" aria-label="The four firmwares">
+  <div class="row">
+    <a class="plate clouds" href="clouds/" role="listitem">
+      <div class="name">Clouds</div>
+      <div class="kind">Texture synthesizer</div>
+      <p>Records what you feed J1/J2 and plays it back as grains, a time-stretch, a looping delay, or a
+      spectral smear. Freeze on B1.</p>
+      <dl><dt>rate</dt><dd>32 kHz</dd><dt>slot</dt><dd>8</dd><dt>image</dt><dd>387 KB</dd></dl>
+      <div class="go">Manual →</div>
+    </a>
+    <a class="plate elements" href="elements/" role="listitem">
+      <div class="name">Elements</div>
+      <div class="kind">Modal synthesis voice</div>
+      <p>Bow, blow or strike a resonating body: strings, plates, tubes. Three pages of controls, and your
+      own audio on J1/J2 as the exciter.</p>
+      <dl><dt>rate</dt><dd>32 kHz</dd><dt>slot</dt><dd>9</dd><dt>card</dt><dd>+ /mi/elements.smp</dd></dl>
+      <div class="go">Manual →</div>
+    </a>
+    <a class="plate marbles" href="marbles/" role="listitem">
+      <div class="name">Marbles</div>
+      <div class="kind">Random sampler</div>
+      <p>Three gates and four voltages, drawn from the distributions you set, locked into loops with
+      déjà vu. Every jack but one becomes an output.</p>
+      <dl><dt>rate</dt><dd>32 kHz</dd><dt>slot</dt><dd>10</dd><dt>outs</dt><dd>T×3, X×3, Y</dd></dl>
+      <div class="go">Manual →</div>
+    </a>
+    <a class="plate plaits" href="plaits/" role="listitem">
+      <div class="name">Plaits</div>
+      <div class="kind">Macro oscillator</div>
+      <p>All 24 synthesis models, from virtual analog to speech, chords and drums, with its low-pass gate
+      and an aux output on J10.</p>
+      <dl><dt>rate</dt><dd>48 kHz</dd><dt>slot</dt><dd>11</dd><dt>models</dt><dd>24</dd></dl>
+      <div class="go">Manual →</div>
+    </a>
+  </div>
+</div>
+
+<section>
+  <h2>Status</h2>
+  <span class="status">Built and tested on a computer · not yet heard on hardware</span>
+  <p>Every firmware builds, and each engine passes its test suite running on a computer. None has been
+  flashed to a module yet. Each manual lists what to check on the hardware.</p>
+</section>
+
+<section>
+  <h2>Put them on the card</h2>
+<pre>/alchemy/clouds_alchemy.bin
+/alchemy/elements_alchemy.bin
+/alchemy/marbles_alchemy.bin
+/alchemy/plaits_alchemy.bin
+/mi/elements.smp            Elements' exciter samples</pre>
+  <p>Then hold B2 and B3 for two seconds to open Settings, turn to the firmware page, and pick one.
+  Without <code>/mi/elements.smp</code>, Elements still plays, but its strike and blow samples are silent.</p>
+  <p>They share the card with Smack, Mark, Belt and Relay. Each firmware keeps its settings in its own
+  preset slot, so switching doesn't lose them. Those four use slots 12–15, these use 8–11, and slots 0–7
+  are free for presets you save yourself.</p>
+</section>
+
+<section>
+  <h2>What this version leaves out</h2>
+  <ul>
+    <li>The front USB-C is for the computer only (HostLink). There's no Launchpad support and no USB-audio
+    mode yet.</li>
+    <li>Each manual lists the features of the original module that aren't here.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Found along the way</h2>
+  <p>Clouds' time-stretch mode is silent when built from the current eurorack source, because a 2023 merge
+  dropped one line. It's fixed here, and the fix was sent upstream as
+  <a href="https://github.com/pichenettes/eurorack/pull/72">pichenettes/eurorack #72</a>.</p>
+</section>
+
+<section>
+  <h2>More Alchemy Lab firmware</h2>
+  <ul>
+    <li><a href="https://timncox.github.io/mark-alchemy/">Mark</a>: five-track live looper</li>
+    <li><a href="https://timncox.github.io/belt-alchemy/">Belt</a>: vocal pitch correction and harmony</li>
+    <li><a href="https://timncox.github.io/smack-alchemy/">Smack</a>: live loop capture, slicing and glitch</li>
+  </ul>
+</section>
+
+<footer>
+  Source: <a href="https://github.com/timncox/mi-alchemy">github.com/timncox/mi-alchemy</a>.
+  Clouds, Elements, Marbles and Plaits by Emilie Gillet / Mutable Instruments, MIT licence.
+  Alchemy Lab and its SDK by Hermetic Modular.
+</footer>
+
+</div>
+</body>
+</html>
