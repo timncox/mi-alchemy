@@ -21,6 +21,17 @@ Rules:
 - Never define `TEST` in a firmware build: it is stmlib's host switch, and it
   collides with ST headers (meld's lesson). Native tests define it.
 
+`parasites/warps/` is Warps in Matthias Puech's Parasites build, from
+[mqtthiqs/parasites](https://github.com/mqtthiqs/parasites) `master` at
+**32fa66f5ac** (2021-02-18), directory `warps/`: `dsp/*.h`, `dsp/*.cc`,
+`resources.h`, `resources.cc`. Copied from `~/tim-os/meld/src/vendor/warps`,
+which took it from that commit. MIT (see `parasites/LICENSE.md`). Not taken:
+`drivers/` (`warps/drivers/debug_pin.h` is shadowed by `src/shim/warps/`),
+`ui.cc`, `cv_scaler.cc`, `settings.cc`, `warps.cc`. It compiles against the
+eurorack stmlib above (e3bd7c9) unchanged; Parasites' own pinned stmlib
+(mqtthiqs/stmlib 8ab2aae) is not vendored, and test/test_warps.cpp passes
+against this one.
+
 Changes:
 
 1. `clouds/dsp/window.h`, `Window::Start()`: restored `done_ = false;`.
@@ -31,3 +42,10 @@ Changes:
    Found by test/test_clouds.cpp (stretch RMS 0.001 vs 0.1-0.3 for the other
    modes); upstream's own host test never runs stretch. Shipped Clouds
    firmware predates the regression.
+
+2. `parasites/warps/dsp/modulator.cc`, `ProcessDelay()`: after the upstream
+   `while (index < 0)` wrap, a matching `while (index >= DELAY_SIZE)` wrap.
+   Upstream only wraps negative read indices; a reverse-direction read can
+   land past `DELAY_SIZE` and fetch memory past the object (a silent
+   garbage read on Warps, a heap overflow under ASan). Found and fixed in
+   meld; carried over and re-marked `// mi-alchemy (fix from meld):`.
