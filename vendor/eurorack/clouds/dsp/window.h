@@ -64,6 +64,7 @@ class Window {
     first_sample_ = (start + buffer_size) % buffer_size;
     phase_increment_ = phase_increment;
     phase_ = 0;
+    done_ = false;  // mi-alchemy: restored, see vendor/VENDOR.md
     regenerated_ = false;
     envelope_phase_increment_ = 2.0f / static_cast<float>(width);
   }

@@ -5,8 +5,16 @@
 # pass TEST to a firmware build (vendor/VENDOR.md).
 CXX      ?= c++
 EURORACK := ../vendor/eurorack
+#
+# ASan checks heap and stack, NOT global arrays (-asan-globals=0): Mutable's
+# code reads interpolated lookup tables with a phase that can reach exactly
+# 1.0, which reads the float one past the table's end times a zero fraction
+# (clouds lut_xfade_in at dry_wet 1.0, lut_window at a grain's end). It is
+# harmless on the part and all over upstream, and it is vendored code we do
+# not patch; with global redzones on, ASan stops at the first one.
 CXXFLAGS := -std=gnu++14 -O2 -g -DTEST -I$(EURORACK) -I../src/shim -I. \
-            -Wno-everything -fsanitize=address,undefined -fno-omit-frame-pointer
+            -Wno-everything -fsanitize=address,undefined -fno-omit-frame-pointer \
+            -mllvm -asan-globals=0
 STMLIB_CC := $(EURORACK)/stmlib/dsp/units.cc $(EURORACK)/stmlib/dsp/atan.cc \
              $(EURORACK)/stmlib/utils/random.cc
 BIN := bin

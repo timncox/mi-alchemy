@@ -450,7 +450,11 @@ static void AudioCallback(daisy::AudioHandle::InputBuffer  in,
     p->size          = sm_size;
     p->density       = sm_density;
     p->texture       = sm_texture;
-    p->dry_wet       = mi::clampf(sm_dry_wet * 1.05f - 0.025f, 0.f, 1.f);
+    /* Upstream clamps to [0, 1], and at exactly 1.0 its crossfade
+     * (Interpolate(lut_xfade_in, dry_wet, 16) on a 17-entry table) reads
+     * one float past the table -- times a zero fraction, so harmless on
+     * the F405, but ASan flags it (test/test_clouds.cpp). Stop just short. */
+    p->dry_wet       = mi::clampf(sm_dry_wet * 1.05f - 0.025f, 0.f, 0.99999f);
     p->stereo_spread = sm_spread;
     p->feedback      = sm_feedback;
     p->reverb        = sm_reverb;

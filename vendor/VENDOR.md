@@ -21,4 +21,13 @@ Rules:
 - Never define `TEST` in a firmware build: it is stmlib's host switch, and it
   collides with ST headers (meld's lesson). Native tests define it.
 
-Changes: none yet.
+Changes:
+
+1. `clouds/dsp/window.h`, `Window::Start()`: restored `done_ = false;`.
+   Upstream had it twice until 2023-03; `fbb53ba2` ("Duplicate variable
+   assignment") removed one and the merge `d1d8839c` (2023-03-13) lost the
+   other, so on eurorack master a WSOLA window, once finished, is never
+   restarted and Clouds' STRETCH mode goes silent after its first window.
+   Found by test/test_clouds.cpp (stretch RMS 0.001 vs 0.1-0.3 for the other
+   modes); upstream's own host test never runs stretch. Shipped Clouds
+   firmware predates the regression.
