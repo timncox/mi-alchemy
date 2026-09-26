@@ -137,12 +137,15 @@ static const char* const kLevelLabels[2] = {"Off", "On"};
  *      [P3] B2 [P4]
  *      [P5] B3 [P6]                                                        */
 
+static void ModelRing(LedPanel& panel, uint8_t pot, const ArcGeometry& geo,
+                      float norm, uint32_t t_ms, void* ctx);
+
 static VirtualKnob model = VirtualKnob(kPotTopLeft, "Model")
     .Selector(kNumEngines).Labels(kModelLabels).Ident("model")
     .Help("The synthesis model: 1-8 the Plaits 1.2 bank, 9-16 the pitched "
           "classics, 17-24 noise, physical models and drums. B2 jumps to "
           "the same model in the next bank.")
-    .Ring(SelectorRing(kColNotch, kColDim, kNumEngines));
+    .Ring(Custom(ModelRing));
 
 static VirtualKnob frequency = VirtualKnob(kPotTopRight, "Frequency")
     .Linear(-1.f, 1.f).Ident("frequency")
@@ -332,6 +335,8 @@ static int   prev_trig = -1, prev_level = -1;
 /* Plaits' octave quantizer for OCTAVE = 9 (ui.cc: 9 zones, hysteresis 0.1). */
 static stmlib::HysteresisQuantizer2 octave_quantizer;
 
+static const float kSrCorrection = 12.0f * log2f(48000.0f / plaits::kCorrectedSampleRate);
+
 static float compute_note(float transposition, int oct, float fine_st)
 {
     /* ui.cc, with fine_tune_ fixed at its centre and FINE as a trim. */
@@ -345,7 +350,10 @@ static float compute_note(float transposition, int oct, float fine_st)
         note = 60.0f + transposition * 48.0f;
     else
         note = transposition * 7.0f + (float)oct * 12.0f;
-    return note + fine_st;
+    /* Plaits' pitch maths (plaits/dsp/dsp.h: a0) assumes its codec's real
+     * rate, 47,872.34 Hz; the Lab runs at 48 kHz, which would put every
+     * note 12*log2(48000/47872.34) = 0.0461 semitones (4.6 cents) sharp. */
+    return note + fine_st - kSrCorrection;
 }
 
 static void OnFrame(void)
@@ -447,14 +455,33 @@ static void OnRender(uint32_t t_ms)
         L.SetButtonPair(kButtonB3, L.ScaleGlobal(kColSetup));
 }
 
-/* Paint the selected model's dot in its bank colour. */
-static void ModelOverdraw(LedPanel& panel, uint8_t pot, const ArcGeometry& geo,
-                          float norm, uint32_t t_ms, void* ctx)
+/*
+ * The MODEL ring, drawn whole here instead of as the SDK's 24-zone selector
+ * plus an overdraw: the SDK lights the NEAREST zone and only has LEDs to
+ * show some of the 24, while the engine plays floor(v * 24), so near a zone
+ * edge the ring showed two dots and on bank 3 only one of them. Now there is
+ * one source of truth, G_ENGINE (what the voice is playing): every LED is
+ * dimly lit in the colour of the bank its zones belong to, and the playing
+ * model's LED is bright in its bank colour.
+ */
+static void ModelRing(LedPanel& panel, uint8_t pot, const ArcGeometry& geo,
+                      float norm, uint32_t t_ms, void* ctx)
 {
     (void)norm; (void)t_ms; (void)ctx;
+    panel.ClearRing(pot);
+    const int n = geo.arc_leds;
+    for (int i = 0; i < n; i++)
+    {
+        /* the model at the middle of this LED's share of the travel */
+        const int     m = (int)(((float)i + 0.5f) * (float)kNumEngines / (float)n);
+        LedPanel::Rgb c = kBank[(m < kNumEngines ? m : kNumEngines - 1) / 8];
+        c = {(uint8_t)(c.r / 10), (uint8_t)(c.g / 10), (uint8_t)(c.b / 10)};
+        panel.SetRingByHour(pot, fmodf(geo.start_hour + geo.step_hours * (float)i, 12.0f),
+                            panel.ScaleGlobal(c));
+    }
     const int e   = G_ENGINE;
-    const int led = (int)lroundf((float)e * (float)(geo.arc_leds - 1) / (float)(kNumEngines - 1));
-    panel.SetRingByHour(pot, fmodf(geo.start_hour + geo.step_hours * (float)led, 12.0f),
+    const int led = (int)(((float)e + 0.5f) * (float)n / (float)kNumEngines);
+    panel.SetRingByHour(pot, fmodf(geo.start_hour + geo.step_hours * (float)(led < n ? led : n - 1), 12.0f),
                         panel.ScaleGlobal(kBank[e / 8]));
 }
 
@@ -606,7 +633,6 @@ int main(void)
     /* Every jack is read raw in the callback with Plaits' own scaling. */
     for (uint8_t j = 0; j < 6; j++) cv_matrix.Jack(j).Off();
 
-    model.Overdraw(ModelOverdraw);
 
     host.Product("Plaits")
         .BootSlot(home.slot)

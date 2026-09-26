@@ -19,7 +19,7 @@ unmodified except one restored line (vendor/VENDOR.md), at its native
 | POSITION | where grains read from (now to oldest) | 0..1, one-pole 0.05 at 1 kHz |
 | SIZE | grain size / loop length / FFT window | 0..1, 0.01 |
 | PITCH | transpose | Clouds' `lut_quantized_pitch` (semitone detents near noon), ±24 st; + J5 V/Oct |
-| DENSITY | grain rate; noon = none, CW regular, CCW random | 0..1, 0.01 |
+| DENSITY | grain rate; noon = none, CCW regular, CW random (`use_deterministic_seed = density < 0.5`) | 0..1, 0.01 |
 | TEXTURE | grain envelope; past 3 o'clock, diffuser | 0..1, 0.01 |
 | BLEND | dry/wet | `x*1.05-0.025`, clamped to [0, 0.99999] |
 | MODE | Granular / Stretch / Looping delay / Spectral | 4-zone selector |

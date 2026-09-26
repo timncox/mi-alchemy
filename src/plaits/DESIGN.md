@@ -102,3 +102,17 @@ call on an Apple M-series host; unsanitised at `-O2` it is 1.26 µs, against a
 - **24 zones on a 16-LED ring**: MODEL's selector is dense. The coloured dot shows the choice, but zone boundaries are ~4 % of travel apart.
 - **Output level**: int16 full scale maps to the codec's full scale. That hasn't been compared against a real Plaits (±5 V-ish), so it may be hot or quiet.
 - **Level/timbre scaling** is derived from Plaits' default calibration, not measured.
+
+## Fixes after v0.1.0 (found by the manual's pitch calculator and ring drawing)
+
+- **Pitch:** Plaits' `a0` (plaits/dsp/dsp.h) assumes its codec's real rate,
+  47,872.34 Hz. The Lab runs at 48 kHz, which put every note 4.6 cents sharp.
+  `compute_note()` now subtracts 12·log2(48000/47872.34) = 0.0461 st.
+  libDaisy's PLL runs the codec ~250 ppm fast (docs/alchemy-lab-status.md),
+  which would add another ~0.4 cents; that is not corrected.
+- **MODEL ring:** it used to be the SDK's 24-zone selector plus an overdraw.
+  The SDK lights the nearest zone while the engine plays floor(v·24), so
+  near a zone edge two dots showed, and the SDK drew nothing for zones 17–24.
+  The ring is now a `Custom` ring drawn only from the engine that is
+  playing. Every LED is dimly lit in the colour of the bank its zones
+  belong to, and the playing model's LED is bright.

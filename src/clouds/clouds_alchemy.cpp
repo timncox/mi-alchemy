@@ -141,8 +141,8 @@ static VirtualKnob pitch = VirtualKnob(kPotMiddleLeft, "Pitch")
 
 static VirtualKnob density = VirtualKnob(kPotMiddleRight, "Density")
     .Linear(0.f, 1.f).Ident("density")
-    .Help("Grain rate. Noon is silence; clockwise is regular, "
-          "counter-clockwise random.")
+    .Help("Grain rate. Noon is silence; counter-clockwise is "
+          "regular, clockwise random.")
     .Ring(Bipolar(kColDensU, kColDensD, kColNotch));
 
 static VirtualKnob texture = VirtualKnob(kPotBottomLeft, "Texture")

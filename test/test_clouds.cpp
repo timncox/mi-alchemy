@@ -71,7 +71,7 @@ static void set_params(GranularProcessor& p, bool freeze)
     q->position      = 0.3f;
     q->size          = 0.5f;
     q->pitch         = 0.0f;
-    q->density       = 0.85f;   /* regular, dense grains */
+    q->density       = 0.85f;   /* dense, randomly seeded grains */
     q->texture       = 0.5f;
     q->dry_wet       = 0.99999f; /* wet only, capped as the firmware caps it */
     q->stereo_spread = 0.3f;
