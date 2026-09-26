@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>mi-alchemy</title>
-<meta name="description" content="Mutable Instruments Clouds, Elements, Marbles and Plaits as firmwares for the Hermetic Modular Alchemy Lab V2.">
+<meta name="description" content="Mutable Instruments Clouds, Elements, Marbles, Plaits and Warps, plus Meld, as firmwares for the Hermetic Modular Alchemy Lab V2.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Libre+Franklin:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -24,6 +24,8 @@
   --elements: #9a6a14;
   --marbles:  #b8336a;
   --plaits:   #c2561a;
+  --warps:    #2e7d5b;
+  --meld:     #6a4bb0;
   --link:    #9cc9ff;
   --display: "Chakra Petch", "Arial Narrow", system-ui, sans-serif;
   --body:    "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
@@ -63,14 +65,14 @@ h1 {
   overflow-x: auto;
 }
 .row {
-  display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 6px;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;
   min-width: 0;
 }
 .plate {
   position: relative; display: grid; grid-template-rows: auto auto 1fr auto; gap: 10px;
   background: linear-gradient(180deg, var(--panel), var(--panel-2));
   color: var(--ink); text-decoration: none;
-  padding: 26px 16px 22px; min-height: 380px; border-radius: 3px;
+  padding: 26px 16px 22px; min-height: 330px; border-radius: 3px;
   transition: transform .2s ease, box-shadow .2s ease;
 }
 .plate::before, .plate::after {   /* mounting screws */
@@ -95,6 +97,8 @@ h1 {
 .elements .name, .elements .go { color: var(--elements); }
 .marbles  .name, .marbles  .go { color: var(--marbles); }
 .plaits   .name, .plaits   .go { color: var(--plaits); }
+.warps    .name, .warps    .go { color: var(--warps); }
+.meld     .name, .meld     .go { color: var(--meld); }
 
 @media (max-width: 760px) {
   .row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -130,12 +134,12 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
 <header>
   <div class="eyebrow">Firmware for the Hermetic Modular Alchemy Lab V2</div>
   <h1>mi-alchemy</h1>
-  <p class="lede">Four Mutable Instruments modules, <b>Clouds, Elements, Marbles and Plaits</b>, running on one
-  12HP panel. Put all four on the SD card and switch between them from the Lab's own firmware picker.
-  The sound engines are Emilie Gillet's original code, unmodified apart from one restored line.</p>
+  <p class="lede">Mutable Instruments' <b>Clouds, Elements, Marbles, Plaits and Warps</b>, plus <b>Meld</b>, running on one
+  12HP panel. Put them all on the SD card and switch between them from the Lab's own firmware picker.
+  The sound engines are Emilie Gillet's original code (and, for Warps and Meld, Matthias Puech's Parasites), unmodified apart from two marked fixes.</p>
 </header>
 
-<div class="rack" role="list" aria-label="The four firmwares">
+<div class="rack" role="list" aria-label="The firmwares">
   <div class="row">
     <a class="plate clouds" href="clouds/" role="listitem">
       <div class="name">Clouds</div>
@@ -169,6 +173,22 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
       <dl><dt>rate</dt><dd>48 kHz</dd><dt>slot</dt><dd>11</dd><dt>models</dt><dd>24</dd></dl>
       <div class="go">Manual →</div>
     </a>
+    <a class="plate warps" href="warps/" role="listitem">
+      <div class="name">Warps</div>
+      <div class="kind">Meta-modulator</div>
+      <p>Two signals in, one collision out: ring mods, folds, XOR, a vocoder, frequency shift, Doppler and
+      delay. Matthias Puech's Parasites firmware.</p>
+      <dl><dt>rate</dt><dd>96 kHz</dd><dt>slot</dt><dd>7</dd><dt>modes</dt><dd>9</dd></dl>
+      <div class="go">Manual →</div>
+    </a>
+    <a class="plate meld" href="https://github.com/timncox/mi-alchemy/blob/release/src/meld/DESIGN.md" role="listitem">
+      <div class="name">Meld</div>
+      <div class="kind">Warps, extended</div>
+      <p>Warps Parasites plus stock Warps as a tenth mode, with a coincidence gate and both envelopes out
+      as CV. First built for the Daisy Patch.</p>
+      <dl><dt>rate</dt><dd>96 kHz</dd><dt>slot</dt><dd>6</dd><dt>modes</dt><dd>10</dd></dl>
+      <div class="go">Design notes →</div>
+    </a>
   </div>
 </div>
 
@@ -185,11 +205,13 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
 /alchemy/elements_alchemy.bin
 /alchemy/marbles_alchemy.bin
 /alchemy/plaits_alchemy.bin
+/alchemy/warps_alchemy.bin
+/alchemy/meld_alchemy.bin
 /mi/elements.smp            Elements' exciter samples</pre>
   <p>Then hold B2 and B3 for two seconds to open Settings, turn to the firmware page, and pick one.
   Without <code>/mi/elements.smp</code>, Elements still plays, but its strike and blow samples are silent.</p>
   <p>They share the card with Smack, Mark, Belt and Relay. Each firmware keeps its settings in its own
-  preset slot, so switching doesn't lose them. Those four use slots 12–15, these use 8–11, and slots 0–7
+  preset slot, so switching doesn't lose them. Those four use slots 12–15, these use 6–11, and slots 0–5
   are free for presets you save yourself.</p>
 </section>
 
@@ -220,7 +242,7 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
 
 <footer>
   Source: <a href="https://github.com/timncox/mi-alchemy">github.com/timncox/mi-alchemy</a>.
-  Clouds, Elements, Marbles and Plaits by Emilie Gillet / Mutable Instruments, MIT licence.
+  Clouds, Elements, Marbles, Plaits and Warps by Emilie Gillet / Mutable Instruments, MIT licence. Parasites by Matthias Puech, MIT licence.
   Alchemy Lab and its SDK by Hermetic Modular.
 </footer>
 
