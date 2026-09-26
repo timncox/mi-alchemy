@@ -1,0 +1,5 @@
+build*/
+.claude/
+CLAUDE.md
+*.o
+test/bin/
