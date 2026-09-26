@@ -137,7 +137,7 @@ every:
 size:
 	@for f in $(FWS); do e=build-$$f/$${f}_alchemy.elf; [ -f $$e ] && arm-none-eabi-size -A $$e | awk -v f=$$f '/^\.(text|rodata|data|itcm)|isr/{s+=$$2} END{printf "%-9s image %7d B of 491520 (%.1f%%)\n", f, s, s*100/491520}'; done; true
 
-STAGE_DIR ?= ../daisy-sdk/alchemy-lab
+STAGE_DIR ?= $(HOME)/tim-os/daisy-sdk/alchemy-lab
 stage:
 	@for f in $(FWS); do b=build-$$f/$${f}_alchemy.bin; [ -f $$b ] && cp -v $$b $(STAGE_DIR)/$${f}_alchemy-$(MI_GIT_HASH)-front.bin; done; true
 	@# Elements' exciter samples live on the card as /mi/elements.smp
