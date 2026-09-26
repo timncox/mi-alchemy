@@ -151,6 +151,6 @@ test:
 USBPID ?= df11
 .PHONY: program-live
 program-live: all
-	@test -n "$(DFU_SERIAL)" || (echo "set DFU_SERIAL (module 2: 306F365C3433)"; false)
+	@test -n "$(DFU_SERIAL)" || (echo "set DFU_SERIAL (dfu-util -l lists it)"; false)
 	node $(ALCHEMY_DIR)/tools/hostlink-cli/hostlink.mjs reboot bootloader
 	dfu-util -w -S $(DFU_SERIAL) -a 0 -s $(FLASH_ADDRESS):leave -D $(BUILD_DIR)/$(TARGET_BIN) -d ,0483:$(USBPID)
