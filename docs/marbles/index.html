@@ -472,9 +472,14 @@ ol.tests li{margin:.45em 0;max-width:74ch}
 <section id="build"><div class="wrap">
   <h2 class="sh">Build and install</h2>
   <div class="sub">08 · From source · Alchemy Lab V2 only</div>
-  <p class="lede">There is no release download yet. Build it from the repository, which holds
-    all four Mutable Instruments ports, then put it on the card or flash it over the front
-    USB-C.</p>
+  <p class="lede">Download the firmware, or build it from the repository, which holds
+    all six ports, then put it on the card or flash it over the front USB-C.</p>
+  <div class="dl" id="download" style="scroll-margin-top:90px;margin:16px 0 24px;padding:16px 18px;border:1.5px solid currentColor;border-radius:8px;max-width:46em">
+    <p style="margin:0 0 12px"><b>Download v0.1.0</b> &middot; built and tested on a computer, not yet run on a module</p>
+    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/marbles_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">marbles_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/mi-alchemy-sd-card-v0.1.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all six</a></p>
+    <p style="margin:0;font-size:.92em">The zip holds all six firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.1.0">Release notes and SHA-256 checksums</a>.</p>
+  </div>
+
   <pre>git clone https://github.com/timncox/mi-alchemy
 cd mi-alchemy
 git submodule update --init
