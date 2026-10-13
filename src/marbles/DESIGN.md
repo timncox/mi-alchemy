@@ -8,7 +8,7 @@ Mutable Instruments Marbles (random sampler: T gates, X/Y voltages) as the
 `marbles_engine.h` (hardware-free, run by the native test) and
 `marbles_alchemy.cpp` (jacks, pots, buttons, LEDs).
 
-Home slot **10**, preset schema tags `'MRB'` (CPU extras) + `'MRBD'` (deja vu
+Autosaves to `/alchemy/state/marbles.st` (slot **10** until v0.1.0, read once as `legacy_slot`), preset schema tags `'MRB'` (CPU extras) + `'MRBD'` (deja vu
 button states).
 
 ## Panel

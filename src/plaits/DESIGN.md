@@ -76,7 +76,7 @@ Plaits drives a probe signal through its normalled jacks to tell "patched at
 | Engine at `-O2` instead | 470 KB image, SRAM 97.2 %: fits, but leaves ~13 KB for the shim |
 | Shared buffer | 16 KB in D2 (`MI_D2_BSS`, memset at boot); D2 region 48 KB used |
 | Voice object | `.bss`, in DTCM; DTCM total 82.7 KB of 128 KB |
-| Home slot | 11; CpuExtras tag `'PLT'` |
+| Autosave | `/alchemy/state/plaits.st` (slot 11 until v0.1.0, read once as `legacy_slot`); CpuExtras tag `'PLT'` |
 
 ## Left out vs the real Plaits
 

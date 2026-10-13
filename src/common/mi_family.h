@@ -13,9 +13,10 @@
  *   CpuExtras   last session's worst CPU load, in the preset blob, with a
  *               per-firmware schema tag
  *   HomeSlot    boot-time restore from this firmware's own preset slot and
- *               the hands-off autosave into it. The 16 QSPI slots ran out
- *               on 2026-10-13: a NEW firmware uses mi::HomeFile
- *               (home_state.h), which autosaves to its own file on the card
+ *               the hands-off autosave into it. No longer used here: every
+ *               firmware moved to mi::HomeFile (home_state.h), its own file
+ *               on the card, on 2026-10-13. Kept for the sibling repos
+ *               that copy this header.
  *   fault_forever, f2i, clampf, the boot CPU readout
  *
  * Home slots (0-based; `hostlink list` numbers from 1). The Smack / Mark /
@@ -25,8 +26,10 @@
  *   Meld 6   Warps 7   Clouds 8   Elements 9   Marbles 10   Plaits 11
  *
  * Sibling repos have since taken 1-5 (Hypjolin, Tally, Stencil, Break, Seq;
- * memory reference_alchemy_lab_slots.md), so no slot is left. Beads keeps
- * its panel in 0:/alchemy/state/beads.st instead (home_state.h).
+ * memory reference_alchemy_lab_slots.md), so no slot was left for Beads.
+ * Since 2026-10-13 every firmware here keeps its panel in
+ * 0:/alchemy/state/<fw>.st (home_state.h); 6-11 are read once, as
+ * legacy_slot, and are free for hand-saved presets after that.
  */
 #pragma once
 

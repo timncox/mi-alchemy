@@ -91,7 +91,7 @@ firmware's own arithmetic.
 - **Stock sources:** they compile through `src/meld/stock/stock_*.cc`,
   because both trees have `modulator.cc`, `vocoder.cc` and so on, and the
   Makefile keys objects by basename.
-- **Home slot 6**, schema tag `'MLD'`.
+- **Autosave:** `/alchemy/state/meld.st` (slot 6 until v0.1.0, read once as `legacy_slot`). Schema tag `'MLD'`.
 
 ## Tests (`make -C test test-meld`)
 

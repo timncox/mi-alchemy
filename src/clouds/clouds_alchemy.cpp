@@ -40,6 +40,7 @@
 #include "alchemy/surface/virtual_button.h"
 #include "alchemy/surface/virtual_knob.h"
 
+#include "home_state.h"
 #include "mi_family.h"
 #include "picker.h"
 
@@ -236,8 +237,10 @@ static ControlLoop loop(hw);
 static Pager       pager = Pager(kNumAppPages, kNumPots)
                                .Shift(hw.buttons[kButtonB3], kPageSetup);
 
-/* Home slot 8: see mi_family.h for the whole card's map. */
-static mi::HomeSlot home(8u);
+/* The panel autosaves to 0:/alchemy/state/clouds.st (home_state.h). Slot 8,
+ * its QSPI home until 2026-10-13, is read once if the card has no file yet,
+ * so a saved panel carries over; it is never written again. */
+static mi::HomeFile home("clouds", 8);
 static Presets      presets(hw.seed.qspi);
 static Settings     settings(hw, &pager);
 static CvMatrix     cv_matrix(kNumCvInputs);
@@ -539,7 +542,6 @@ int main(void)
     cv_matrix.Jack(5).To(density);
 
     host.Product("Clouds")
-        .BootSlot(home.slot)
         .Pages(play_page, setup_page)
         .Jacks(jk_in_l, jk_in_r, jk_freeze, jk_trig, jk_voct, jk_cv_pos,
                jk_cv_siz, jk_cv_den, jk_out_l, jk_out_r)
@@ -555,7 +557,7 @@ int main(void)
     presets.Manage(settings);
     presets.Manage(extras);
     presets.Init();
-    const bool had_boot = home.Boot(presets);
+    const bool had_boot = home.Boot(presets, sd, System::GetNow());
 
     float phys[kNumPots];
     for (int i = 0; i < 8; i++)

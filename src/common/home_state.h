@@ -113,18 +113,8 @@ struct HomeFile
      * error -- a file may be there. */
     enum class Got : uint8_t { Loaded, Absent, Unknown };
 
-    /* SDMMC1's IDMA cannot reach DTCM (where .bss lives): the buffer and
-     * the FIL go in .axi_bss, as the picker's do. */
-    static uint8_t* Buf()
-    {
-        alignas(32) static uint8_t ALCHEMY_SDMMC_BSS b[state_file::kHeaderLen + kCap];
-        return b;
-    }
-    static FIL& File()
-    {
-        alignas(32) static FIL ALCHEMY_SDMMC_BSS f;
-        return f;
-    }
+    static uint8_t* Buf();
+    static FIL&     File();
 
     void PathFor(char* out, size_t cap, const char* ext) const
     {
@@ -193,5 +183,18 @@ struct HomeFile
         return f_rename(tmp, path) == FR_OK;
     }
 };
+
+/* SDMMC1's IDMA cannot reach DTCM (where .bss lives): the buffer and the
+ * FIL go in .axi_bss, as the picker's do. File-scope statics, not
+ * function-local ones: GCC puts an inline function's statics in a COMDAT
+ * group, and a COMDAT and a plain object can't share .axi_bss (Elements'
+ * sample-file FIL is one). One firmware TU includes this header. */
+namespace home_file_detail {
+alignas(32) static uint8_t ALCHEMY_SDMMC_BSS s_buf[state_file::kHeaderLen + HomeFile::kCap];
+alignas(32) static FIL ALCHEMY_SDMMC_BSS     s_fil;
+}  // namespace home_file_detail
+
+inline uint8_t* HomeFile::Buf() { return home_file_detail::s_buf; }
+inline FIL&     HomeFile::File() { return home_file_detail::s_fil; }
 
 }  // namespace mi

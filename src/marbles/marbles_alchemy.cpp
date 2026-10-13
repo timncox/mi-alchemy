@@ -43,6 +43,7 @@
 #include "alchemy/surface/virtual_button.h"
 #include "alchemy/surface/virtual_knob.h"
 
+#include "home_state.h"
 #include "mi_family.h"
 #include "picker.h"
 
@@ -238,8 +239,10 @@ static ControlLoop loop(hw);
 static Pager       pager = Pager(kNumAppPages, kNumPots)
                                .Shift(hw.buttons[kButtonB3], kPageSetup);
 
-/* Home slot 10: see mi_family.h for the whole card's map. */
-static mi::HomeSlot home(10u);
+/* The panel autosaves to 0:/alchemy/state/marbles.st (home_state.h). Slot 10,
+ * its QSPI home until 2026-10-13, is read once if the card has no file yet,
+ * so a saved panel carries over; it is never written again. */
+static mi::HomeFile home("marbles", 10);
 static Presets      presets(hw.seed.qspi);
 static Settings     settings(hw, &pager);
 static CvMatrix     cv_matrix(kNumCvInputs);
@@ -610,7 +613,6 @@ int main(void)
     rate.Overdraw(RateOverdraw);
 
     host.Product("Marbles")
-        .BootSlot(home.slot)
         .Pages(play_page, setup_page)
         .Jacks(jk_tclk, jk_xclk, jk_x1, jk_x2, jk_x3, jk_y, jk_t3, jk_cv,
                jk_t1, jk_t2)
@@ -627,7 +629,7 @@ int main(void)
     presets.Manage(extras);
     presets.Manage(dv);
     presets.Init();
-    const bool had_boot = home.Boot(presets);
+    const bool had_boot = home.Boot(presets, sd, System::GetNow());
 
     float phys[kNumPots];
     for (int i = 0; i < 8; i++)

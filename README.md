@@ -14,19 +14,19 @@ namespace rename (`vendor/VENDOR.md`). Each
 firmware's shim does what the original's `cv_scaler`/`ui` code did, on six
 pots, three buttons and ten jacks.
 
-| Firmware | Rate | Home slot | Image (of 480 KB) | Panel + jacks |
+| Firmware | Rate | Autosave (slot until v0.1.0) | Image (of 480 KB) | Panel + jacks |
 |---|---|---|---|---|
-| Clouds | 32 kHz / 32 | 8 | 387 KB | [src/clouds/DESIGN.md](src/clouds/DESIGN.md) |
-| Elements | 32 kHz / 16 | 9 | 366 KB, plus a 338 KB samples file on the card | [src/elements/DESIGN.md](src/elements/DESIGN.md) |
-| Marbles | 32 kHz / 16 | 10 | 399 KB | [src/marbles/DESIGN.md](src/marbles/DESIGN.md) |
-| Plaits | 48 kHz / 24 (2×12) | 11 | 451 KB (engine at -Os) | [src/plaits/DESIGN.md](src/plaits/DESIGN.md) |
-| Warps (Parasites) | 96 kHz / 60 | 7 | 393 KB | [src/warps/DESIGN.md](src/warps/DESIGN.md) |
-| Meld | 96 kHz / 60 | 6 | 457 KB (engines at -O2) | [src/meld/DESIGN.md](src/meld/DESIGN.md) |
-| Beads | 48 kHz / 12 (Clouds quality resampled to 32 kHz) | none: `/alchemy/state/beads.st` on the card | 474 KB (engine at -Os), plus 768 KB of SDRAM | [src/beads/DESIGN.md](src/beads/DESIGN.md) |
+| Clouds | 32 kHz / 32 | `clouds.st` (was 8) | 387 KB | [src/clouds/DESIGN.md](src/clouds/DESIGN.md) |
+| Elements | 32 kHz / 16 | `elements.st` (was 9) | 366 KB, plus a 338 KB samples file on the card | [src/elements/DESIGN.md](src/elements/DESIGN.md) |
+| Marbles | 32 kHz / 16 | `marbles.st` (was 10) | 399 KB | [src/marbles/DESIGN.md](src/marbles/DESIGN.md) |
+| Plaits | 48 kHz / 24 (2×12) | `plaits.st` (was 11) | 451 KB (engine at -Os) | [src/plaits/DESIGN.md](src/plaits/DESIGN.md) |
+| Warps (Parasites) | 96 kHz / 60 | `warps.st` (was 7) | 393 KB | [src/warps/DESIGN.md](src/warps/DESIGN.md) |
+| Meld | 96 kHz / 60 | `meld.st` (was 6) | 457 KB (engines at -O2) | [src/meld/DESIGN.md](src/meld/DESIGN.md) |
+| Beads | 48 kHz / 12 (Clouds quality resampled to 32 kHz) | `beads.st` (never had one) | 474 KB (engine at -Os), plus 768 KB of SDRAM | [src/beads/DESIGN.md](src/beads/DESIGN.md) |
 
 All seven are siblings of smack/mark/belt/relay-alchemy. They include the
 same SD-card firmware picker (Settings page 1), keep their working state in
-their own QSPI preset slot (Beads: its own file on the card), autosave 5 s after the last change, catch pots
+their own file on the card (`/alchemy/state/<fw>.st`), autosave 5 s after the last change, catch pots
 after a firmware switch, and show last session's CPU peak on the P1 ring at
 boot.
 
@@ -47,26 +47,44 @@ use the SD picker, or `make FW=x program-live DFU_SERIAL=<serial>`.
 
     /alchemy/clouds_alchemy.bin  elements_alchemy.bin  marbles_alchemy.bin  plaits_alchemy.bin  warps_alchemy.bin  meld_alchemy.bin  beads_alchemy.bin
     /mi/elements.smp             Elements' exciter samples (build-elements/elements.smp)
-    /alchemy/state/beads.st      Beads' autosaved panel (written by the firmware)
+    /alchemy/state/<fw>.st       each firmware's autosaved panel (written by the firmware)
 
 Without `/mi/elements.smp`, Elements still runs. Its strike samples and
 blow noise are silent, B1 rests dim amber, and the P2 ring shows red at
 boot.
 
-## Home slots across the card
+## Where the panel is saved
 
-Smack 12, Mark 13, Belt 14 and Relay 15 were already taken. This repository
-takes **6–11** (Meld 6, Warps 7, Clouds 8, Elements 9, Marbles 10, Plaits 11)
-which leaves 0–5 for presets saved by hand.
+Every firmware here autosaves its panel to its own file on the card,
+`/alchemy/state/<fw>.st` (`src/common/home_state.h`; format in
+`state_file.h`, tested by `make -C test test-state-file`). It writes 5 s
+after the last change, hands off, never while Settings or the picker is
+busy, as a `.tmp` then renamed. A file named after the firmware can't
+collide with another's, so there is no slot map to keep.
 
-The sibling repos have since taken 1–5 (Hypjolin, Tally, Stencil, Break
-and Seq), so all 16 QSPI slots are spoken for. **Beads uses no slot.** It
-autosaves its panel to its own file on the card, `/alchemy/state/beads.st`
-(`src/common/home_state.h`, format in `state_file.h`). A file named after
-the firmware can't collide with another's, so no slot map is needed. New
-firmware should use `mi::HomeFile` the same way. The existing six could
-move to it with their old slot as `legacy_slot`, which carries their saved
-panel over on first boot and frees the slot for hand-saved presets.
+Up to v0.1.0 they autosaved to QSPI preset slots instead: Meld 6, Warps 7,
+Clouds 8, Elements 9, Marbles 10, Plaits 11. The SDK has 16 slots for the
+whole module, and by 2026-10-13 sibling repos held the rest (Hypjolin 1,
+Tally 2, Stencil 3, Break 4, Seq 5, Smack 12, Mark 13, Belt 14, Relay 15),
+with Beads still to place. Each firmware now names its old slot as
+`legacy_slot`. When the card has no `<fw>.st`, that slot is read once
+(schema-checked, so another firmware's state is never misread) and written
+to the card at the first autosave. The slot itself is never written again,
+so 6–11 are free for presets saved by hand. Their old contents sit there
+until something overwrites them.
+
+Rules the helper keeps:
+- No card: nothing is saved (it retries every 30 s), and the next boot
+  falls back to the legacy slot or defaults.
+- If the card wasn't readable at boot, autosave won't replace an existing
+  file that session, so a late-mounting card never loses its saved panel to
+  defaults.
+- `host.BootSlot` is left at the SDK default of 0, which is what the web
+  programmer sees. Slot 0 still loads first at boot (BootLoad), then the
+  card file overrides it, as a home slot did.
+
+The manuals in `docs/` describe v0.1.0 and its slots; they change with the
+release that ships this.
 
 Counting Beads, there are 17 Lab firmwares, one more than the picker's 16
 bins (`kMaxFiles`), so one stays off any given card.
