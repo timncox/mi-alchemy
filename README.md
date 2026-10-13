@@ -1,13 +1,15 @@
 # mi-alchemy
 
-Mutable Instruments **Clouds**, **Elements**, **Marbles**, **Plaits** and
-**Warps** (Emilie Gillet, MIT), plus **Meld** (Warps with stock Warps as a
+Mutable Instruments **Clouds**, **Elements**, **Marbles**, **Plaits**,
+**Warps** and **Beads** (Emilie Gillet, MIT), plus **Meld** (Warps with stock Warps as a
 tenth mode and a coincidence clock and envelope CVs, from `~/tim-os/meld`), as firmwares for the Hermetic Modular
 **Alchemy Lab V2**, on the Alchemy SDK. The DSP is vendored from
 [pichenettes/eurorack](https://github.com/pichenettes/eurorack) at 08460a6,
 and for Warps from Matthias Puech's
-[Parasites](https://github.com/mqtthiqs/parasites) at 32fa66f. It is
-unmodified except two marked fixes; Meld's stock-Warps copy is a mechanical
+[Parasites](https://github.com/mqtthiqs/parasites) at 32fa66f; Beads,
+whose source was released on 2026-10-12, is from eurorack d8f4739. It is
+unmodified except two marked fixes and one upstream flag (Beads' 48 kHz
+path); Meld's stock-Warps copy is a mechanical
 namespace rename (`vendor/VENDOR.md`). Each
 firmware's shim does what the original's `cv_scaler`/`ui` code did, on six
 pots, three buttons and ten jacks.
@@ -20,8 +22,9 @@ pots, three buttons and ten jacks.
 | Plaits | 48 kHz / 24 (2×12) | 11 | 451 KB (engine at -Os) | [src/plaits/DESIGN.md](src/plaits/DESIGN.md) |
 | Warps (Parasites) | 96 kHz / 60 | 7 | 393 KB | [src/warps/DESIGN.md](src/warps/DESIGN.md) |
 | Meld | 96 kHz / 60 | 6 | 457 KB (engines at -O2) | [src/meld/DESIGN.md](src/meld/DESIGN.md) |
+| Beads | 48 kHz / 12 (Clouds quality resampled to 32 kHz) | 1 | 474 KB (engine at -Os), plus 768 KB of SDRAM | [src/beads/DESIGN.md](src/beads/DESIGN.md) |
 
-All six are siblings of smack/mark/belt/relay-alchemy. They include the
+All seven are siblings of smack/mark/belt/relay-alchemy. They include the
 same SD-card firmware picker (Settings page 1), keep their working state in
 their own QSPI preset slot, autosave 5 s after the last change, catch pots
 after a firmware switch, and show last session's CPU peak on the P1 ring at
@@ -31,10 +34,10 @@ boot.
 
     git submodule update --init && git -C lib/libDaisy submodule update --init --recursive
     make libdaisy        once
-    make FW=clouds       build-clouds/clouds_alchemy.bin   (FW = clouds | elements | marbles | plaits | warps | meld)
-    make every           all six
+    make FW=clouds       build-clouds/clouds_alchemy.bin   (FW = clouds | elements | marbles | plaits | warps | meld | beads)
+    make every           all seven
     make size            image sizes against the 480 KB SRAM region
-    make test            native suites for all six (host compiler, ASan/UBSan)
+    make test            native suites for all seven (host compiler, ASan/UBSan)
     make stage           copy bins (+ elements.smp) to ../daisy-sdk/alchemy-lab/
 
 **Never build with a module attached in DFU.** Flashing is a manual step:
@@ -42,7 +45,7 @@ use the SD picker, or `make FW=x program-live DFU_SERIAL=<serial>`.
 
 ## Card layout
 
-    /alchemy/clouds_alchemy.bin  elements_alchemy.bin  marbles_alchemy.bin  plaits_alchemy.bin  warps_alchemy.bin  meld_alchemy.bin
+    /alchemy/clouds_alchemy.bin  elements_alchemy.bin  marbles_alchemy.bin  plaits_alchemy.bin  warps_alchemy.bin  meld_alchemy.bin  beads_alchemy.bin
     /mi/elements.smp             Elements' exciter samples (build-elements/elements.smp)
 
 Without `/mi/elements.smp`, Elements still runs. Its strike samples and
@@ -52,8 +55,10 @@ boot.
 ## Home slots across the card
 
 Smack 12, Mark 13, Belt 14 and Relay 15 were already taken. This repository
-takes **6–11** (Meld 6, Warps 7, Clouds 8, Elements 9, Marbles 10, Plaits 11),
-which leaves 0–5 for presets saved by hand.
+takes **6–11** (Meld 6, Warps 7, Clouds 8, Elements 9, Marbles 10, Plaits 11)
+and **1** (Beads, the last free slot: 2–5 went to Tally, Stencil, Break and
+Seq, and 0 is the SDK's migration slot). With Beads the picker's 16-bin
+limit (`kMaxFiles`) is reached for a card holding every Lab firmware.
 
 ## v0.1 scope
 

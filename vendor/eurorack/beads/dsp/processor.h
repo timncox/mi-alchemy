@@ -43,7 +43,9 @@
 // When this flag is not set, the codec is run at 48kHz and the wet signal is
 // downsampled by a 0.5 factor before being processed. Low-pass filtering
 // is also applied to the output signal within the wow and flutter code.
-#define ENABLE_HARDWARE_24K
+// mi-alchemy: off. The Lab's SAI has no 24 kHz rate and stays at one rate
+// for the session; this is upstream's own 48 kHz path (see VENDOR.md).
+// #define ENABLE_HARDWARE_24K
 
 namespace beads {
 

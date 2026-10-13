@@ -1,15 +1,15 @@
 # =============================================================================
-# mi-alchemy -- Mutable Instruments Clouds, Elements, Marbles and Plaits for
-# the Hermetic Modular Alchemy Lab V2, one repository, four firmwares.
+# mi-alchemy -- Mutable Instruments Clouds, Elements, Marbles, Plaits, Warps,
+# Beads and Meld for the Hermetic Modular Alchemy Lab V2, one repository.
 #
 #   make libdaisy            build lib/libDaisy once after cloning
 #   make FW=clouds           build-clouds/clouds_alchemy.bin (BOOT_SRAM)
-#   make every               all four, one after another
-#   make test                native suites (no hardware), all four engines
+#   make every               all of them, one after another
+#   make test                native suites (no hardware), every engine
 #   make stage               copy each built .bin to ../daisy-sdk/alchemy-lab/
 #                            as <fw>_alchemy-<hash>-front.bin (never the card)
 #
-# FW is one of: clouds elements marbles plaits. Each has src/<fw>/fw.mk with
+# FW is one of $(FWS) below. Each has src/<fw>/fw.mk with
 # its sources and flags; everything else here is common.
 #
 # Build flags:
@@ -20,7 +20,7 @@
 # module attached in DFU (memory feedback_no_builds_with_board_in_dfu).
 # =============================================================================
 
-FWS := clouds elements marbles plaits warps meld
+FWS := clouds elements marbles plaits warps meld beads
 FW  ?= clouds
 ifeq ($(filter $(FW),$(FWS)),)
 $(error FW must be one of: $(FWS) (got '$(FW)'))

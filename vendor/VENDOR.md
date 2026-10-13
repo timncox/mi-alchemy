@@ -15,6 +15,20 @@ Taken:
   `test/` and the licence. Not `third_party/` (43 MB of ST CMSIS/HAL for the
   F-series), `system/`, `linker_scripts/` or `programming/`.
 
+`beads/` comes from a later commit, pichenettes/eurorack **d8f473915232**
+(2026-10-12, "Beads code/sch"), which is the first release of Beads' source.
+The next commit, f4cfa76, only edits README.md, and its note reads "Code
+provided as is, builds on a Desktop platform but not verified to build and
+run on a module". It is MIT, with headers as the rest. The whole directory
+is taken except `hardware_design/`, `bootloader/` and the `__init__.py`
+build hooks. Only the DSP (`dsp/`, `resources.*`) and `gain_control.*` are
+compiled.
+
+The commit touches only `beads/` and README.md, and it leaves the stmlib
+submodule pointer alone, so it builds against the stmlib above (e3bd7c9).
+`beads/drivers/codec.h` is shadowed by `src/shim/beads/` (only `Codec::Frame`
+is needed, and the real header pulls in the H7 HAL through `pins.h`).
+
 Rules:
 - Upstream files are byte-identical unless a change is marked
   `// mi-alchemy:` in the file and listed below.
@@ -65,3 +79,12 @@ Changes:
    land past `DELAY_SIZE` and fetch memory past the object (a silent
    garbage read on Warps, a heap overflow under ASan). Found and fixed in
    meld; carried over and re-marked `// mi-alchemy (fix from meld):`.
+
+3. `beads/dsp/processor.h`: `#define ENABLE_HARDWARE_24K` commented out.
+   That switch is upstream's own, and the header documents both paths. With
+   it set, Beads restarts its codec at 24 kHz for the tape qualities. With
+   it off, the codec stays at 48 kHz and `GranularProcessor` decimates the
+   wet signal by 2. The Lab's SAI has no 24 kHz setting, and the SDK's
+   controls are set up for the boot rate, so the 48 kHz path is the one that
+   fits. The Clouds quality's 32 kHz is handled outside the vendor tree
+   (`src/beads/resample_3_2.h`).
