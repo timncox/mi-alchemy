@@ -324,8 +324,10 @@ static Pager pager = Pager(kNumAppPages, kNumPots)
                          .Shift(hw.buttons[kButtonB3], kPageMod)
                          .Shift(hw.buttons[kButtonB1], kPageSetup).From(kPageMod);
 
-/* Home slot 1: see memory reference_alchemy_lab_slots.md for the card's
- * map (this took the last free slot). */
+/* Home slot: PROVISIONAL. Slot 1 was the last free one, but Hypjolin
+ * (hypjolin-alchemy) took it the same day, so the card is full and the two
+ * would overwrite each other's saved state. Which slot Beads gets is Tim's
+ * call (memory reference_alchemy_lab_slots.md). */
 static mi::HomeSlot home(1u);
 static Presets      presets(hw.seed.qspi);
 static Settings     settings(hw, &pager);

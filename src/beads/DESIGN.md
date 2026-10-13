@@ -172,6 +172,9 @@ lo-fi media, so TIME 0.3 read from before the 3 s recording began.
 
 ## Not done / open
 
+- **Home slot.** The code says 1, the last slot that was free, but
+  hypjolin-alchemy took it the same day, so the card is full. This is Tim's
+  call (README, "Home slots across the card").
 - **Unheard and unflashed.** CPU on the M7 is unmeasured. Beads was written
   for a 400 MHz H7 and this is a 480 MHz one, but the engine is at `-Os` and
   grains read the delay memory from SDRAM where Beads used AXI SRAM. That is

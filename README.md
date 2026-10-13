@@ -22,7 +22,7 @@ pots, three buttons and ten jacks.
 | Plaits | 48 kHz / 24 (2×12) | 11 | 451 KB (engine at -Os) | [src/plaits/DESIGN.md](src/plaits/DESIGN.md) |
 | Warps (Parasites) | 96 kHz / 60 | 7 | 393 KB | [src/warps/DESIGN.md](src/warps/DESIGN.md) |
 | Meld | 96 kHz / 60 | 6 | 457 KB (engines at -O2) | [src/meld/DESIGN.md](src/meld/DESIGN.md) |
-| Beads | 48 kHz / 12 (Clouds quality resampled to 32 kHz) | 1 | 474 KB (engine at -Os), plus 768 KB of SDRAM | [src/beads/DESIGN.md](src/beads/DESIGN.md) |
+| Beads | 48 kHz / 12 (Clouds quality resampled to 32 kHz) | 1, provisional (see below) | 474 KB (engine at -Os), plus 768 KB of SDRAM | [src/beads/DESIGN.md](src/beads/DESIGN.md) |
 
 All seven are siblings of smack/mark/belt/relay-alchemy. They include the
 same SD-card firmware picker (Settings page 1), keep their working state in
@@ -56,9 +56,13 @@ boot.
 
 Smack 12, Mark 13, Belt 14 and Relay 15 were already taken. This repository
 takes **6–11** (Meld 6, Warps 7, Clouds 8, Elements 9, Marbles 10, Plaits 11)
-and **1** (Beads, the last free slot: 2–5 went to Tally, Stencil, Break and
-Seq, and 0 is the SDK's migration slot). With Beads the picker's 16-bin
-limit (`kMaxFiles`) is reached for a card holding every Lab firmware.
+which leaves 0–5 for presets saved by hand.
+
+**Beads' slot is not settled.** The code says 1. That was the last free
+slot, but hypjolin-alchemy took it the same day, and 2–5 belong to Tally,
+Stencil, Break and Seq. Two firmwares on one slot overwrite each other's
+saved state. Counting Beads there are 17 Lab firmwares, one more than the
+picker's 16 bins (`kMaxFiles`).
 
 ## v0.1 scope
 
