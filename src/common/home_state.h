@@ -21,6 +21,12 @@
  * The file is written as <name>.tmp then renamed, so a power cut mid-write
  * leaves the previous file (or, between unlink and rename, the .tmp, which
  * Boot() also tries). The format is state_file.h.
+ *
+ * Never overwrite a file this boot has not read: if the card was not
+ * mounted (or errored) at Boot(), the panel came up from defaults, and
+ * the first autosave would replace the saved panel the user expected to
+ * get back. Write() then refuses while a file exists, which leaves
+ * autosave off for the session.
  */
 #pragma once
 
@@ -58,7 +64,11 @@ struct HomeFile
         sd_ = &card;
         const bool had_boot = presets.HasValid(0);
         presets.BootLoad();
-        if (Read(presets, now, "st") || Read(presets, now, "tmp")) return true;
+        const Got st = Read(presets, now, "st");
+        if (st == Got::Loaded) { checked_ = true; return true; }
+        const Got tmp = Read(presets, now, "tmp");
+        if (tmp == Got::Loaded) { checked_ = true; return true; }
+        checked_ = st != Got::Unknown && tmp != Got::Unknown;
         if (legacy_slot >= 0 && presets.HasValid((uint8_t)legacy_slot)
             && presets.Load((uint8_t)legacy_slot))
         {
@@ -96,6 +106,12 @@ struct HomeFile
 
   private:
     alchemy::SdCard* sd_ = nullptr;
+    bool             checked_ = false;   /* Boot() saw the card's answer */
+
+    /* Loaded: restored. Absent: the card was read and has no usable file
+     * (none, another schema, corrupt). Unknown: no card / not mounted / I/O
+     * error -- a file may be there. */
+    enum class Got : uint8_t { Loaded, Absent, Unknown };
 
     /* SDMMC1's IDMA cannot reach DTCM (where .bss lives): the buffer and
      * the FIL go in .axi_bss, as the picker's do. */
@@ -115,24 +131,27 @@ struct HomeFile
         snprintf(out, cap, "0:/alchemy/state/%s.%s", name, ext);
     }
 
-    bool Read(alchemy::Presets& presets, uint32_t now, const char* ext)
+    Got Read(alchemy::Presets& presets, uint32_t now, const char* ext)
     {
         alchemy::SdCard::BusyGuard guard(*sd_);
-        if (!sd_->EnsureMounted(now)) return false;
+        if (!sd_->EnsureMounted(now)) return Got::Unknown;
         char path[48];
         PathFor(path, sizeof path, ext);
         FIL& f = File();
         memset(&f, 0, sizeof f);
-        if (f_open(&f, path, FA_READ) != FR_OK) return false;
+        const FRESULT op = f_open(&f, path, FA_READ);
+        if (op == FR_NO_FILE || op == FR_NO_PATH) return Got::Absent;
+        if (op != FR_OK) return Got::Unknown;
         uint8_t* b = Buf();
         UINT     n = 0;
         const FRESULT r = f_read(&f, b, (UINT)(state_file::kHeaderLen + kCap), &n);
         f_close(&f);
-        if (r != FR_OK) return false;
+        if (r != FR_OK) return Got::Unknown;
         size_t len = 0;
         if (!state_file::Open(b, n, presets.LiveSchemaHash(), presets.LiveSize(), len))
-            return false;
-        return presets.DeserializeLive(b + state_file::kHeaderLen, len);
+            return Got::Absent;
+        return presets.DeserializeLive(b + state_file::kHeaderLen, len) ? Got::Loaded
+                                                                        : Got::Absent;
     }
 
     bool Write(alchemy::Presets& presets, uint32_t now)
@@ -150,6 +169,15 @@ struct HomeFile
         char tmp[48], path[48];
         PathFor(tmp, sizeof tmp, "tmp");
         PathFor(path, sizeof path, "st");
+        if (!checked_)
+        {
+            /* Boot() never got an answer from the card: only write if
+             * there is nothing here to lose. */
+            FILINFO fi;
+            if (f_stat(path, &fi) != FR_NO_FILE || f_stat(tmp, &fi) != FR_NO_FILE)
+                return false;
+            checked_ = true;
+        }
         FIL& f = File();
         memset(&f, 0, sizeof f);
         if (f_open(&f, tmp, FA_CREATE_ALWAYS | FA_WRITE) != FR_OK) return false;

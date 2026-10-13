@@ -179,6 +179,10 @@ lo-fi media, so TIME 0.3 read from before the 3 s recording began.
   when Beads arrived. Two consequences:
   - Without a card, nothing is saved; it retries every 30 s, and every boot
     starts from defaults.
+  - If the card wasn't readable at boot (slow mount, I/O error), the panel
+    starts from defaults. Autosave then refuses to replace an existing file
+    for that session, so the saved panel isn't lost to a boot that never
+    loaded it.
   - `host.BootSlot` is left at the SDK's default of 0, which is what
     HostLink reports to the web programmer. Slot 0 still loads first at
     boot (BootLoad), and the card file then overrides it, as a home slot
