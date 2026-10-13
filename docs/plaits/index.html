@@ -183,7 +183,7 @@ ul.plain li{margin-bottom:.45em}
 
 <header id="top"><div class="wrap hero">
   <div>
-    <div class="kick">Firmware for the Hermetic Modular Alchemy Lab V2 · mi-alchemy v0.1.0</div>
+    <div class="kick">Firmware for the Hermetic Modular Alchemy Lab V2 · mi-alchemy v0.2.0</div>
     <h1 class="title">Plaits<small>24 synthesis models behind four knobs, on the Alchemy Lab</small></h1>
     <p class="lede">Mutable Instruments' macro-oscillator, unmodified, running at its native 48 kHz. Pick a model, set the pitch, and shape it with HARMONICS, TIMBRE and MORPH. A trigger hands the sound to Plaits' low-pass gate and decay envelope.</p>
     <div class="status">Built and native-tested · not yet flashed or heard</div>
@@ -358,9 +358,9 @@ ul.plain li{margin-bottom:.45em}
 <section id="card"><div class="wrap">
   <h2 class="sh">Firmware on the card</h2>
   <div class="dl" id="download" style="scroll-margin-top:90px;margin:16px 0 24px;padding:16px 18px;border:1.5px solid currentColor;border-radius:8px;max-width:46em">
-    <p style="margin:0 0 12px"><b>Download v0.1.0</b> &middot; built and tested on a computer, not yet run on a module</p>
-    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/plaits_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">plaits_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/mi-alchemy-sd-card-v0.1.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all six</a></p>
-    <p style="margin:0;font-size:.92em">The zip holds all six firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.1.0">Release notes and SHA-256 checksums</a>.</p>
+    <p style="margin:0 0 12px"><b>Download v0.2.0</b> &middot; built and tested on a computer, not yet run on a module</p>
+    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/plaits_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">plaits_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/mi-alchemy-sd-card-v0.2.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all seven</a></p>
+    <p style="margin:0;font-size:.92em">The zip holds all seven firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.2.0">Release notes and SHA-256 checksums</a>.</p>
   </div>
 
   <div class="cols">
@@ -374,8 +374,8 @@ ul.plain li{margin-bottom:.45em}
       <p>The same picker is in Clouds, Elements and Marbles for Alchemy Lab, and in Mark, Belt and Smack.</p>
     </div>
     <div>
-      <p><b>Where it saves.</b> Plaits keeps its working state in its own QSPI preset slot, <b>11</b> (counting from 0), and saves about five seconds after the last change, when no button is held. Switching to another firmware and back leaves Plaits as you left it. On return, each pot has to catch its saved value before it takes over.</p>
-      <p>Across the card the home slots are Clouds 8, Elements 9, Marbles 10, Plaits 11, Smack 12, Mark 13, Belt 14 and Relay 15. That leaves slots 0–7 for presets you save by hand.</p>
+      <p><b>Where it saves.</b> Plaits keeps its working state in its own file on the card, <b>/alchemy/state/plaits.st</b>, and saves about five seconds after the last change, when no button is held. Switching to another firmware and back leaves Plaits as you left it. On return, each pot has to catch its saved value before it takes over.</p>
+      <p>Up to v0.1.0 it used preset slot 11; the first boot of v0.2.0 copies that onto the card. The other Lab firmwares keep their own slots, 1–5 and 12–15, so 6–11 are free for presets you save by hand.</p>
       <p><b>First boot after a flash:</b> Plaits' factory state. MODEL is on Virtual analog, OCTAVE on Free, decay at noon, LPG colour fully VCFA, attenuverters off.</p>
     </div>
   </div>
@@ -431,7 +431,7 @@ ul.plain li{margin-bottom:.45em}
 <footer><div class="wrap">
   <p><b>Plaits</b> is by Emilie Gillet for Mutable Instruments, MIT licence, from <a href="https://github.com/pichenettes/eurorack">pichenettes/eurorack</a>. This port, the Alchemy Lab shim and this manual are in <a href="https://github.com/timncox/mi-alchemy">timncox/mi-alchemy</a>. The Alchemy Lab and its SDK are by <a href="https://hermeticmodular.com/modules/alchemy-lab">Hermetic Modular</a>.</p>
   <div class="sib" aria-label="The other ports">
-    <a href="../">All six</a><a href="../clouds/">Clouds</a><a href="../elements/">Elements</a><a href="../marbles/">Marbles</a>
+    <a href="../">All seven</a><a href="../clouds/">Clouds</a><a href="../elements/">Elements</a><a href="../marbles/">Marbles</a>
   </div>
   <p style="margin-top:14px"><a href="https://timncox.github.io/alchemy-lab/">All of Tim's Alchemy Lab instruments, on one page →</a></p>
   <p class="mono" style="font-size:.7rem;color:var(--ink-3)">Panel geometry generated from the SDK's KiCad front-panel template by tools/emit_panel_geometry.py. J3–J8 are numbered in reading order: top row J3 J4 J5, bottom row J6 J7 J8.</p>
@@ -800,7 +800,7 @@ const PAGES = [
       d:"Auto (the default) drones until the first trigger on J3 or B1 since power-up, then gates. Drone is never gated. Triggered is always gated and silent between hits.",
       meta:["Settings <b>page 1, pot 2</b>"] },
     { name:"PRESET SLOT", ring:RING.sel(16, C.slot), v:.03, sub:"16 slots, 0–15",
-      d:"Picks the slot the next pot saves to or loads from. Plaits' own working state lives in slot 11, and saving by hand into 8–15 overwrites a firmware's working state.",
+      d:"Picks the slot the next pot saves to or loads from. Plaits keeps its working state on the card; saving by hand into 1–5 or 12–15 overwrites another firmware's working state, so use 6–11.",
       meta:["SDK <b>UsePresets</b>"] },
     { name:"PRESET ACTION", ring:RING.bip(C.act, C.act), v:.5, sub:"left: save · right: load",
       d:"Turn fully left to save into the chosen slot, fully right to load from it.", meta:["SDK <b>UsePresets</b>"] },
@@ -828,7 +828,7 @@ const BUTTONS = {
   BANK:{ d:"A tap jumps MODEL to the same model in the next bank (1.2 → classic → noise + drums → 1.2). Its LEDs show the active bank in that bank's colour, and turn red when the audio callback averages over 80 % CPU.", s:"B2 · tap", meta:["LED <b>bank colour</b>"] },
   SETUP:{ d:"Hold to show the Setup page on the pots. B2 + B3 held for two seconds opens Settings; B2 stands down while B3 is held, so the chord never jumps a bank.", s:"B3 · hold", meta:[] },
   "NEXT PAGE":{ d:"In Settings, B1 steps to the next page when you let go of it. It is lit orange while Settings is open.", s:"B1 in Settings", meta:[] },
-  LEAVE:{ d:"In Settings, a press of B2 or B3 leaves and returns to the Play page. Every Settings value except the picker's is saved in slot 11 about five seconds later.", s:"B2 / B3 in Settings", meta:[] },
+  LEAVE:{ d:"In Settings, a press of B2 or B3 leaves and returns to the Play page. Every Settings value except the picker's is saved to the card about five seconds later.", s:"B2 / B3 in Settings", meta:[] },
 };
 const JACKS = {
   J1:["IN L","Unused. AC-coupled codec input; Plaits' FM input needs DC, so it stays free.",true],

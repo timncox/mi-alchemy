@@ -156,7 +156,7 @@ footer .sib a:hover{background:var(--ink);color:var(--bg)}
 </div></nav>
 
 <header><div class="wrap">
-  <div class="kick">Firmware for the Hermetic Modular Alchemy Lab V2 · mi-alchemy v0.1.0 · the Parasites build</div>
+  <div class="kick">Firmware for the Hermetic Modular Alchemy Lab V2 · mi-alchemy v0.2.0 · the Parasites build</div>
   <h1 class="mark" aria-label="Warps"><span class="c" aria-hidden="true">WARPS</span><span class="m" aria-hidden="true">WARPS</span><span class="sr">WARPS</span></h1>
   <p class="tag">Two signals in, one out. A <b class="c">carrier</b> on J1 and a <b class="m">modulator</b> on J2 are crossfaded, folded, ring-modulated, XORed, compared or vocoded into <b class="o">something neither of them was</b>.</p>
   <div class="status">Built and native-tested · not yet flashed or heard</div>
@@ -295,9 +295,9 @@ footer .sib a:hover{background:var(--ink);color:var(--bg)}
 <section id="card"><div class="wrap">
   <h2 class="sh">Firmware on the card</h2>
   <div class="dl" id="download" style="scroll-margin-top:90px;margin:16px 0 24px;padding:16px 18px;border:1.5px solid currentColor;border-radius:8px;max-width:46em">
-    <p style="margin:0 0 12px"><b>Download v0.1.0</b> &middot; built and tested on a computer, not yet run on a module</p>
-    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/warps_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">warps_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/mi-alchemy-sd-card-v0.1.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all six</a></p>
-    <p style="margin:0;font-size:.92em">The zip holds all six firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.1.0">Release notes and SHA-256 checksums</a>.</p>
+    <p style="margin:0 0 12px"><b>Download v0.2.0</b> &middot; built and tested on a computer, not yet run on a module</p>
+    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/warps_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">warps_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/mi-alchemy-sd-card-v0.2.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all seven</a></p>
+    <p style="margin:0;font-size:.92em">The zip holds all seven firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.2.0">Release notes and SHA-256 checksums</a>.</p>
   </div>
 
   <div class="cols">
@@ -311,7 +311,7 @@ footer .sib a:hover{background:var(--ink);color:var(--bg)}
       <p>The firmware picker is the same in every mi-alchemy firmware and in Mark, Belt and Smack.</p>
     </div>
     <div>
-      <p><b>Where it saves.</b> Warps keeps its working state in its own QSPI preset slot, <b>7</b> (counting from 0), and saves it about five seconds after the last change, once no button is held. Across the card: Warps 7, Clouds 8, Elements 9, Marbles 10, Plaits 11, Smack 12, Mark 13, Belt 14, Relay 15. That leaves slots 0–6 for presets you save by hand.</p>
+      <p><b>Where it saves.</b> Warps keeps its working state in its own file on the card, <b>/alchemy/state/warps.st</b>, and saves it about five seconds after the last change, once no button is held. Up to v0.1.0 it used preset slot 7; the first boot of v0.2.0 copies that onto the card. The other Lab firmwares keep their own slots, 1–5 and 12–15, so 6–11 are free for presets you save by hand.</p>
       <p><b>First boot after a flash:</b> MODE is META and CARRIER is external, so a fresh module is stock Warps on its jacks. IN GAIN is at 0 dB and TUNE at 0. The other PLAY pots take whatever position they're in.</p>
     </div>
   </div>
@@ -352,7 +352,7 @@ footer .sib a:hover{background:var(--ink);color:var(--bg)}
 
 <footer><div class="wrap">
   <p><b>Warps</b> is by Emilie Gillet for Mutable Instruments, MIT licence. <b>Parasites</b> is by Matthias Puech, MIT licence, at <a href="https://github.com/mqtthiqs/parasites">mqtthiqs/parasites</a>. This port, its Alchemy Lab shim and this manual are in <a href="https://github.com/timncox/mi-alchemy">timncox/mi-alchemy</a>. The Alchemy Lab and its SDK are by <a href="https://hermeticmodular.com/modules/alchemy-lab">Hermetic Modular</a>.</p>
-  <div class="sib" aria-label="The other ports"><a href="../">All six</a><a href="../clouds/">Clouds</a><a href="../elements/">Elements</a><a href="../marbles/">Marbles</a><a href="../plaits/">Plaits</a></div>
+  <div class="sib" aria-label="The other ports"><a href="../">All seven</a><a href="../clouds/">Clouds</a><a href="../elements/">Elements</a><a href="../marbles/">Marbles</a><a href="../plaits/">Plaits</a></div>
   <p style="margin-top:14px"><a href="https://timncox.github.io/alchemy-lab/">All of Tim's Alchemy Lab instruments, on one page →</a></p>
   <p class="mono" style="font-size:.72rem;color:var(--ink3)">Panel geometry generated from the SDK's KiCad front-panel template by tools/emit_panel_geometry.py. J3–J8 are numbered in reading order: top row J3 J4 J5, bottom row J6 J7 J8.</p>
 </div></footer>
@@ -776,7 +776,7 @@ const PAGES = [
   { name:"SETTINGS 1", halos:[C.orange, null, null], buttons:["NEXT PAGE","LEAVE","LEAVE"], pots:[
     { name:"BRIGHTNESS", ring:RING.lvl(C.bright), v:.26, sub:"LED brightness", d:"LED brightness, applied as you turn.", meta:["SDK <b>UseBrightness</b>"] },
     NONE,
-    { name:"PRESET SLOT", ring:RING.sel(16, C.slot), v:.03, sub:"16 slots, 0–15", d:"Picks the slot for the next save or load. Warps keeps its working state in slot 7; saving by hand into 7–15 overwrites a firmware's working state.", meta:["SDK <b>UsePresets</b>"] },
+    { name:"PRESET SLOT", ring:RING.sel(16, C.slot), v:.03, sub:"16 slots, 0–15", d:"Picks the slot for the next save or load. Warps keeps its working state on the card; saving by hand into 1–5 or 12–15 overwrites another firmware's working state, so use 6–11.", meta:["SDK <b>UsePresets</b>"] },
     { name:"PRESET ACTION", ring:RING.bip(C.act, C.act), v:.5, sub:"left: save · right: load", d:"Turn fully left to save into the chosen slot, fully right to load from it.", meta:["SDK <b>UsePresets</b>"] },
     NONE, NONE,
   ] },

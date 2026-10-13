@@ -461,11 +461,11 @@ ol.tests li{margin:.45em 0;max-width:74ch}
       <p>P1 FILE picks the file. On P2 FLASH, turn below 85 % and then all the way up: it
         compares, erases, writes, verifies and reboots. If that firmware is already loaded it
         writes nothing and just shows solid green.</p></div>
-    <div class="card"><div class="k">Its own memory</div><h4>Preset slot 10</h4>
-      <p>Marbles keeps its working state in slot 10 (0-based) and saves it 5 s after the last
-        change, once your hands are off the buttons. Switch away and back, and it returns as
-        you left it. Smack, Mark, Belt and Relay use 12–15 and the other Mutable ports 8, 9 and
-        11, so slots 0–7 are free for presets you save by hand.</p></div>
+    <div class="card"><div class="k">Its own memory</div><h4>A file on the card</h4>
+      <p>Marbles keeps its working state in <code>/alchemy/state/marbles.st</code> and saves it 5 s
+        after the last change, once your hands are off the buttons. Switch away and back, and it
+        returns as you left it. Up to v0.1.0 it used slot 10; the first boot of v0.2.0 copies that
+        onto the card. The other Lab firmwares keep their own slots, 1–5 and 12–15, so 6–11 are free for presets you save by hand.</p></div>
   </div>
 </div></section>
 
@@ -473,11 +473,11 @@ ol.tests li{margin:.45em 0;max-width:74ch}
   <h2 class="sh">Build and install</h2>
   <div class="sub">08 · From source · Alchemy Lab V2 only</div>
   <p class="lede">Download the firmware, or build it from the repository, which holds
-    all six ports, then put it on the card or flash it over the front USB-C.</p>
+    all seven ports, then put it on the card or flash it over the front USB-C.</p>
   <div class="dl" id="download" style="scroll-margin-top:90px;margin:16px 0 24px;padding:16px 18px;border:1.5px solid currentColor;border-radius:8px;max-width:46em">
-    <p style="margin:0 0 12px"><b>Download v0.1.0</b> &middot; built and tested on a computer, not yet run on a module</p>
-    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/marbles_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">marbles_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/mi-alchemy-sd-card-v0.1.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all six</a></p>
-    <p style="margin:0;font-size:.92em">The zip holds all six firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.1.0">Release notes and SHA-256 checksums</a>.</p>
+    <p style="margin:0 0 12px"><b>Download v0.2.0</b> &middot; built and tested on a computer, not yet run on a module</p>
+    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/marbles_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">marbles_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/mi-alchemy-sd-card-v0.2.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all seven</a></p>
+    <p style="margin:0;font-size:.92em">The zip holds all seven firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.2.0">Release notes and SHA-256 checksums</a>.</p>
   </div>
 
   <pre>git clone https://github.com/timncox/mi-alchemy
@@ -511,7 +511,7 @@ make test            <b># the native suites for all four engines</b></pre>
       <tr><td>Parameter scaling</td><td>RATE = pot × 120 − 60 semitones around 2 Hz; t BIAS × 1.05 − 0.025; X SPREAD and BIAS × 1.02 − 0.01; STEPS × 1.04 − 0.02; LENGTH through Marbles' 1–16 table. A one-pole filter smooths the knob values.</td></tr>
       <tr><td>Scales</td><td>The six factory scales copied from <code>settings.cc</code>, which can't be compiled here because it includes the STM32F4 flash driver.</td></tr>
       <tr><td>Random numbers</td><td>The STM32's hardware generator feeds Marbles' random stream from the 1 ms poll, as its own RNG driver did.</td></tr>
-      <tr><td>Working state</td><td>Slot 10: both pages, the Settings, the deja vu buttons and last session's CPU peak, schema-tagged so another firmware's slot is never read as this one's.</td></tr>
+      <tr><td>Working state</td><td><code>/alchemy/state/marbles.st</code> (slot 10 up to v0.1.0): both pages, the Settings, the deja vu buttons and last session's CPU peak, schema-tagged so another firmware's state is never read as this one's.</td></tr>
       <tr><td>Budget</td><td>398,844 B image: SRAM 82.75 % of 480 KB, DTCM 83,880 B, D2 only the LED window. CPU on the module is unmeasured; Marbles ran on a 168 MHz STM32F405 with its whole UI.</td></tr>
     </tbody>
   </table></div>
@@ -557,11 +557,11 @@ make test            <b># the native suites for all four engines</b></pre>
   <h2 class="sh">The rest of them</h2>
   <div class="sub">11 · Four Mutable Instruments ports from one repository, and their siblings</div>
   <div class="fam">
-    <a href="../"><div class="fn">mi-alchemy</div><div class="fd">The repository's landing page: all six ports, the card layout, the preset slots.</div><div class="fh">overview</div></a>
-    <a href="../clouds/"><div class="fn">Clouds</div><div class="fd">Granular texture synthesizer: granular, stretch, looping delay, spectral.</div><div class="fh">mutable port · slot 8</div></a>
-    <a href="../elements/"><div class="fn">Elements</div><div class="fd">Modal synthesis voice: bow, blow and strike a resonator.</div><div class="fh">mutable port · slot 9</div></a>
-    <a class="here" href="./" aria-current="page"><div class="fn">Marbles</div><div class="fd">This page: random gates and voltages with deja vu.</div><div class="fh">mutable port · slot 10</div></a>
-    <a href="../plaits/"><div class="fn">Plaits</div><div class="fd">Macro oscillator: 24 synthesis models, one voice.</div><div class="fh">mutable port · slot 11</div></a>
+    <a href="../"><div class="fn">mi-alchemy</div><div class="fd">The repository's landing page: all seven ports, the card layout, where settings are saved.</div><div class="fh">overview</div></a>
+    <a href="../clouds/"><div class="fn">Clouds</div><div class="fd">Granular texture synthesizer: granular, stretch, looping delay, spectral.</div><div class="fh">mutable port</div></a>
+    <a href="../elements/"><div class="fn">Elements</div><div class="fd">Modal synthesis voice: bow, blow and strike a resonator.</div><div class="fh">mutable port</div></a>
+    <a class="here" href="./" aria-current="page"><div class="fn">Marbles</div><div class="fd">This page: random gates and voltages with deja vu.</div><div class="fh">mutable port</div></a>
+    <a href="../plaits/"><div class="fn">Plaits</div><div class="fd">Macro oscillator: 24 synthesis models, one voice.</div><div class="fh">mutable port</div></a>
     <a href="https://timncox.github.io/mark-alchemy/"><div class="fn">Mark</div><div class="fd">Five-track live looper, the family's first picker firmware to be heard.</div><div class="fh">sibling firmware</div></a>
     <a href="https://timncox.github.io/smack-alchemy/"><div class="fn">Smack</div><div class="fd">Live loop capture, slicing and seeded glitch.</div><div class="fh">sibling firmware</div></a>
     <a href="https://timncox.github.io/belt-alchemy/"><div class="fn">Belt</div><div class="fd">Vocal pitch correction and harmony.</div><div class="fh">sibling firmware</div></a>
@@ -829,7 +829,7 @@ const PAGES = [
   { name:"SETTINGS · MAIN", settings:true, pots:[
     { name:"BRIGHTNESS", ring:{s:"level",c:LED.stg}, v:.7, sub:"LED brightness", d:"The SDK's shared LED brightness setting.", meta:["SDK"] },
     { name:"t RANGE", ring:{s:"sel",n:3}, v:1.5/3, sub:"×¼ · ×1 · ×4", d:"RATE's range: a quarter, normal, or four times as fast.", meta:["ident <b>t_range</b>","default <b>×1</b>"] },
-    { name:"PRESET SLOT", ring:{s:"level",c:LED.stg}, v:.4, sub:"0–15", d:"Choose a preset slot for the action on P4. Slot 10 is Marbles' own working state; 0–7 are free.", meta:["SDK"] },
+    { name:"PRESET SLOT", ring:{s:"level",c:LED.stg}, v:.4, sub:"0–15", d:"Choose a preset slot for the action on P4. Marbles keeps its working state on the card; 6–11 are free for your presets.", meta:["SDK"] },
     { name:"PRESET ACTION", ring:{s:"level",c:LED.stg}, v:.2, sub:"load · save", d:"Load or save the slot chosen on P3.", meta:["SDK"] },
     { name:"J1 CLOCK", ring:{s:"sel",n:2}, v:.25, sub:"Auto · Ignore", d:"Auto: J1 clocks T while edges arrive (the last within 3 s), else the internal clock runs. Ignore: always the internal clock.", meta:["ident <b>j1_mode</b>"] },
     { name:"X CLOCK", ring:{s:"sel",n:6}, v:.5/6, sub:"Auto · T1+T2+T3 · T1 · T2 · T3 · J2", d:"What steps X. Auto: J2 while edges arrive, else T1+T2+T3, where T1 steps X1, T2 steps X2 and T3 steps X3.", meta:["ident <b>x_clock</b>"] },

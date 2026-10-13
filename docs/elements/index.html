@@ -228,7 +228,7 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
 <header id="top"><div class="wrap">
   <div class="hero">
     <div>
-      <div class="eyebrow">Custom firmware · Hermetic Modular Alchemy Lab V2 · mi-alchemy v0.1.0 · build 30989c0</div>
+      <div class="eyebrow">Custom firmware · Hermetic Modular Alchemy Lab V2 · mi-alchemy v0.2.0</div>
       <h1 class="title" id="title" aria-label="Elements for Alchemy Lab"><span class="word"><span class="ch">E</span><span class="ch">l</span><span class="ch">e</span><span class="ch">m</span><span class="ch">e</span><span class="ch">n</span><span class="ch">t</span><span class="ch">s</span></span><span class="for">for Alchemy Lab</span></h1>
       <div class="modecap" id="modecap" aria-hidden="true">the letters stand in <b>mode 3</b> of a free bar</div>
       <div class="tagline">Bow it, blow it, strike it. Tune the object it resonates in.</div>
@@ -548,19 +548,18 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
   </table></div>
   <p style="margin-top:20px">The first Settings page holds the LED brightness (P1, 30% by default; these
     LEDs get very bright) and the preset gesture: P3 picks a slot, P4 saves or loads it.
-    Elements keeps its working state in <b>slot 9</b> (0-based; HostLink's list numbers from 1), saved
-    five seconds after the last change once your hands are off the buttons. Clouds, Marbles and Plaits
-    use 8, 10 and 11, and Smack, Mark, Belt and Relay 12–15, so slots <b>0–7</b> are yours for presets
-    saved by hand.</p>
+    Elements keeps its working state in its own file on the card, <b>/alchemy/state/elements.st</b>, saved
+    five seconds after the last change once your hands are off the buttons. Up to v0.1.0 it used slot 9;
+    the first boot of v0.2.0 copies that onto the card. The other Lab firmwares keep their own slots, 1–5 and 12–15, so <b>6–11</b> are free for presets you save by hand.</p>
 </div></section>
 
 <section id="install"><div class="wrap">
   <h2 class="sh">Installing</h2>
   <div class="sub">From the card, or through the front USB-C</div>
   <div class="dl" id="download" style="scroll-margin-top:90px;margin:16px 0 24px;padding:16px 18px;border:1.5px solid currentColor;border-radius:8px;max-width:46em">
-    <p style="margin:0 0 12px"><b>Download v0.1.0</b> &middot; built and tested on a computer, not yet run on a module</p>
-    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/elements_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">elements_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/elements.smp" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">elements.smp</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/mi-alchemy-sd-card-v0.1.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all six</a></p>
-    <p style="margin:0;font-size:.92em">The zip holds all six firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. Elements needs both files. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.1.0">Release notes and SHA-256 checksums</a>.</p>
+    <p style="margin:0 0 12px"><b>Download v0.2.0</b> &middot; built and tested on a computer, not yet run on a module</p>
+    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/elements_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">elements_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/elements.smp" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">elements.smp</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/mi-alchemy-sd-card-v0.2.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all seven</a></p>
+    <p style="margin:0;font-size:.92em">The zip holds all seven firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. Elements needs both files. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.2.0">Release notes and SHA-256 checksums</a>.</p>
   </div>
 
   <div class="cols">
@@ -623,7 +622,7 @@ make -C test test-elements</pre>
     <a class="here" href="#top" aria-current="page"><div class="fn">Elements</div><div class="fd">This page. A modal voice, bowed, blown and struck.</div><div class="fh">mi-alchemy · you are here</div></a>
     <a href="../marbles/"><div class="fn">Marbles</div><div class="fd">Random gates and voltages, with deja vu.</div><div class="fh">mi-alchemy</div></a>
     <a href="../plaits/"><div class="fn">Plaits</div><div class="fd">A macro oscillator with 24 synthesis models.</div><div class="fh">mi-alchemy</div></a>
-    <a href="../"><div class="fn">All six</div><div class="fd">The mi-alchemy landing page: what is on the card and how they share it.</div><div class="fh">index</div></a>
+    <a href="../"><div class="fn">All seven</div><div class="fd">The mi-alchemy landing page: what is on the card and how they share it.</div><div class="fh">index</div></a>
     <a href="https://timncox.github.io/mark-alchemy/"><div class="fn">Mark</div><div class="fd">A five-track live looper on the same module. Loop Elements into it.</div><div class="fh">sibling firmware</div></a>
     <a href="https://timncox.github.io/belt-alchemy/"><div class="fn">Belt</div><div class="fd">Vocal pitch correction and harmony.</div><div class="fh">sibling firmware</div></a>
     <a href="https://timncox.github.io/smack-alchemy/"><div class="fn">Smack</div><div class="fd">Live loop capture, slicing and seeded glitch.</div><div class="fh">sibling firmware</div></a>
@@ -956,7 +955,7 @@ const INFO = {
     ["GEOMETRY","Play · P3","0–1 · J7 adds CV","The resonator's structure. Low: plates and bars, whose overtones crowd together. Around a quarter: a string's harmonic series. Higher: bells, then inharmonic objects whose modes spread apart. Try it in the Resonator section."],
     ["STRIKE","Exciter · P3 · hold B3","level 0–1 · first boot 80%","The strike exciter: a mallet, the recorded samples, or bouncing particles, chosen by MALLET. J2's audio replaces it when patched."],
     ["STRIKE timbre","Timbre · P3 · hold B2","0–1 · first boot 50%","How bright the strike is."],
-    ["Preset slot","Settings · P3","slots 0–15","Chooses a preset slot for P4 to save to or load from. Slot 9 is Elements' own working state; saving into it by hand replaces that. Slots 0–7 are free for your presets."],
+    ["Preset slot","Settings · P3","slots 0–15","Chooses a preset slot for P4 to save to or load from. Elements keeps its working state on the card, not in a slot. 1–5 and 12–15 hold other firmwares' working state; 6–11 are free for your presets."],
     ["DFU","Settings 2 · P3","dip, then all the way up","Reboots into the bootloader's update mode and stays there, for flashing over USB. Violet arming bar."]],
   P4:[
     ["BRIGHTNESS","Play · P4","0–1 · J8 adds CV","How much of the high modes survive. Low values make each higher mode lose more of its ring time."],

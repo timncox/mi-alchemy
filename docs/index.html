@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>mi-alchemy</title>
-<meta name="description" content="Mutable Instruments Clouds, Elements, Marbles, Plaits and Warps, plus Meld, as firmwares for the Hermetic Modular Alchemy Lab V2.">
+<meta name="description" content="Mutable Instruments Clouds, Elements, Marbles, Plaits, Warps and Beads, plus Meld, as firmwares for the Hermetic Modular Alchemy Lab V2.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Libre+Franklin:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -26,6 +26,7 @@
   --plaits:   #c2561a;
   --warps:    #2e7d5b;
   --meld:     #6a4bb0;
+  --beads:    #2f8f83;
   --link:    #9cc9ff;
   --display: "Chakra Petch", "Arial Narrow", system-ui, sans-serif;
   --body:    "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
@@ -99,6 +100,7 @@ h1 {
 .plaits   .name, .plaits   .go { color: var(--plaits); }
 .warps    .name, .warps    .go { color: var(--warps); }
 .meld     .name, .meld     .go { color: var(--meld); }
+.beads    .name, .beads    .go { color: var(--beads); }
 
 @media (max-width: 760px) {
   .row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -134,9 +136,9 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
 <header>
   <div class="eyebrow">Firmware for the Hermetic Modular Alchemy Lab V2</div>
   <h1>mi-alchemy</h1>
-  <p class="lede">Mutable Instruments' <b>Clouds, Elements, Marbles, Plaits and Warps</b>, plus <b>Meld</b>, running on one
+  <p class="lede">Mutable Instruments' <b>Clouds, Elements, Marbles, Plaits, Warps and Beads</b>, plus <b>Meld</b>, running on one
   12HP panel. Put them all on the SD card and switch between them from the Lab's own firmware picker.
-  The sound engines are Emilie Gillet's original code (and, for Warps and Meld, Matthias Puech's Parasites), unmodified apart from two marked fixes.</p>
+  The sound engines are Emilie Gillet's original code (and, for Warps and Meld, Matthias Puech's Parasites), unmodified apart from two marked fixes and one upstream switch (Beads' 48 kHz path).</p>
 </header>
 
 <div class="rack" role="list" aria-label="The firmwares">
@@ -146,7 +148,7 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
       <div class="kind">Texture synthesizer</div>
       <p>Records what you feed J1/J2 and plays it back as grains, a time-stretch, a looping delay, or a
       spectral smear. Freeze on B1.</p>
-      <dl><dt>rate</dt><dd>32 kHz</dd><dt>slot</dt><dd>8</dd><dt>image</dt><dd>387 KB</dd></dl>
+      <dl><dt>rate</dt><dd>32 kHz</dd><dt>saves</dt><dd>card</dd><dt>image</dt><dd>387 KB</dd></dl>
       <div class="go">Manual →</div>
     </a>
     <a class="plate elements" href="elements/" role="listitem">
@@ -154,7 +156,7 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
       <div class="kind">Modal synthesis voice</div>
       <p>Bow, blow or strike a resonating body: strings, plates, tubes. Three pages of controls, and your
       own audio on J1/J2 as the exciter.</p>
-      <dl><dt>rate</dt><dd>32 kHz</dd><dt>slot</dt><dd>9</dd><dt>card</dt><dd>+ /mi/elements.smp</dd></dl>
+      <dl><dt>rate</dt><dd>32 kHz</dd><dt>saves</dt><dd>card</dd><dt>card</dt><dd>+ /mi/elements.smp</dd></dl>
       <div class="go">Manual →</div>
     </a>
     <a class="plate marbles" href="marbles/" role="listitem">
@@ -162,7 +164,7 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
       <div class="kind">Random sampler</div>
       <p>Three gates and four voltages, drawn from the distributions you set, locked into loops with
       déjà vu. Every jack but one becomes an output.</p>
-      <dl><dt>rate</dt><dd>32 kHz</dd><dt>slot</dt><dd>10</dd><dt>outs</dt><dd>T×3, X×3, Y</dd></dl>
+      <dl><dt>rate</dt><dd>32 kHz</dd><dt>saves</dt><dd>card</dd><dt>outs</dt><dd>T×3, X×3, Y</dd></dl>
       <div class="go">Manual →</div>
     </a>
     <a class="plate plaits" href="plaits/" role="listitem">
@@ -170,7 +172,7 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
       <div class="kind">Macro oscillator</div>
       <p>All 24 synthesis models, from virtual analog to speech, chords and drums, with its low-pass gate
       and an aux output on J10.</p>
-      <dl><dt>rate</dt><dd>48 kHz</dd><dt>slot</dt><dd>11</dd><dt>models</dt><dd>24</dd></dl>
+      <dl><dt>rate</dt><dd>48 kHz</dd><dt>saves</dt><dd>card</dd><dt>models</dt><dd>24</dd></dl>
       <div class="go">Manual →</div>
     </a>
     <a class="plate warps" href="warps/" role="listitem">
@@ -178,7 +180,7 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
       <div class="kind">Meta-modulator</div>
       <p>Two signals in, one collision out: ring mods, folds, XOR, a vocoder, frequency shift, Doppler and
       delay. Matthias Puech's Parasites firmware.</p>
-      <dl><dt>rate</dt><dd>96 kHz</dd><dt>slot</dt><dd>7</dd><dt>modes</dt><dd>9</dd></dl>
+      <dl><dt>rate</dt><dd>96 kHz</dd><dt>saves</dt><dd>card</dd><dt>modes</dt><dd>9</dd></dl>
       <div class="go">Manual →</div>
     </a>
     <a class="plate meld" href="https://github.com/timncox/mi-alchemy/blob/release/src/meld/DESIGN.md" role="listitem">
@@ -186,7 +188,15 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
       <div class="kind">Warps, extended</div>
       <p>Warps Parasites plus stock Warps as a tenth mode, with a coincidence gate and both envelopes out
       as CV. First built for the Daisy Patch.</p>
-      <dl><dt>rate</dt><dd>96 kHz</dd><dt>slot</dt><dd>6</dd><dt>modes</dt><dd>10</dd></dl>
+      <dl><dt>rate</dt><dd>96 kHz</dd><dt>saves</dt><dd>card</dd><dt>modes</dt><dd>10</dd></dl>
+      <div class="go">Design notes →</div>
+    </a>
+    <a class="plate beads" href="https://github.com/timncox/mi-alchemy/blob/release/src/beads/DESIGN.md" role="listitem">
+      <div class="name">Beads</div>
+      <div class="kind">Texture synthesizer</div>
+      <p>Clouds' successor and the last Mutable module to be open-sourced: grains, a delay mode,
+      four recording qualities, and a wavetable synth when nothing is patched in.</p>
+      <dl><dt>rate</dt><dd>48 kHz</dd><dt>saves</dt><dd>card</dd><dt>source</dt><dd>2026-10-12</dd></dl>
       <div class="go">Design notes →</div>
     </a>
   </div>
@@ -202,9 +212,9 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
 <section>
   <h2>Put them on the card</h2>
   <div class="dl" id="download" style="scroll-margin-top:90px;margin:16px 0 24px;padding:16px 18px;border:1.5px solid currentColor;border-radius:8px;max-width:46em">
-    <p style="margin:0 0 12px"><b>Download v0.1.0</b> &middot; built and tested on a computer, not yet run on a module</p>
-    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/mi-alchemy-sd-card-v0.1.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all six</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/clouds_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">Clouds</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/elements_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">Elements</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/marbles_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">Marbles</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/plaits_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">Plaits</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/warps_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">Warps</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/meld_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">Meld</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/elements.smp" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">elements.smp</a></p>
-    <p style="margin:0;font-size:.92em">The zip holds all six firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.1.0">Release notes and SHA-256 checksums</a>.</p>
+    <p style="margin:0 0 12px"><b>Download v0.2.0</b> &middot; built and tested on a computer, not yet run on a module</p>
+    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/mi-alchemy-sd-card-v0.2.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all seven</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/clouds_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">Clouds</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/elements_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">Elements</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/marbles_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">Marbles</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/plaits_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">Plaits</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/warps_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">Warps</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/meld_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">Meld</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/beads_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">Beads</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/elements.smp" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">elements.smp</a></p>
+    <p style="margin:0;font-size:.92em">The zip holds all seven firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.2.0">Release notes and SHA-256 checksums</a>.</p>
   </div>
 
 <pre>/alchemy/clouds_alchemy.bin
@@ -213,12 +223,15 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
 /alchemy/plaits_alchemy.bin
 /alchemy/warps_alchemy.bin
 /alchemy/meld_alchemy.bin
-/mi/elements.smp            Elements' exciter samples</pre>
+/alchemy/beads_alchemy.bin
+/mi/elements.smp            Elements' exciter samples
+/alchemy/state/             written by the firmwares: each one's saved settings</pre>
   <p>Then hold B2 and B3 for two seconds to open Settings, turn to the firmware page, and pick one.
   Without <code>/mi/elements.smp</code>, Elements still plays, but its strike and blow samples are silent.</p>
-  <p>They share the card with Smack, Mark, Belt and Relay. Each firmware keeps its settings in its own
-  preset slot, so switching doesn't lose them. Those four use slots 12–15, these use 6–11, and slots 0–5
-  are free for presets you save yourself.</p>
+  <p>They share the card with Smack, Mark, Belt, Relay and the other Lab firmwares. Each firmware here keeps its settings in its own file on the card, <code>/alchemy/state/&lt;name&gt;.st</code>, written five seconds after
+  your last change, so switching firmwares doesn't lose them. Up to v0.1.0 they used preset slots 6–11.
+  The first boot of v0.2.0 copies those settings onto the card, and after that slots 6–11 are free for
+  presets you save yourself. The other firmwares keep their slots, 1–5 and 12–15.</p>
 </section>
 
 <section>
@@ -249,7 +262,7 @@ footer { padding-top: 26px; border-top: 1px solid var(--line); color: var(--mute
 
 <footer>
   Source: <a href="https://github.com/timncox/mi-alchemy">github.com/timncox/mi-alchemy</a>.
-  Clouds, Elements, Marbles, Plaits and Warps by Emilie Gillet / Mutable Instruments, MIT licence. Parasites by Matthias Puech, MIT licence.
+  Clouds, Elements, Marbles, Plaits, Warps and Beads by Emilie Gillet / Mutable Instruments, MIT licence. Parasites by Matthias Puech, MIT licence.
   Alchemy Lab and its SDK by Hermetic Modular.
 </footer>
 

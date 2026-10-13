@@ -161,7 +161,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
 
 <div class="hero"><div class="wrap">
   <div class="grid">
-    <h1>Clouds<span>texture synthesizer · 32 kHz · home slot 8</span></h1>
+    <h1>Clouds<span>texture synthesizer · 32 kHz · saves to the card</span></h1>
     <div>
       <p class="lede">Clouds records what you patch into J1 and J2 into a short buffer and plays it back as
         a cloud of tiny grains: smeared, pitched, frozen, stretched or turned into spectral mist.
@@ -319,9 +319,9 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
   <h2>Installing</h2>
   <div class="sub">From the SD card, no computer needed</div>
   <div class="dl" id="download" style="scroll-margin-top:90px;margin:16px 0 24px;padding:16px 18px;border:1.5px solid currentColor;border-radius:8px;max-width:46em">
-    <p style="margin:0 0 12px"><b>Download v0.1.0</b> &middot; built and tested on a computer, not yet run on a module</p>
-    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/clouds_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">clouds_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.1.0/mi-alchemy-sd-card-v0.1.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all six</a></p>
-    <p style="margin:0;font-size:.92em">The zip holds all six firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.1.0">Release notes and SHA-256 checksums</a>.</p>
+    <p style="margin:0 0 12px"><b>Download v0.2.0</b> &middot; built and tested on a computer, not yet run on a module</p>
+    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/clouds_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">clouds_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/mi-alchemy-sd-card-v0.2.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all seven</a></p>
+    <p style="margin:0;font-size:.92em">The zip holds all seven firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.2.0">Release notes and SHA-256 checksums</a>.</p>
   </div>
 
   <div class="cols">
@@ -330,10 +330,10 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
         whatever firmware is running (hold B2 + B3 for two seconds), press B1 to reach the firmware page,
         choose the file with P1 and fire P2: turn it below about 85 %, then past 95 %. It writes, verifies
         and reboots into Clouds.</p>
-      <p>Clouds keeps its knobs in <strong>preset slot 8</strong> (counting from 0) and saves five seconds
-        after the last change, with your hands off the buttons. Switching to another firmware and back
-        brings Clouds' settings back; the pots catch before they take over. Slots 0–7 are left for presets
-        you save by hand.</p>
+      <p>Clouds keeps its knobs in its own file on the card, <strong>/alchemy/state/clouds.st</strong>, and
+        saves five seconds after the last change, with your hands off the buttons. Switching to another
+        firmware and back brings Clouds' settings back; the pots catch before they take over. Up to v0.1.0
+        it used preset slot 8; the first boot of v0.2.0 copies that onto the card. The other Lab firmwares keep their own slots, 1–5 and 12–15, so 6–11 are free for presets you save by hand.</p>
     </div>
     <pre class="card">/alchemy/
   clouds_alchemy.bin     this firmware
@@ -403,13 +403,13 @@ build it yourself:
     <a href="../marbles/"><b>Marbles</b><span>random sampler</span></a>
     <a href="../plaits/"><b>Plaits</b><span>macro oscillator</span></a>
   </div>
-  <p class="hint" style="margin-top:14px"><a href="../">All six Mutable ports, on one page</a></p>
+  <p class="hint" style="margin-top:14px"><a href="../">All seven Mutable ports, on one page</a></p>
   <p style="margin-top:14px"><a href="https://timncox.github.io/alchemy-lab/">All of Tim's Alchemy Lab instruments, on one page →</a></p>
 </div></section>
 </main>
 
 <footer><div class="wrap">
-  <div>Clouds for Alchemy Lab · mi-alchemy v0.1.0 · MIT</div>
+  <div>Clouds for Alchemy Lab · mi-alchemy v0.2.0 · MIT</div>
   <div>Mutable Instruments Clouds © Emilie Gillet. Not affiliated with Mutable Instruments or Hermetic Modular.</div>
 </div></footer>
 
@@ -834,10 +834,10 @@ const PAGES = [
   ]},
   { name:"SETTINGS 1", settings:true, halos:[C.orange, null, null], pots:[
     { name:"BRIGHTNESS", ring:{style:"level", c:C.gold}, v:.26, sub:"5–100 % · acts at once",
-      d:"How bright every LED is. The one Settings value that acts as you turn. Saved in Clouds' slot, 8.", meta:["SDK <b>UseBrightness</b>"] },
+      d:"How bright every LED is. The one Settings value that acts as you turn. Saved on the card with the rest of Clouds' settings.", meta:["SDK <b>UseBrightness</b>"] },
     { name:"—", ring:{style:"off"}, v:0, sub:"nothing here", d:"Nothing on this pot for Clouds.", meta:[] },
     { name:"PRESET SLOT", ring:{style:"level", c:C.gold}, v:.53, sub:"slots 0–15 · for P4",
-      d:"Chooses the slot P4 saves into or loads from. Slot 8 is Clouds' own working state; 12–15 belong to Smack, Mark, Belt and Relay. Slots 0–7 are free for your presets.", meta:["SDK <b>UsePresets</b>"] },
+      d:"Chooses the slot P4 saves into or loads from. Clouds keeps its working state on the card, not in a slot. 1–5 and 12–15 hold other firmwares' working state; 6–11 are free for your presets.", meta:["SDK <b>UsePresets</b>"] },
     { name:"PRESET ACTION", ring:{style:"bipolar", p:C.orange, n:C.orange}, v:.5, sub:"fully left save · fully right load · hold 3 s",
       d:"Hold the pot fully left for three seconds to save to the slot on P3, fully right to load. Bring it back through the middle to re-arm. Loading another firmware's slot is refused.", meta:["save <b>left, 3 s</b>","load <b>right, 3 s</b>"] },
     { name:"—", ring:{style:"off"}, v:0, sub:"nothing here", d:"Nothing on this pot for Clouds.", meta:[] },
