@@ -382,6 +382,7 @@ static constexpr uint32_t kSeedLockMs = 4000u;   /* ui.cc long_press_duration */
 static mi::Toggle  tg_freeze;
 static mi::Swallow swallow;
 static bool        g_b2_down = false, g_b2_chorded = false;
+static bool        g_lock_at_press = true;
 static uint32_t    g_b2_since = 0;
 
 static void OnPoll(uint32_t now)
@@ -405,7 +406,16 @@ static void OnPoll(uint32_t now)
     if (b3)
     {
         if (hw.buttons[kButtonB1].Pressed()) swallow.mask |= (uint8_t)(1u << kButtonB1);
-        if (hw.buttons[kButtonB2].Pressed()) swallow.mask |= (uint8_t)(1u << kButtonB2);
+        if (hw.buttons[kButtonB2].Pressed())
+        {
+            /* B2 was the start of the Settings chord (or of a trip to the
+             * Mod page), not a seed: undo the unlock its press made, or
+             * DENSITY would stop making grains with nothing on the panel
+             * to say why. */
+            if (g_b2_down && !g_b2_chorded) T.seed_locked = g_lock_at_press;
+            g_b2_chorded = true;
+            swallow.mask |= (uint8_t)(1u << kButtonB2);
+        }
     }
     const bool b2 = swallow.Live(hw, kButtonB2);
     const bool b1 = swallow.Live(hw, kButtonB1);
@@ -427,6 +437,7 @@ static void OnPoll(uint32_t now)
     if (b2 && !g_b2_down)
     {
         /* ui.cc OnSwitchPressed: a press unlocks, and seeds while held. */
+        g_lock_at_press = T.seed_locked;
         g_b2_since    = now;
         g_b2_chorded  = false;
         T.seed_locked = false;
@@ -552,6 +563,9 @@ static void Reconfigure(int media, int input)
 {
     const bool synth_mode = input == kInSynth;
     const bool mono       = input == kInMono;
+    /* beads.cc resets the AGC when mono flips or synth mode ends; decided
+     * before Configure() overwrites processor.mono(). */
+    const bool reset_gain = mono != processor.mono() || synth_mode != s_synth;
     /* beads.cc reconfigures only the processor; the synth keeps its state
      * (Synth::Reset() is declared upstream but never defined). */
     if (!synth_mode)
@@ -565,7 +579,7 @@ static void Reconfigure(int media, int input)
             : (media == beads::Processor::MEDIA_CLEAN_TAPE
                    ? beads::GainControl::SOFT_CLIPPING_MODE_DYNAMIC
                    : beads::GainControl::SOFT_CLIPPING_MODE_OFF),
-        mono != processor.mono() || synth_mode != s_synth);
+        reset_gain);
     src32.Reset();
     s_synth      = synth_mode;
     s_transition = (int)(kBlockRate / 4.0f);   /* codec_transition_frames */
