@@ -46,6 +46,7 @@
 #include "alchemy/surface/virtual_button.h"
 #include "alchemy/surface/virtual_knob.h"
 
+#include "home_state.h"
 #include "mi_family.h"
 #include "picker.h"
 
@@ -324,11 +325,10 @@ static Pager pager = Pager(kNumAppPages, kNumPots)
                          .Shift(hw.buttons[kButtonB3], kPageMod)
                          .Shift(hw.buttons[kButtonB1], kPageSetup).From(kPageMod);
 
-/* Home slot: PROVISIONAL. Slot 1 was the last free one, but Hypjolin
- * (hypjolin-alchemy) took it the same day, so the card is full and the two
- * would overwrite each other's saved state. Which slot Beads gets is Tim's
- * call (memory reference_alchemy_lab_slots.md). */
-static mi::HomeSlot home(1u);
+/* The panel autosaves to 0:/alchemy/state/beads.st (home_state.h), not to
+ * a QSPI slot: all 16 were taken by the time Beads arrived. Beads never had
+ * a slot, so there is nothing to migrate from. */
+static mi::HomeFile home("beads");
 static Presets      presets(hw.seed.qspi);
 static Settings     settings(hw, &pager);
 static CvMatrix     cv_matrix(kNumCvInputs);
@@ -795,7 +795,6 @@ int main(void)
     cv_matrix.Jack(5).To(density_k);
 
     host.Product("Beads")
-        .BootSlot(home.slot)
         .Pages(play_page, mod_page, setup_page)
         .Jacks(jk_in_l, jk_in_r, jk_freeze, jk_seed, jk_voct, jk_cv_time,
                jk_cv_size, jk_cv_dens, jk_out_l, jk_out_r)
@@ -811,7 +810,7 @@ int main(void)
     presets.Manage(settings);
     presets.Manage(extras);
     presets.Init();
-    const bool had_boot = home.Boot(presets);
+    const bool had_boot = home.Boot(presets, sd, System::GetNow());
 
     float phys[kNumPots];
     for (int i = 0; i < 8; i++)

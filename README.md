@@ -22,11 +22,11 @@ pots, three buttons and ten jacks.
 | Plaits | 48 kHz / 24 (2×12) | 11 | 451 KB (engine at -Os) | [src/plaits/DESIGN.md](src/plaits/DESIGN.md) |
 | Warps (Parasites) | 96 kHz / 60 | 7 | 393 KB | [src/warps/DESIGN.md](src/warps/DESIGN.md) |
 | Meld | 96 kHz / 60 | 6 | 457 KB (engines at -O2) | [src/meld/DESIGN.md](src/meld/DESIGN.md) |
-| Beads | 48 kHz / 12 (Clouds quality resampled to 32 kHz) | 1, provisional (see below) | 474 KB (engine at -Os), plus 768 KB of SDRAM | [src/beads/DESIGN.md](src/beads/DESIGN.md) |
+| Beads | 48 kHz / 12 (Clouds quality resampled to 32 kHz) | none: `/alchemy/state/beads.st` on the card | 474 KB (engine at -Os), plus 768 KB of SDRAM | [src/beads/DESIGN.md](src/beads/DESIGN.md) |
 
 All seven are siblings of smack/mark/belt/relay-alchemy. They include the
 same SD-card firmware picker (Settings page 1), keep their working state in
-their own QSPI preset slot, autosave 5 s after the last change, catch pots
+their own QSPI preset slot (Beads: its own file on the card), autosave 5 s after the last change, catch pots
 after a firmware switch, and show last session's CPU peak on the P1 ring at
 boot.
 
@@ -47,6 +47,7 @@ use the SD picker, or `make FW=x program-live DFU_SERIAL=<serial>`.
 
     /alchemy/clouds_alchemy.bin  elements_alchemy.bin  marbles_alchemy.bin  plaits_alchemy.bin  warps_alchemy.bin  meld_alchemy.bin  beads_alchemy.bin
     /mi/elements.smp             Elements' exciter samples (build-elements/elements.smp)
+    /alchemy/state/beads.st      Beads' autosaved panel (written by the firmware)
 
 Without `/mi/elements.smp`, Elements still runs. Its strike samples and
 blow noise are silent, B1 rests dim amber, and the P2 ring shows red at
@@ -58,11 +59,17 @@ Smack 12, Mark 13, Belt 14 and Relay 15 were already taken. This repository
 takes **6–11** (Meld 6, Warps 7, Clouds 8, Elements 9, Marbles 10, Plaits 11)
 which leaves 0–5 for presets saved by hand.
 
-**Beads' slot is not settled.** The code says 1. That was the last free
-slot, but hypjolin-alchemy took it the same day, and 2–5 belong to Tally,
-Stencil, Break and Seq. Two firmwares on one slot overwrite each other's
-saved state. Counting Beads there are 17 Lab firmwares, one more than the
-picker's 16 bins (`kMaxFiles`).
+The sibling repos have since taken 1–5 (Hypjolin, Tally, Stencil, Break
+and Seq), so all 16 QSPI slots are spoken for. **Beads uses no slot.** It
+autosaves its panel to its own file on the card, `/alchemy/state/beads.st`
+(`src/common/home_state.h`, format in `state_file.h`). A file named after
+the firmware can't collide with another's, so no slot map is needed. New
+firmware should use `mi::HomeFile` the same way. The existing six could
+move to it with their old slot as `legacy_slot`, which carries their saved
+panel over on first boot and frees the slot for hand-saved presets.
+
+Counting Beads, there are 17 Lab firmwares, one more than the picker's 16
+bins (`kMaxFiles`), so one stays off any given card.
 
 ## v0.1 scope
 
