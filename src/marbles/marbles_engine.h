@@ -50,7 +50,10 @@ static constexpr size_t kMaxBlock = 16;
  * through an I2C DAC flushed from a 1 ms poll -- up to ~2 ms after the
  * callback computed it -- so the gates wait for X: a sample-and-hold or an
  * envelope fired by T1 sees the new X1, as on the original. */
-static constexpr size_t kGateDelay = 64;
+#ifndef MARBLES_PORT_GATE_DELAY
+#define MARBLES_PORT_GATE_DELAY 64   /* the Alchemy Lab's I2C DAC; the Patch build overrides */
+#endif
+static constexpr size_t kGateDelay = MARBLES_PORT_GATE_DELAY;
 
 /* Everything the panel sets, written by the control thread. */
 struct Controls
