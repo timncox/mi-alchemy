@@ -263,8 +263,9 @@ static void draw(void)
     /* Row 0: the note (MIDI numbering), and the DSP load (avg/peak %). */
     int n = (int)floorf(g_note + kSrCorrection + 0.5f);
     n     = clampi(n, 0, 127);
-    snprintf(line, sizeof(line), "PLAITS %-2s%d   c%02d/%02d", NOTE_NAME[n % 12], n / 12 - 1,
-             clampi(g_cpu_avg, 0, 99), clampi(g_cpu_peak, 0, 99));
+    char nn[8];
+    snprintf(nn, sizeof(nn), "%s%d", NOTE_NAME[n % 12], n / 12 - 1);
+    snprintf(line, sizeof(line), "PLAITS %-4s  c%02d/%02d", nn, clampi(g_cpu_avg, 0, 99), clampi(g_cpu_peak, 0, 99));
     hw.display.SetCursor(0, 0);
     hw.display.WriteString(line, Font_6x8, true);
 

@@ -25,7 +25,9 @@
  *   AUDIO IN 1  external exciter into the BLOW path (Elements' BLOW IN)
  *   AUDIO IN 2  external exciter into the STRIKE path (STRIKE IN)
  *   OUT 1 / 2   main / aux (the stereo pair from the reverb); 3 / 4 the same
- *   CV OUT 1    exciter level, 0..5 V;  CV OUT 2  resonator level, 0..5 V
+ *   CV OUT 1    the main output's level (envelope follower), 0..5 V
+ *   CV OUT 2    the resonator's pitch, 1 V/oct, 0 V = CTRL 1 at 0 with Trans 0
+ *               (0..5 V; DAC uncalibrated)
  *   GATE OUT    the gate as the engine sees it (one block late, as upstream)
  *   Encoder     click to select a row ('*'), turn to change, click to let
  *               go; rows Page / Model / Trans / mods (click = picker)
@@ -118,7 +120,8 @@ static float blow_in[BLOCK], strike_in[BLOCK], out_main[BLOCK], out_aux[BLOCK];
 /* Control loop -> callback. Single floats/ints: torn reads are harmless. */
 static volatile float g_pitch_unit = 0.5f; /* CTRL 1, smoothed */
 static volatile int   g_model_req  = 0;
-static volatile float g_exc_level, g_res_level;
+static volatile float g_env;
+static float          s_env_a, s_env_r;
 static volatile bool  g_gate_engine;
 
 static float sm[P_COUNT];
@@ -226,6 +229,7 @@ static void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer
 
     part->Process(s, blow_in, strike_in, out_main, out_aux, size);
 
+    float env = g_env;
     for(size_t i = 0; i < size; i++)
     {
         const float l = clampf(out_main[i], -1.f, 1.f), r = clampf(out_aux[i], -1.f, 1.f);
@@ -233,9 +237,10 @@ static void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer
         out[1][i] = r;
         out[2][i] = l;
         out[3][i] = r;
+        const float a = fabsf(l);
+        env += (a > env ? s_env_a : s_env_r) * (a - env);
     }
-    g_exc_level = part->exciter_level();
-    g_res_level = part->resonator_level();
+    g_env = env;
 
     g_cpu.OnBlockEnd();
     const float ld = (float)(System::GetTick() - t0) * g_ticks_per_block_inv;
@@ -357,7 +362,7 @@ static void draw(void)
     int n = (int)floorf(note_cv + 0.5f);
     if(n < 0) n = 0;
     if(n > 127) n = 127;
-    snprintf(line, sizeof(line), "ELEMENTS %-3s%d c%02d/%02d", NOTE_NAME[n % 12], n / 12 - 1,
+    snprintf(line, sizeof(line), "ELEMENTS %s%d  c%02d/%02d", NOTE_NAME[n % 12], n / 12 - 1,
              g_cpu_avg > 99 ? 99 : g_cpu_avg, g_cpu_peak > 99 ? 99 : g_cpu_peak);
     hw.display.SetCursor(0, 0);
     hw.display.WriteString(line, Font_6x8, true);
@@ -407,6 +412,8 @@ int main(void)
     const float sr        = hw.AudioSampleRate();
     g_ticks_per_block_inv = 1.0f / ((float)System::GetTickFreq() * ((float)BLOCK / sr));
     g_cpu.Init(sr, BLOCK);
+    s_env_a = 1.0f - expf(-1.0f / (0.002f * sr)); /* 2 ms attack */
+    s_env_r = 1.0f - expf(-1.0f / (0.100f * sr)); /* 100 ms release */
 
     memset(reverb_buffer, 0, sizeof(reverb_buffer));
     memset(part_mem, 0, sizeof(part_mem));
@@ -442,8 +449,10 @@ int main(void)
         knobs();
 
         hw.gate_output.Write(g_gate_engine);
-        hw.seed.dac.WriteValue(DacHandle::Channel::ONE, (uint16_t)(clampf(g_exc_level, 0.f, 1.f) * 4095.0f));
-        hw.seed.dac.WriteValue(DacHandle::Channel::TWO, (uint16_t)(clampf(g_res_level, 0.f, 1.f) * 4095.0f));
+        hw.seed.dac.WriteValue(DacHandle::Channel::ONE, (uint16_t)(clampf(g_env, 0.f, 1.f) * 4095.0f));
+        /* 12 bits over ~5 V: 1 V/oct = 4095 / 5 codes per 12 semitones. */
+        const float pitch_v = (note_cv - kNoteBase) / 12.0f;
+        hw.seed.dac.WriteValue(DacHandle::Channel::TWO, (uint16_t)(clampf(pitch_v / 5.0f, 0.f, 1.f) * 4095.0f));
 
         const uint32_t now = System::GetNow();
         const float    pk  = g_load_peak;
