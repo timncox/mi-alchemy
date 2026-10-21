@@ -156,7 +156,7 @@ footer .sib a:hover{background:var(--ink);color:var(--bg)}
 </div></nav>
 
 <header><div class="wrap">
-  <div class="kick">Firmware for the Hermetic Modular Alchemy Lab V2 · mi-alchemy v0.2.0 · the Parasites build</div>
+  <div class="kick">Firmware for the Hermetic Modular Alchemy Lab V2 · mi-alchemy v0.2.1 · the Parasites build</div>
   <h1 class="mark" aria-label="Warps"><span class="c" aria-hidden="true">WARPS</span><span class="m" aria-hidden="true">WARPS</span><span class="sr">WARPS</span></h1>
   <p class="tag">Two signals in, one out. A <b class="c">carrier</b> on J1 and a <b class="m">modulator</b> on J2 are crossfaded, folded, ring-modulated, XORed, compared or vocoded into <b class="o">something neither of them was</b>.</p>
   <div class="status">Built and native-tested · not yet flashed or heard</div>
@@ -295,9 +295,9 @@ footer .sib a:hover{background:var(--ink);color:var(--bg)}
 <section id="card"><div class="wrap">
   <h2 class="sh">Firmware on the card</h2>
   <div class="dl" id="download" style="scroll-margin-top:90px;margin:16px 0 24px;padding:16px 18px;border:1.5px solid currentColor;border-radius:8px;max-width:46em">
-    <p style="margin:0 0 12px"><b>Download v0.2.0</b> &middot; built and tested on a computer, not yet run on a module</p>
-    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/warps_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">warps_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.0/mi-alchemy-sd-card-v0.2.0.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all seven</a></p>
-    <p style="margin:0;font-size:.92em">The zip holds all seven firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.2.0">Release notes and SHA-256 checksums</a>.</p>
+    <p style="margin:0 0 12px"><b>Download v0.2.1</b> &middot; built and tested on a computer, not yet heard working on a module</p>
+    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.1/warps_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">warps_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.1/mi-alchemy-sd-card-v0.2.1.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all seven</a></p>
+    <p style="margin:0;font-size:.92em">The zip holds all seven firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.2.1">Release notes and SHA-256 checksums</a>.</p>
   </div>
 
   <div class="cols">
@@ -311,7 +311,7 @@ footer .sib a:hover{background:var(--ink);color:var(--bg)}
       <p>The firmware picker is the same in every mi-alchemy firmware and in Mark, Belt and Smack.</p>
     </div>
     <div>
-      <p><b>Where it saves.</b> Warps keeps its working state in its own file on the card, <b>/alchemy/state/warps.st</b>, and saves it about five seconds after the last change, once no button is held. Up to v0.1.0 it used preset slot 7; the first boot of v0.2.0 copies that onto the card. The other Lab firmwares keep their own slots, 1–5 and 12–15, so 6–11 are free for presets you save by hand.</p>
+      <p><b>Where it saves.</b> Warps keeps its working state in its own file on the card, <b>/alchemy/state/warps.st</b>, and saves it about five seconds after the last change, once no button is held. Up to v0.1.0 it used preset slot 7; the first boot of v0.2.0 or later copies that onto the card. The other Lab firmwares keep their own slots, 1–5 and 12–15, so 6–11 are free for presets you save by hand.</p>
       <p><b>First boot after a flash:</b> MODE is META and CARRIER is external, so a fresh module is stock Warps on its jacks. IN GAIN is at 0 dB and TUNE at 0. The other PLAY pots take whatever position they're in.</p>
     </div>
   </div>
