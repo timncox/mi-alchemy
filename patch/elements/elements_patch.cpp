@@ -26,8 +26,7 @@
  *   AUDIO IN 2  external exciter into the STRIKE path (STRIKE IN)
  *   OUT 1 / 2   main / aux (the stereo pair from the reverb); 3 / 4 the same
  *   CV OUT 1    the main output's level (envelope follower), 0..5 V
- *   CV OUT 2    the resonator's pitch, 1 V/oct, 0 V = CTRL 1 at 0 with Trans 0
- *               (0..5 V; DAC uncalibrated)
+ *   CV OUT 2    the aux output's level (envelope follower), 0..5 V
  *   GATE OUT    the gate as the engine sees it (one block late, as upstream)
  *   Encoder     click to select a row ('*'), turn to change, click to let
  *               go; rows Page / Model / Trans / mods (click = picker)
@@ -120,7 +119,7 @@ static float blow_in[BLOCK], strike_in[BLOCK], out_main[BLOCK], out_aux[BLOCK];
 /* Control loop -> callback. Single floats/ints: torn reads are harmless. */
 static volatile float g_pitch_unit = 0.5f; /* CTRL 1, smoothed */
 static volatile int   g_model_req  = 0;
-static volatile float g_env;
+static volatile float g_env, g_env_aux;
 static float          s_env_a, s_env_r;
 static volatile bool  g_gate_engine;
 
@@ -229,7 +228,7 @@ static void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer
 
     part->Process(s, blow_in, strike_in, out_main, out_aux, size);
 
-    float env = g_env;
+    float env = g_env, env_aux = g_env_aux;
     for(size_t i = 0; i < size; i++)
     {
         const float l = clampf(out_main[i], -1.f, 1.f), r = clampf(out_aux[i], -1.f, 1.f);
@@ -239,8 +238,11 @@ static void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer
         out[3][i] = r;
         const float a = fabsf(l);
         env += (a > env ? s_env_a : s_env_r) * (a - env);
+        const float b = fabsf(r);
+        env_aux += (b > env_aux ? s_env_a : s_env_r) * (b - env_aux);
     }
-    g_env = env;
+    g_env     = env;
+    g_env_aux = env_aux;
 
     g_cpu.OnBlockEnd();
     const float ld = (float)(System::GetTick() - t0) * g_ticks_per_block_inv;
@@ -450,9 +452,7 @@ int main(void)
 
         hw.gate_output.Write(g_gate_engine);
         hw.seed.dac.WriteValue(DacHandle::Channel::ONE, (uint16_t)(clampf(g_env, 0.f, 1.f) * 4095.0f));
-        /* 12 bits over ~5 V: 1 V/oct = 4095 / 5 codes per 12 semitones. */
-        const float pitch_v = (note_cv - kNoteBase) / 12.0f;
-        hw.seed.dac.WriteValue(DacHandle::Channel::TWO, (uint16_t)(clampf(pitch_v / 5.0f, 0.f, 1.f) * 4095.0f));
+        hw.seed.dac.WriteValue(DacHandle::Channel::TWO, (uint16_t)(clampf(g_env_aux, 0.f, 1.f) * 4095.0f));
 
         const uint32_t now = System::GetNow();
         const float    pk  = g_load_peak;
