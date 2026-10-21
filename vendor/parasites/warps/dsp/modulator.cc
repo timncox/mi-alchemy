@@ -974,7 +974,9 @@ inline float Modulator::Mod<ALGORITHM_CHEBYSCHEV>(
 
 
   SLOPE(envelope_, fabs(x), att, rel);
-  float amp = 0.9f / envelope_;
+  // mi-alchemy: envelope_ starts at 0, and with silence in 0.9 / 0 = inf
+  // made 0 * inf = NaN (vendor/VENDOR.md change 5).
+  float amp = 0.9f / std::max(envelope_, 1e-6f);
 
   const float degree = 6.0f;
 
@@ -1016,6 +1018,11 @@ inline float Modulator::Xmod<ALGORITHM_FOLD>(
   sum *= 0.02f + p_1;
   sum += p_2;
   const float kScale = 2048.0f / ((1.0f + 1.0f + 0.25f) * 1.02f);
+  // mi-alchemy: Parasites adds p_2 after the scaling (stock Warps does not),
+  // so hot inputs drove the index past the 4097-entry table into whatever
+  // follows it. Hold the index inside the table (vendor/VENDOR.md change 4).
+  const float kLimit = 2047.99f / kScale;
+  CONSTRAIN(sum, -kLimit, kLimit);
   return Interpolate(lut_bipolar_fold + 2048, sum, kScale);
 }
 
@@ -1184,7 +1191,10 @@ inline float Modulator::Xmod<ALGORITHM_CHEBYSCHEV>(
   }
 
   x = tn1 + (tn - tn1) * n;
-  x /= p_2;
+  // mi-alchemy: p_2 is 0 with TIMBRE fully down and on the first block
+  // (previous_parameters_ start at 0); x / 0 was NaN or inf, which the M7
+  // turns into silence or a full-scale sample (vendor/VENDOR.md change 5).
+  x /= std::max(p_2, 1e-4f);
   x *= 0.5f;
 
   return x;

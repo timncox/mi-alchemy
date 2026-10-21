@@ -464,8 +464,11 @@ static void AudioCallback(daisy::AudioHandle::InputBuffer  in,
 
     /* Pitch: the knob through Clouds' quantized curve (it is unsmoothed
      * upstream too), plus V/Oct on J5 -- jumps of more than half a
-     * semitone land at once, smaller moves glide. */
-    p->pitch = stmlib::Interpolate(clouds::lut_quantized_pitch, T.pitch, 1024.0f);
+     * semitone land at once, smaller moves glide. The knob stops just short
+     * of 1.0, as dry_wet does: at 1.0 Interpolate reads one float past the
+     * 1025-entry table (times a zero fraction; ASan flags it). */
+    p->pitch = stmlib::Interpolate(clouds::lut_quantized_pitch,
+                                   mi::clampf(T.pitch, 0.f, 0.99999f), 1024.0f);
     const float note = 12.0f * hw.cv_jacks[kCvVoct].Volts();
     if (fabsf(note - sm_note) > 0.5f) sm_note = note;
     else sm_note += 0.2f * (note - sm_note);

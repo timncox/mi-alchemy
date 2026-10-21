@@ -88,3 +88,25 @@ Changes:
    controls are set up for the boot rate, so the 48 kHz path is the one that
    fits. The Clouds quality's 32 kHz is handled outside the vendor tree
    (`src/beads/resample_3_2.h`).
+
+4. `parasites/warps/dsp/modulator.cc`, `Xmod<ALGORITHM_FOLD>`: the folded
+   sum is held inside `lut_bipolar_fold` (`CONSTRAIN(sum, ±2047.99/kScale)`)
+   before the lookup. Parasites adds `p_2` after the scaling, which stock
+   Warps does not, so with hot in-phase inputs and the algorithm and timbre
+   up the index ran up to 155 floats past the 4097-entry table: on the
+   module, harsh garbage from whatever constant data follows the table. The
+   clamp holds the fold at the table's end instead. Found with the
+   emulator's ASan build of warps_alchemy; test/test_warps_bounds.cpp runs it
+   with global redzones on. Applies to Meld too (same vendored tree).
+
+5. `parasites/warps/dsp/modulator.cc`, CHEBYSCHEV: two divides floored.
+   `Xmod<ALGORITHM_CHEBYSCHEV>` ends `x /= p_2`, and p_2 is 0 with TIMBRE
+   fully down and on the first block (previous_parameters_ start at 0), so
+   it gave NaN or inf; now `std::max(p_2, 1e-4f)`. `Mod<ALGORITHM_CHEBYSCHEV>`
+   (COMPARATOR_CHEBYSCHEV) took `0.9f / envelope_` with the envelope still at
+   0 under silence, so inf, then 0 * inf = NaN; now `std::max(envelope_,
+   1e-6f)`. The M7 turns a NaN into 0 and an inf into a full-scale sample
+   when Process1 converts to int. Behaviour away from exactly zero is
+   unchanged (the comparator-Chebyschev's DC under silence, T_n(0) times
+   the slow envelope, is upstream's and measured identical with and without
+   the floor). test/test_warps_bounds.cpp makes the float->int check fatal.
