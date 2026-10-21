@@ -1,0 +1,3 @@
+// libDaisy's Makefile compiles .cpp only; this reaches the vendored .cc.
+// Edit nothing here: the source is vendor/eurorack/beads/dsp/mu_law.cc (vendor/VENDOR.md).
+#include "beads/dsp/mu_law.cc"
