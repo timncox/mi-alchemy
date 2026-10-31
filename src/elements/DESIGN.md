@@ -176,7 +176,7 @@ It has to be copied to the card by hand as **`/mi/elements.smp`**. The repo
 
 ## Knob recording (2026-10-30)
 
-A tester asked for knob recording. Settings page 1, P2 **B1** = Gate
+A tester asked for knob recording. The main Settings page, P2 **B1** = Gate
 (default, Elements' Play button) or **Record**: then B1 is the SDK's
 `ParamLock` trigger -- hold it, move knobs, and each loops what it did (up to
 16 s, stored at 20 Hz; moving a looping knob 3 % clears it). It is paged
