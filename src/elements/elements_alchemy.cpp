@@ -13,7 +13,9 @@
  *   PLAY     COARSE . FINE . GEOMETRY . BRIGHTNESS . DAMPING . POSITION
  *   EXCITER  BOW . BLOW . STRIKE . CONTOUR . FLOW . MALLET      (hold B3)
  *   TIMBRE   BOW T. . BLOW T. . STRIKE T. . SPACE . MODEL . FM  (hold B2)
- *   B1       PLAY: the gate, while held (Elements' Play button)
+ *   B1       PLAY: the gate, while held (Elements' Play button) -- or,
+ *            with Settings B1 = Record, hold it and move knobs to record
+ *            their motion as a loop (SDK ParamLock; any page you hold)
  *   J1 blow in . J2 strike in . J3 gate . J4 strength . J5 V/Oct . J6 FM
  *   J7/J8 CV (geometry / brightness) . J9 main . J10 aux
  *   Settings (B2+B3 2 s): brightness, presets; page 1 = the SD picker
@@ -38,11 +40,15 @@
 #include "alchemy/surface/manual.h"
 #include "alchemy/surface/page.h"
 #include "alchemy/surface/pager.h"
+#include "alchemy/surface/param_lock.h"
 #include "alchemy/surface/presets.h"
 #include "alchemy/surface/settings.h"
 #include "alchemy/surface/virtual_button.h"
 #include "alchemy/surface/virtual_knob.h"
 
+/* Elements saves its knob recordings with the panel (~11.6 KB): give the
+ * home file room for them (home_state.h, MI_HOME_CAP). */
+#define MI_HOME_CAP 16384u
 #include "home_state.h"
 #include "mi_family.h"
 #include "picker.h"
@@ -117,6 +123,7 @@ static constexpr LedPanel::Rgb kRed   = {0xFF, 0x00, 0x00};
 static constexpr LedPanel::Rgb kGreen = {0x00, 0xFF, 0x00};
 
 static const char* const kModelLabels[4] = {"Modal", "String", "Strings", "Ominous"};
+static const char* const kB1Labels[2]    = {"Gate", "Record"};
 
 /* ---- pages --------------------------------------------------------------- */
 
@@ -290,6 +297,33 @@ static Pager       pager = Pager(kNumAppPages, kNumPots)
  * its QSPI home until 2026-10-13, is read once if the card has no file yet,
  * so a saved panel carries over; it is never written again. */
 static mi::HomeFile home("elements", 9);
+
+/* Knob recording (a tester's ask, 2026-10-30): with Settings B1 = Record,
+ * B1 stops being the gate and becomes ParamLock's trigger -- hold it, move
+ * knobs, and each loops what it did (up to 16 s). Moving a looping knob
+ * clears it. Paged, so a held B2/B3 page records too. The loops are saved
+ * with the panel. */
+static SelectorHandle s_b1;
+static volatile bool  g_b1_record = false;
+
+class RecordTrigger : public IButton
+{
+  public:
+    explicit RecordTrigger(IButton& b) : b_(b) {}
+    bool  Pressed() const override { return g_b1_record && b_.Pressed(); }
+    bool  RisingEdge() override { return g_b1_record && b_.RisingEdge(); }
+    bool  FallingEdge() override { return b_.FallingEdge(); }
+    float TimeHeldMs() const override { return g_b1_record ? b_.TimeHeldMs() : 0.f; }
+
+  private:
+    IButton& b_;
+};
+static RecordTrigger rec_trigger(hw.buttons[kButtonB1]);
+static ParamLock<kNumAppPages * kNumPots, LockLength<16, 20>> locks(rec_trigger, pager);
+/* The loops are saved with the panel (presets.Manage(locks)), so the home
+ * file must hold them: a payload over kCap would stop ALL autosaving. */
+static_assert(decltype(locks)::kPresetBytes + 1024u <= mi::HomeFile::kCap,
+              "raise MI_HOME_CAP above #include \"home_state.h\"");
 static Presets      presets(hw.seed.qspi);
 static Settings     settings(hw, &pager);
 static CvMatrix     cv_matrix(kNumCvInputs);
@@ -390,8 +424,11 @@ static void OnPoll(uint32_t now)
         return;
     }
     /* B1 is momentary: a tap is a short note, as on Elements. B2 and B3
-     * belong to the pager (page layers). */
-    T.play_btn = swallow.Live(hw, kButtonB1);
+     * belong to the pager (page layers). In Record mode B1 belongs to the
+     * locks (RecordTrigger) and plays nothing. */
+    g_b1_record = s_b1.Value() == 1u;
+    const bool b1 = swallow.Live(hw, kButtonB1);
+    T.play_btn    = b1 && !g_b1_record;
 }
 
 /* ---- control frame (~60 Hz) ------------------------------------------------ */
@@ -409,6 +446,13 @@ static void OnFrame(void)
     if (play_watch.Changed(pager, kPagePlay)) home.Touch(now);
     if (exciter_watch.Changed(pager, kPageExciter)) home.Touch(now);
     if (timbre_watch.Changed(pager, kPageTimbre)) home.Touch(now);
+
+    /* A finished or cleared recording is part of the panel: save it. */
+    static bool prev_rec = false, prev_any = false;
+    const bool  rec = locks.AnyRecording(), any = locks.AnyActive();
+    if ((prev_rec && !rec) || any != prev_any) home.Touch(now);
+    prev_rec = rec;
+    prev_any = any;
 
     /* Values are catch + locks + CV, already mixed by the SDK. */
     T.coarse        = mi::clampf(coarse.Value(), 0.f, 1.f);
@@ -493,7 +537,10 @@ static void OnRender(uint32_t t_ms)
 
     const bool          ok   = g_samples == es::Status::Ok;
     const LedPanel::Rgb base = ok ? kIdle : LedPanel::Rgb{0x30, 0x14, 0x00};
-    L.SetButtonPair(kButtonB1, L.ScaleGlobal(G_GATE ? kWhite : mix(base, kAmber, G_EXCITER)));
+    if (g_b1_record)   /* Record mode: B1 is the lock trigger */
+        L.SetButtonPair(kButtonB1, L.ScaleGlobal(locks.AnyRecording() ? kRed : LedPanel::Rgb{0x40, 0x00, 0x00}));
+    else
+        L.SetButtonPair(kButtonB1, L.ScaleGlobal(G_GATE ? kWhite : mix(base, kAmber, G_EXCITER)));
 
     const uint8_t pg = pager.Page();
     if (pg != kPageTimbre)
@@ -668,6 +715,13 @@ int main(void)
     picker::Install(settings, kSettingsFirmware, sd, hw);
     settings.UseBrightness();
     settings.UsePresets(presets);
+    s_b1 = settings.Page(kSettingsMain).Pot(1)
+        .Selector(kB1Labels).Default(0)
+        .Ident("b1_mode").Name("B1")
+        .Help("Gate: B1 plays, as on Elements. Record: hold B1 and move "
+              "knobs to record their motion as a loop (moving a looping "
+              "knob clears it); B1 plays nothing -- use J3 for the gate.");
+    locks.Init();
 
     /* CV: J3 gate, J4 strength, J5 V/Oct and J6 FM are read raw in the
      * callback; J7/J8 modulate through the SDK's matrix (re-routable from
@@ -694,6 +748,7 @@ int main(void)
     presets.Manage(pager);
     presets.Manage(settings);
     presets.Manage(extras);
+    presets.Manage(locks);
     presets.Init();
     const bool had_boot = home.Boot(presets, sd, System::GetNow());
 
@@ -739,6 +794,7 @@ int main(void)
     cpu.Reset();
 
     loop.Use(pager)
+        .Use(locks)
         .Use(settings)
         .Use(cv_matrix)
         .Use(play_page)

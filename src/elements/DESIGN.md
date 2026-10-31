@@ -173,3 +173,17 @@ It has to be copied to the card by hand as **`/mi/elements.smp`**. The repo
   boot. There is no retry.
 - **Pitch and strength at 0 V** are derived from constants and not heard
   (see Pages).
+
+## Knob recording (2026-10-30)
+
+A tester asked for knob recording. Settings page 1, P2 **B1** = Gate
+(default, Elements' Play button) or **Record**: then B1 is the SDK's
+`ParamLock` trigger -- hold it, move knobs, and each loops what it did (up to
+16 s, stored at 20 Hz; moving a looping knob 3 % clears it). It is paged
+(18 slots), so holding B2 or B3 while recording records the TIMBRE or
+EXCITER page. B1 lights dim red in Record mode, bright red while recording;
+J3 still gates. The loops are saved with the panel, which needs a 16 KB home
+file (`MI_HOME_CAP`, set above `#include "home_state.h"`; a
+`static_assert` fails the build if the loops outgrow it -- a payload over the
+cap would otherwise stop all autosaving). Emulator check:
+`test/emu/elements_record.emu`.
