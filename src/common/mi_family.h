@@ -193,9 +193,13 @@ struct CpuExtras : public alchemy::Serializable
     /* 'XYZ' << 8 | layout version. Bump the low byte on a layout change. */
     uint32_t SchemaHash() const override { return (tag << 8) | 0x01u; }
 
-    /* Fold this block's meter into the session's worst. Returns true when
-     * the peak rose enough (5 points) above what was last saved to be
-     * worth a flash write. */
+    /* Fold this block's meter into the session's worst. Returns true ONCE
+     * each time the peak rises 5 points above both what was last saved and
+     * what was last reported. It used to compare only with the saved peak,
+     * which moves only after a save -- so once the peak rose it returned
+     * true every frame, the caller's Touch() kept restarting the autosave
+     * countdown, and the panel was never saved (found on module 1,
+     * 2026-10-31: no /alchemy/state on the card). */
     bool Track(daisy::CpuLoadMeter& cpu, float saved_peak)
     {
         float mx = cpu.GetMaxCpuLoad();
@@ -204,8 +208,14 @@ struct CpuExtras : public alchemy::Serializable
         float av = cpu.GetAvgCpuLoad();
         if (av > 1.0f) av = 1.0f;
         if (av > cpu_avg) cpu_avg = av;
-        return cpu_peak > saved_peak + 0.05f;
+        const float ref = saved_peak > reported_ ? saved_peak : reported_;
+        if (cpu_peak <= ref + 0.05f) return false;
+        reported_ = cpu_peak;
+        return true;
     }
+
+  private:
+    float reported_ = 0.0f;   /* not saved: per session */
 };
 
 /* ---- HomeSlot -----------------------------------------------------------

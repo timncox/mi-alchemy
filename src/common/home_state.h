@@ -52,7 +52,8 @@ struct HomeFile
     const char* name;
     int         legacy_slot;
     bool        dirty    = false;
-    uint32_t    since    = 0;
+    uint32_t    since    = 0;   /* last change */
+    uint32_t    first    = 0;   /* first change since the last save */
     uint32_t    retry_at = 0;
 
     explicit HomeFile(const char* n, int legacy = -1) : name(n), legacy_slot(legacy) {}
@@ -74,6 +75,7 @@ struct HomeFile
         {
             dirty = true;   /* carry it onto the card at the first Service() */
             since = now - 5000u;
+            first = since;
             return true;
         }
         return had_boot;
@@ -81,6 +83,7 @@ struct HomeFile
 
     void Touch(uint32_t now)
     {
+        if (!dirty) first = now;
         dirty = true;
         since = now;
     }
@@ -90,7 +93,10 @@ struct HomeFile
      * stays dirty and retries every 30 s. */
     bool Service(alchemy::Presets& presets, alchemy::AlchemyLab& hw, uint32_t now, bool busy)
     {
-        if (!dirty || busy || !sd_ || now - since < 5000u) return false;
+        /* 5 s after the last change -- or 30 s after the first, so a source
+         * that keeps touching can delay the save but never block it. */
+        if (!dirty || busy || !sd_) return false;
+        if (now - since < 5000u && now - first < 30000u) return false;
         if ((int32_t)(now - retry_at) < 0) return false;
         for (uint8_t b = 0; b < alchemy::kNumButtons; b++)
             if (hw.buttons[b].Pressed()) return false;
