@@ -319,11 +319,14 @@ static Manual manual = Manual()
 /* ---- surfaces ------------------------------------------------------------ */
 
 static ControlLoop loop(hw);
-/* B1 reaches SETUP only from MOD (B3 held), so from PLAY it stays FREEZE;
- * B2+B3 stays free for the Settings chord. */
+/* B3 holds MOD. SETUP (B1 pressed while MOD is up) is NOT a second Shift:
+ * the SDK allows one held layer at a time (pager.cpp TryEngage poisons a
+ * Shift pressed under another), so `.Shift(B1, kPageSetup).From(kPageMod)`
+ * never engaged and Setup was unreachable (tester report, 2026-11-01).
+ * SetupGesture() in OnFrame drives it with GoToPage instead. From PLAY, B1
+ * stays FREEZE; B2+B3 stays free for the Settings chord. */
 static Pager pager = Pager(kNumAppPages, kNumPots)
-                         .Shift(hw.buttons[kButtonB3], kPageMod)
-                         .Shift(hw.buttons[kButtonB1], kPageSetup).From(kPageMod);
+                         .Shift(hw.buttons[kButtonB3], kPageMod);
 
 /* The panel autosaves to 0:/alchemy/state/beads.st (home_state.h), not to
  * a QSPI slot: all 16 were taken by the time Beads arrived. Beads never had
@@ -455,9 +458,58 @@ static mi::StoredWatch<kNumPots> play_watch, mod_watch, setup_watch;
 static float g_saved_peak  = 0.0f;
 static bool  prev_settings = false;
 
+/* Hold B3 (MOD), press B1: SETUP. Release B1: back to MOD while B3 is
+ * still held; release both: PLAY. GoToPage cancels B3's Shift layer, so
+ * this owns the way back too; it re-arms pot catch on every jump. */
+enum class SetupNav : uint8_t { Off, Setup, Mod };
+static SetupNav g_setup_nav = SetupNav::Off;
+static bool     g_prev_b1   = false;
+
+static void SetupGesture()
+{
+    const bool b1 = hw.buttons[kButtonB1].Pressed();
+    const bool b3 = hw.buttons[kButtonB3].Pressed();
+    const bool b1_edge = b1 && !g_prev_b1;
+    g_prev_b1 = b1;
+    if (settings.IsActive()) { g_setup_nav = SetupNav::Off; return; }
+
+    float phys[kNumPots];
+    for (uint8_t p = 0; p < kNumPots; p++) phys[p] = hw.pots[p].Value();
+
+    switch (g_setup_nav)
+    {
+        case SetupNav::Off:
+            if (b1_edge && b3 && pager.Page() == kPageMod)
+            {
+                pager.GoToPage(kPageSetup, phys);
+                g_setup_nav = SetupNav::Setup;
+            }
+            break;
+        case SetupNav::Setup:
+            if (b1) break;
+            pager.GoToPage(b3 ? kPageMod : kPagePlay, phys);
+            g_setup_nav = b3 ? SetupNav::Mod : SetupNav::Off;
+            break;
+        case SetupNav::Mod:
+            if (!b3)
+            {
+                pager.GoToPage(kPagePlay, phys);
+                g_setup_nav = SetupNav::Off;
+            }
+            else if (b1_edge)
+            {
+                pager.GoToPage(kPageSetup, phys);
+                g_setup_nav = SetupNav::Setup;
+            }
+            break;
+    }
+}
+
 static void OnFrame(void)
 {
     const uint32_t now = System::GetNow();
+
+    SetupGesture();
 
     if (play_watch.Changed(pager, kPagePlay)) home.Touch(now);
     if (mod_watch.Changed(pager, kPageMod)) home.Touch(now);
