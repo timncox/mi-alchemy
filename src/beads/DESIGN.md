@@ -44,11 +44,11 @@ rate given at boot. So:
 |---|---|---|
 | TIME | where grains read from; the delay time in delay mode | 0..1 of the whole buffer |
 | SIZE | grain length; below ⅓ reversed; fully CW (> 0.99) = delay mode, a 1.5 s crossfade | 0..1 |
-| PITCH | transposition, ±24 st, plus J5 V/Oct | Beads' `LAW_DETUNE`, with detents at 0, 1, 3, 4, 7, 12, 24 st (`beads_laws.h`) |
+| PITCH | transposition, ±24 st, plus J5 V/Oct | Beads' `LAW_DETUNE`, with detents at 0, 1, 3, 4, 7, 12, 24 st, each widened from a third to two thirds of its sector in v0.2.3 (virtual detents; `beads_laws.h`) |
 | SHAPE | grain envelope | 0..1 |
 | DENSITY | noon none; CCW regular, CW random; with J4, divisions CCW and probability CW | 0..1 |
 | DRY/WET | mix | ×1.005, clamped (beads.cc) |
-| TIME~ SIZE~ PITCH~ SHAPE~ | Beads' attenuverters; see below | `LAW_ATTENUVERTER`, -1..+1 with a ±3 % dead band |
+| TIME~ SIZE~ PITCH~ SHAPE~ | Beads' attenuverters; see below | `LAW_ATTENUVERTER`, -1..+1 with a ±8 % dead band (Beads: ±3 %; widened in v0.2.3 as a virtual detent) |
 | FEEDBACK | output back into the recording; in Synth input, the wavetable bank | 0..1 ×1.005 |
 | REVERB | reverb amount | 0..1 ×1.005 |
 | QUALITY | Hi-fi (48 kHz 16-bit) / Clouds (32 kHz 12-bit) / Clean lo-fi (24 kHz 12-bit) / Tape (24 kHz 8-bit µ-law, wow) | 4 zones = `Media` 3..0 |

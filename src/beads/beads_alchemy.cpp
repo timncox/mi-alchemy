@@ -169,9 +169,10 @@ static VirtualKnob size_k = VirtualKnob(kPotTopRight, "Size")
 
 static VirtualKnob pitch_k = VirtualKnob(kPotMiddleLeft, "Pitch")
     .Linear(0.f, 1.f).Ident("pitch")
-    .Help("Transposition, -2 to +2 octaves, with detents at unison, "
-          "semitone, minor and major third, fifth, octave and two octaves "
-          "(Beads' pitch curve). J5 adds 1 V/octave.")
+    .Help("Transposition, -2 to +2 octaves, with wide virtual detents at "
+          "unison, semitone, minor and major third, fifth, octave and two "
+          "octaves (Beads' pitch curve, flat spots widened). J5 adds 1 "
+          "V/octave.")
     .Ring(Bipolar(kColPitchU, kColPitchD, kColNotch));
 
 static VirtualKnob shape_k = VirtualKnob(kPotMiddleRight, "Shape")
@@ -193,26 +194,26 @@ static VirtualKnob dry_wet_k = VirtualKnob(kPotBottomRight, "Dry/Wet")
  * randomizes, and the FEEDBACK and REVERB knobs. */
 
 static VirtualKnob time_amt = VirtualKnob(kPotTopLeft, "Time random")
-    .Linear(0.f, 1.f).Ident("time_amount")
+    .Linear(0.f, 1.f).Ident("time_amount Noon, a wide flat spot, is none.")
     .Help("How much TIME is randomized from grain to grain: clockwise of "
           "noon an even spread, counter-clockwise rarer, bigger jumps. In "
           "delay mode, a slow wander of the tap.")
     .Ring(Bipolar(kColWalk, kColJitter, kColNotch));
 
 static VirtualKnob size_amt = VirtualKnob(kPotTopRight, "Size random")
-    .Linear(0.f, 1.f).Ident("size_amount")
+    .Linear(0.f, 1.f).Ident("size_amount Noon, a wide flat spot, is none.")
     .Help("How much SIZE is randomized from grain to grain: clockwise an "
           "even spread, counter-clockwise rarer, bigger jumps.")
     .Ring(Bipolar(kColWalk, kColJitter, kColNotch));
 
 static VirtualKnob pitch_amt = VirtualKnob(kPotMiddleLeft, "Pitch random")
-    .Linear(0.f, 1.f).Ident("pitch_amount")
+    .Linear(0.f, 1.f).Ident("pitch_amount Noon, a wide flat spot, is none.")
     .Help("How far PITCH drifts, up to two octaves, as a random walk: "
           "faster clockwise of noon, slower counter-clockwise.")
     .Ring(Bipolar(kColWalk, kColJitter, kColNotch));
 
 static VirtualKnob shape_amt = VirtualKnob(kPotMiddleRight, "Shape random")
-    .Linear(0.f, 1.f).Ident("shape_amount")
+    .Linear(0.f, 1.f).Ident("shape_amount Noon, a wide flat spot, is none.")
     .Help("How much SHAPE is randomized from grain to grain: clockwise an "
           "even spread, counter-clockwise rarer, bigger jumps.")
     .Ring(Bipolar(kColWalk, kColJitter, kColNotch));

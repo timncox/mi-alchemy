@@ -243,9 +243,16 @@ int main()
         CHECK(DetuneLaw(0.5f) == 0.f, "PITCH noon is not unison");
         CHECK(std::fabs(DetuneLaw(1.f) - 24.f) < 1e-3 && std::fabs(DetuneLaw(0.f) + 24.f) < 1e-3,
               "PITCH range is not +/-24 st");
-        /* Each sector plateaus on its interval for its first third: */
+        /* Each sector plateaus on its interval for its first two thirds
+         * (widened from Beads' third in v0.2.3: virtual detents): */
         CHECK(std::fabs(DetuneLaw(0.5f + 4.1f / 12.0f) - 7.f) < 1e-3, "no fifth detent");
+        CHECK(std::fabs(DetuneLaw(0.5f + 4.6f / 12.0f) - 7.f) < 1e-3, "fifth detent not widened");
+        CHECK(std::fabs(DetuneLaw(0.5f + 0.6f / 12.0f)) < 1e-6 && std::fabs(DetuneLaw(0.5f - 0.6f / 12.0f)) < 1e-6,
+              "unison detent not widened");
+        CHECK(std::fabs(DetuneLaw(0.5f + 4.9f / 12.0f) - 7.f) > 0.1f, "fifth never glides on to the octave");
         CHECK(AttenuverterLaw(0.5f) == 0.f && AttenuverterLaw(0.51f) == 0.f, "no dead band");
+        CHECK(AttenuverterLaw(0.575f) == 0.f && AttenuverterLaw(0.425f) == 0.f, "dead band not widened to 8 %");
+        CHECK(AttenuverterLaw(0.6f) > 0.f && AttenuverterLaw(0.4f) < 0.f, "dead band too wide");
         CHECK(std::fabs(AttenuverterLaw(1.f) - 1.f) < 1e-3 && std::fabs(AttenuverterLaw(0.f) + 1.f) < 1e-3,
               "attenuverter range is not +/-1");
         CHECK(GainSetting(0.f) == 0 && GainSetting(0.03f) == 0 && GainSetting(0.05f) >= 1 &&

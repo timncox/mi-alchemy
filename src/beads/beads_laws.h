@@ -13,17 +13,24 @@
 
 namespace mi_beads {
 
-/* LAW_ATTENUVERTER: -1..+1 with a dead band 3 % either side of noon. */
+/* Virtual detents (v0.2.3, tester request 2026-11-01): the Lab's pots have
+ * no centre click, so the original laws' narrow flat spots were hard to
+ * find. Both are widened here; the curve shapes are otherwise Beads'. */
+constexpr float kAttenDeadBand = 0.08f;    /* Beads: 0.03 */
+constexpr float kDetunePlateau = 0.6667f;  /* Beads: 0.3333 of each sector */
+
+/* LAW_ATTENUVERTER: -1..+1 with a dead band either side of noon (Beads'
+ * 3 %, widened to 8 % as a virtual detent). Still reaches +/-1 at the ends. */
 inline float AttenuverterLaw(float v)
 {
     v -= 0.5f;
-    const float a = fabsf(v) - 0.03f;
-    return (2.0f / 0.47f) * v * (a > 0.0f ? a : 0.0f);
+    const float a = fabsf(v) - kAttenDeadBand;
+    return (2.0f / (0.5f - kAttenDeadBand)) * v * (a > 0.0f ? a : 0.0f);
 }
 
 /* LAW_DETUNE: PITCH in semitones, -24..+24. Six equal sectors either side
- * of noon, each a plateau on a musical interval for its first third and a
- * smoothstep to the next one after it. */
+ * of noon, each a plateau on a musical interval (Beads: its first third;
+ * here two thirds, a virtual detent) and a smoothstep to the next after it. */
 inline float DetuneLaw(float v)
 {
     float       detune = 2.0f * v - 1.0f;
@@ -38,7 +45,7 @@ inline float DetuneLaw(float v)
 
     static const float intervals[8] = {0.0f, 1.0f, 3.0f, 4.0f, 7.0f, 12.0f, 24.0f, 24.0f};
 
-    detune_fractional = (detune_fractional - 0.33333333f) * 1.5f;
+    detune_fractional = (detune_fractional - kDetunePlateau) / (1.0f - kDetunePlateau);
     if (detune_fractional < 0.0f) detune_fractional = 0.0f;
 
     const float a = intervals[detune_integral];
