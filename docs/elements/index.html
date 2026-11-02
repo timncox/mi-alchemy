@@ -229,7 +229,7 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
 <header id="top"><div class="wrap">
   <div class="hero">
     <div>
-      <div class="eyebrow">Custom firmware · Hermetic Modular Alchemy Lab V2 · mi-alchemy v0.2.2</div>
+      <div class="eyebrow">Custom firmware · Hermetic Modular Alchemy Lab V2 · mi-alchemy v0.2.3</div>
       <h1 class="title" id="title" aria-label="Elements for Alchemy Lab"><span class="word"><span class="ch">E</span><span class="ch">l</span><span class="ch">e</span><span class="ch">m</span><span class="ch">e</span><span class="ch">n</span><span class="ch">t</span><span class="ch">s</span></span><span class="for">for Alchemy Lab</span></h1>
       <div class="modecap" id="modecap" aria-hidden="true">the letters stand in <b>mode 3</b> of a free bar</div>
       <div class="tagline">Bow it, blow it, strike it. Tune the object it resonates in.</div>
@@ -272,7 +272,7 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
   <p style="margin-top:26px">Elements had 16 knobs, 3 sliders and 7 CV attenuverters. The Alchemy Lab
     has six pots, so they are spread over three pages that you reach by holding a button, and the pots
     catch their stored values before taking over. Hold <b>B1</b> to play; a gate on J3 does the same.
-    (New in the next release, B1 can instead <a href="#record">record knob movements</a> as loops.)
+    (New in v0.2.3, B1 can instead <a href="#record">record knob movements</a> as loops.)
     Patch audio into J1 or J2 and it replaces the blow or strike exciter.</p>
 </div></section>
 
@@ -320,7 +320,7 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
       <tr><td>Play</td><td>COARSE</td><td>FINE</td><td>GEOMETRY</td><td>BRIGHTNESS</td><td>DAMPING</td><td>POSITION</td></tr>
       <tr><td>Exciter · hold B3</td><td>BOW</td><td>BLOW</td><td>STRIKE</td><td>CONTOUR</td><td>FLOW</td><td>MALLET</td></tr>
       <tr><td>Timbre · hold B2</td><td>BOW timbre</td><td>BLOW timbre</td><td>STRIKE timbre</td><td>SPACE</td><td>MODEL</td><td>FM</td></tr>
-      <tr><td>Settings</td><td>Brightness</td><td>B1: Gate / Record <span class="small">(next release)</span></td><td>Preset slot</td><td>Save / load</td><td>·</td><td>·</td></tr>
+      <tr><td>Settings</td><td>Brightness</td><td>B1: Gate / Record <span class="small">(v0.2.3)</span></td><td>Preset slot</td><td>Save / load</td><td>·</td><td>·</td></tr>
       <tr><td>Settings 2</td><td>FILE</td><td>FLASH</td><td>DFU</td><td>·</td><td>·</td><td>·</td></tr>
     </tbody>
   </table></div>
@@ -447,11 +447,11 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
 
 <section id="record"><div class="wrap">
   <h2 class="sh">Knob recording</h2>
-  <div class="sub">Hold B1, move knobs, and they loop · new in the next release</div>
+  <div class="sub">Hold B1, move knobs, and they loop · new in v0.2.3</div>
   <div class="note warn">
     <h3>New, and not yet tried on a module</h3>
-    <p>Knob recording is in the next release. It is <b>not in the v0.2.1 download</b> on this page. It has
-      run only in the Alchemy Lab emulator; it has not been flashed onto a module or tried by hand.</p>
+    <p>Knob recording is new in v0.2.3. It has run in the Alchemy Lab emulator; it has not yet been
+      tried by hand on a module.</p>
   </div>
   <p class="lede" style="margin-top:22px">Hold B1 and move knobs: each knob you move loops what it did, up
     to 16 seconds, and keeps looping after you let go. It is off until you turn it on in Settings, because
@@ -517,7 +517,7 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
         level in orange over a dim base: <span class="sw" style="color:#3050ff"></span>dim blue when the
         samples are loaded, <span class="sw" style="color:#ff8000"></span><b>dim amber when
         <code>/mi/elements.smp</code> is missing or bad</b>.</p>
-      <p>With Settings B1 on <a href="#record">Record</a> (next release): <span class="sw" style="color:#802020"></span>dim
+      <p>With Settings B1 on <a href="#record">Record</a> (v0.2.3): <span class="sw" style="color:#802020"></span>dim
         red at rest, <span class="sw" style="color:#ff0000"></span>bright red while recording.</p></div>
     <div class="card"><div class="k">B2 · Timbre</div><h4>The resonator</h4>
       <p><span class="sw" style="color:#00ff00"></span>The resonator's level in green over a dim blue,
@@ -603,9 +603,9 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
   <h2 class="sh">Installing</h2>
   <div class="sub">From the card, or through the front USB-C</div>
   <div class="dl" id="download" style="scroll-margin-top:90px;margin:16px 0 24px;padding:16px 18px;border:1.5px solid currentColor;border-radius:8px;max-width:46em">
-    <p style="margin:0 0 12px"><b>Download v0.2.2</b> &middot; played on a module; settings save to the card and come back after a power cycle</p>
-    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.2/elements_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">elements_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.2/elements.smp" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">elements.smp</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.2/mi-alchemy-sd-card-v0.2.2.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all seven</a></p>
-    <p style="margin:0;font-size:.92em">The zip holds all seven firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. Elements needs both files. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.2.2">Release notes and SHA-256 checksums</a>.</p>
+    <p style="margin:0 0 12px"><b>Download v0.2.3</b> &middot; played on a module; settings save to the card and come back after a power cycle</p>
+    <p style="margin:0 0 4px"><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.3/elements_alchemy.bin" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">elements_alchemy.bin</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.3/elements.smp" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">elements.smp</a><a href="https://github.com/timncox/mi-alchemy/releases/download/v0.2.3/mi-alchemy-sd-card-v0.2.3.zip" style="display:inline-block;margin:0 8px 8px 0;padding:9px 16px;border:1.5px solid currentColor;border-radius:6px;font-weight:600;text-decoration:none;color:inherit">SD card zip · all seven</a></p>
+    <p style="margin:0;font-size:.92em">The zip holds all seven firmwares and the Elements samples, laid out for the card: unzip it onto the card's top level and the <code>.bin</code> files land in <code>/alchemy</code>, <code>elements.smp</code> in <code>/mi</code>. Elements needs both files. <a href="https://github.com/timncox/mi-alchemy/releases/tag/v0.2.3">Release notes and SHA-256 checksums</a>.</p>
   </div>
 
   <div class="cols">
@@ -995,7 +995,7 @@ const INFO = {
     ["FINE","Play · P2","±2 semitones, square law","Fine tune, finest near noon. At boot this ring shows the samples file for 2.5 s: full green loaded, one red pip missing, full red refused."],
     ["BLOW","Exciter · P2 · hold B3","level 0–1 · first boot 0","The blow exciter: granular noise read from /mi/elements.smp, or J1's audio when it is patched and louder than −80 dB. Silent without the samples file unless J1 is patched."],
     ["BLOW timbre","Timbre · P2 · hold B2","0–1 · first boot 50%","The colour of the breath noise."],
-    ["B1 mode","Settings · P2","Gate · Record · next release","What B1 does. Gate (the default): B1 plays, as on Elements. Record: hold B1 and move knobs to record their motion as loops, up to 16 s each; moving a looping knob clears it. B1 then plays nothing; use J3 for the gate. New in the next release and not yet tried on a module."],
+    ["B1 mode","Settings · P2","Gate · Record · new in v0.2.3","What B1 does. Gate (the default): B1 plays, as on Elements. Record: hold B1 and move knobs to record their motion as loops, up to 16 s each; moving a looping knob clears it. B1 then plays nothing; use J3 for the gate. New in v0.2.3 and not yet tried on a module."],
     ["FLASH","Settings 2 · P2","dip below 85%, then all the way up","Writes the chosen file into the firmware slot, verifies it and reboots into it. It compares first: if that file is already running, nothing is written. Teal comparing, orange erasing, blue writing, green verifying, white then reboot; blinking red: failed and nothing booted."]],
   P3:[
     ["GEOMETRY","Play · P3","0–1 · J7 adds CV","The resonator's structure. Low: plates and bars, whose overtones crowd together. Around a quarter: a string's harmonic series. Higher: bells, then inharmonic objects whose modes spread apart. Try it in the Resonator section."],
