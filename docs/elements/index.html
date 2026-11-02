@@ -215,6 +215,7 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
   <a class="s" href="#play">Playing</a>
   <a class="s" href="#resonator">Resonator</a>
   <a class="s" href="#voice">The voice</a>
+  <a class="s" href="#record">Record</a>
   <a class="s" href="#cv">Jacks</a>
   <a class="s" href="#lights">Lights</a>
   <a class="s" href="#samples">Samples</a>
@@ -271,6 +272,7 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
   <p style="margin-top:26px">Elements had 16 knobs, 3 sliders and 7 CV attenuverters. The Alchemy Lab
     has six pots, so they are spread over three pages that you reach by holding a button, and the pots
     catch their stored values before taking over. Hold <b>B1</b> to play; a gate on J3 does the same.
+    (New in the next release, B1 can instead <a href="#record">record knob movements</a> as loops.)
     Patch audio into J1 or J2 and it replaces the blow or strike exciter.</p>
 </div></section>
 
@@ -318,7 +320,7 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
       <tr><td>Play</td><td>COARSE</td><td>FINE</td><td>GEOMETRY</td><td>BRIGHTNESS</td><td>DAMPING</td><td>POSITION</td></tr>
       <tr><td>Exciter · hold B3</td><td>BOW</td><td>BLOW</td><td>STRIKE</td><td>CONTOUR</td><td>FLOW</td><td>MALLET</td></tr>
       <tr><td>Timbre · hold B2</td><td>BOW timbre</td><td>BLOW timbre</td><td>STRIKE timbre</td><td>SPACE</td><td>MODEL</td><td>FM</td></tr>
-      <tr><td>Settings</td><td>Brightness</td><td>·</td><td>Preset slot</td><td>Save / load</td><td>·</td><td>·</td></tr>
+      <tr><td>Settings</td><td>Brightness</td><td>B1: Gate / Record <span class="small">(next release)</span></td><td>Preset slot</td><td>Save / load</td><td>·</td><td>·</td></tr>
       <tr><td>Settings 2</td><td>FILE</td><td>FLASH</td><td>DFU</td><td>·</td><td>·</td><td>·</td></tr>
     </tbody>
   </table></div>
@@ -338,7 +340,8 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
     <li><p><b>Patch J9 and J10</b> to your mixer. J9 is Elements' main output, J10 the aux; with SPACE
       up they are a stereo pair.</p></li>
     <li><p><b>Hold B1.</b> On a first boot the voice is Elements' init sound: a struck modal resonator,
-      STRIKE at 80%, a short CONTOUR, a little SPACE. B1 is momentary, so a tap is a short note.</p></li>
+      STRIKE at 80%, a short CONTOUR, a little SPACE. B1 is momentary, so a tap is a short note.
+      (This is B1 on <b>Gate</b>, the default. Set to <a href="#record">Record</a>, it plays nothing.)</p></li>
     <li><p><b>Tune it on the Play page.</b> COARSE covers five octaves in semitone steps, FINE ±2
       semitones. Patch 1 V/octave into J5 and a gate into J3 to play it from a sequencer.</p></li>
     <li><p><b>Change what it is.</b> Sweep GEOMETRY slowly: plates, then strings, then bells and
@@ -442,6 +445,46 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
     they point wherever the last firmware left them.</p>
 </div></section>
 
+<section id="record"><div class="wrap">
+  <h2 class="sh">Knob recording</h2>
+  <div class="sub">Hold B1, move knobs, and they loop · new in the next release</div>
+  <div class="note warn">
+    <h3>New, and not yet tried on a module</h3>
+    <p>Knob recording is in the next release. It is <b>not in the v0.2.1 download</b> on this page. It has
+      run only in the Alchemy Lab emulator; it has not been flashed onto a module or tried by hand.</p>
+  </div>
+  <p class="lede" style="margin-top:22px">Hold B1 and move knobs: each knob you move loops what it did, up
+    to 16 seconds, and keeps looping after you let go. It is off until you turn it on in Settings, because
+    it takes B1 away from playing notes.</p>
+  <ol class="steps">
+    <li><p><b>Turn it on.</b> Hold B2 and B3 for two seconds to open Settings. On the main Settings page,
+      turn <b>P2 (B1)</b> all the way up to <b>Record</b>; all the way down is <b>Gate</b>, the default.
+      Press B2 or B3 to leave.</p></li>
+    <li><p><b>Record.</b> Hold B1 and move one or more knobs. A knob starts recording as soon as it moves
+      half a percent of its travel, so the knobs you leave alone are not recorded. Let go of B1 to stop.
+      Each knob records up to 16 seconds.</p></li>
+    <li><p><b>Listen.</b> Each recorded knob plays its movement back as a loop, at the speed you made it.
+      The knob stays where your movement left it, and the loop plays as an offset from there.</p></li>
+    <li><p><b>Record the other pages.</b> Hold B3 as well as B1 to record the Exciter page's knobs, or B2
+      for the Timbre page's. Every knob on every page has its own loop: 18 in all.</p></li>
+    <li><p><b>Clear a loop.</b> Move a looping knob about 3% of its travel and its loop is gone. A smaller
+      brush leaves it playing, so touching a neighbour by accident does not clear it.</p></li>
+  </ol>
+  <div class="cols" style="margin-top:26px">
+    <div class="card"><div class="k">B1 in Record mode</div><h4>A trigger, not a gate</h4>
+      <p>B1 plays no notes. Use <b>J3</b> for the gate; it still plays the voice. B1's lights rest
+        <span class="sw" style="color:#802020"></span>dim red, and turn
+        <span class="sw" style="color:#ff0000"></span>bright red while recording.</p></div>
+    <div class="card"><div class="k">The rings</div><h4>A red pip at six o'clock</h4>
+      <p>On the ring of each knob that has a loop: <span class="sw" style="color:#ff0000"></span>solid
+        red while it records, blinking red while its loop plays.</p></div>
+    <div class="card"><div class="k">Saved</div><h4>Kept with the panel</h4>
+      <p>The loops are saved with the rest of the panel in <b>/alchemy/state/elements.st</b>, so they come
+        back after a power-off, and they go into a preset you save by hand. Switching B1 back to Gate stops
+        new recordings; loops you already made keep playing until you clear them.</p></div>
+  </div>
+</div></section>
+
 <section id="cv"><div class="wrap">
   <h2 class="sh">Jacks and CV</h2>
   <div class="sub">Two audio ins, six CV jacks, two outs</div>
@@ -450,7 +493,7 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
     <tbody>
       <tr><td>J1 · Blow in</td><td>Audio. Replaces the blow exciter.</td><td>Elements' noise gate: below −80 dB it fades out, so an unpatched jack's hiss never replaces the internal noise</td></tr>
       <tr><td>J2 · Strike in</td><td>Audio. Replaces the strike exciter.</td><td>Same gate</td></tr>
-      <tr><td>J3 · Gate</td><td>Plays the voice, ORed with B1.</td><td>Raw ADC once per 0.5 ms block: on above 1.5 V, off below 0.5 V. Read one block after the CVs, as upstream, so the pitch is in before the strike</td></tr>
+      <tr><td>J3 · Gate</td><td>Plays the voice, ORed with B1. With B1 on <a href="#record">Record</a>, J3 is the only gate.</td><td>Raw ADC once per 0.5 ms block: on above 1.5 V, off below 0.5 V. Read one block after the CVs, as upstream, so the pitch is in before the strike</td></tr>
       <tr><td>J4 · Strength</td><td>How hard each note is played.</td><td>0.5 + 0.1 × volts, so ±5 V spans 0–1 and an unpatched jack gives 0.5</td></tr>
       <tr><td>J5 · V/Oct</td><td>Pitch.</td><td>Calibrated volts × 12. Jumps over 0.4 semitone land at once, smaller moves glide</td></tr>
       <tr><td>J6 · FM</td><td>Frequency modulation.</td><td>Through the FM attenuverter (Timbre P6)</td></tr>
@@ -473,7 +516,9 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
       <p><span class="sw" style="color:#ffffff"></span>White while the gate is on. Otherwise the exciter
         level in orange over a dim base: <span class="sw" style="color:#3050ff"></span>dim blue when the
         samples are loaded, <span class="sw" style="color:#ff8000"></span><b>dim amber when
-        <code>/mi/elements.smp</code> is missing or bad</b>.</p></div>
+        <code>/mi/elements.smp</code> is missing or bad</b>.</p>
+      <p>With Settings B1 on <a href="#record">Record</a> (next release): <span class="sw" style="color:#802020"></span>dim
+        red at rest, <span class="sw" style="color:#ff0000"></span>bright red while recording.</p></div>
     <div class="card"><div class="k">B2 · Timbre</div><h4>The resonator</h4>
       <p><span class="sw" style="color:#00ff00"></span>The resonator's level in green over a dim blue,
         Elements' second meter. <span class="sw" style="color:#ff0000"></span>Red when the audio callback
@@ -547,7 +592,8 @@ footer .fl{font-family:var(--disp);font-weight:800;font-stretch:125%;font-size:2
     </tbody>
   </table></div>
   <p style="margin-top:20px">The first Settings page holds the LED brightness (P1, 30% by default; these
-    LEDs get very bright) and the preset gesture: P3 picks a slot, P4 saves or loads it.
+    LEDs get very bright), <a href="#record">B1's mode</a> on P2 (Gate or Record, from the next
+    release), and the preset gesture: P3 picks a slot, P4 saves or loads it.
     Elements keeps its working state in its own file on the card, <b>/alchemy/state/elements.st</b>, saved
     five seconds after the last change once your hands are off the buttons. Up to v0.1.0 it used slot 9;
     the first boot of v0.2.0 or later copies that onto the card. The other Lab firmwares keep their own slots, 1–5 and 12–15, so <b>6–11</b> are free for presets you save by hand.</p>
@@ -922,7 +968,7 @@ const PAGES = [
     b:{B1:C.idle, B2:C.tbHeld, B3:C.exPage}},
   { name:"Settings", rings:[
     {id:"P1", n:"BRIGHT", k:"level", c:C.white, v:0.3},
-    {id:"P2", n:"", k:"none"},
+    {id:"P2", n:"B1 MODE", k:"none"},
     {id:"P3", n:"SLOT", k:"sel", c:C.white, zones:16, z:9},
     {id:"P4", n:"SAVE/LOAD", k:"none"},
     {id:"P5", n:"", k:"none"},
@@ -949,7 +995,7 @@ const INFO = {
     ["FINE","Play · P2","±2 semitones, square law","Fine tune, finest near noon. At boot this ring shows the samples file for 2.5 s: full green loaded, one red pip missing, full red refused."],
     ["BLOW","Exciter · P2 · hold B3","level 0–1 · first boot 0","The blow exciter: granular noise read from /mi/elements.smp, or J1's audio when it is patched and louder than −80 dB. Silent without the samples file unless J1 is patched."],
     ["BLOW timbre","Timbre · P2 · hold B2","0–1 · first boot 50%","The colour of the breath noise."],
-    ["(unused)","Settings · P2","",""],
+    ["B1 mode","Settings · P2","Gate · Record · next release","What B1 does. Gate (the default): B1 plays, as on Elements. Record: hold B1 and move knobs to record their motion as loops, up to 16 s each; moving a looping knob clears it. B1 then plays nothing; use J3 for the gate. New in the next release and not yet tried on a module."],
     ["FLASH","Settings 2 · P2","dip below 85%, then all the way up","Writes the chosen file into the firmware slot, verifies it and reboots into it. It compares first: if that file is already running, nothing is written. Teal comparing, orange erasing, blue writing, green verifying, white then reboot; blinking red: failed and nothing booted."]],
   P3:[
     ["GEOMETRY","Play · P3","0–1 · J7 adds CV","The resonator's structure. Low: plates and bars, whose overtones crowd together. Around a quarter: a string's harmonic series. Higher: bells, then inharmonic objects whose modes spread apart. Try it in the Resonator section."],
@@ -977,14 +1023,14 @@ const INFO = {
     ["(unused)","Settings 2 · P6","",""]],
 };
 const BTN = {
-  B1:["B1 · Play","hold","The gate while held; J3 is ORed in. Momentary, so a tap is a short note. White while the gate is on; otherwise the exciter level in orange over dim blue, or over dim amber when the samples file is missing or bad. In Settings, B1 steps between the two Settings pages."],
+  B1:["B1 · Play","hold","The gate while held; J3 is ORed in. Momentary, so a tap is a short note. White while the gate is on; otherwise the exciter level in orange over dim blue, or over dim amber when the samples file is missing or bad. In Settings, B1 steps between the two Settings pages. Next release: with Settings B1 on Record, hold B1 and move knobs to record them as loops; B1 then plays nothing and lights dim red, bright red while recording."],
   B2:["B2 · Timbre","hold","Holding B2 shows the Timbre page. At rest its lights are the resonator level in green; red when the audio callback averages over 80% CPU. Held with B3 for two seconds it opens Settings, and in Settings a press of B2 leaves."],
   B3:["B3 · Exciter","hold","Holding B3 shows the Exciter page. A dim red tint at rest. Held with B2 for two seconds it opens Settings, and in Settings a press of B3 leaves."],
 };
 const JACK = {
   J1:["J1 · Blow in","audio in","Replaces the blow exciter. Elements' noise gate fades it out below −80 dB, so an unpatched jack's hiss never takes over."],
   J2:["J2 · Strike in","audio in","Replaces the strike exciter, with the same noise gate."],
-  J3:["J3 · Gate","gate","Plays the voice, together with B1. On above 1.5 V, off below 0.5 V, read every 0.5 ms, one block after the CVs so the pitch arrives first."],
+  J3:["J3 · Gate","gate","Plays the voice, together with B1 (alone, with Settings B1 on Record). On above 1.5 V, off below 0.5 V, read every 0.5 ms, one block after the CVs so the pitch arrives first."],
   J4:["J4 · Strength","CV","How hard each note is played: 0.5 + 0.1 × volts. Unpatched it reads 0.5."],
   J5:["J5 · V/Oct","CV","Pitch at 1 V/octave, from the Lab's calibrated jack voltage. Jumps of more than 0.4 semitone land at once; smaller moves glide."],
   J6:["J6 · FM","CV","Frequency modulation, scaled by the FM attenuverter on the Timbre page."],

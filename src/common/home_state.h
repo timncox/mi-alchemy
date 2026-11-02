@@ -46,8 +46,14 @@ namespace mi {
 struct HomeFile
 {
     /* Room for the managed components' bytes: a pager's stored pots are
-     * pages x 6 floats, Settings and the CPU extras a few dozen bytes. */
-    static constexpr size_t kCap = 1024u;
+     * pages x 6 floats, Settings and the CPU extras a few dozen bytes. A
+     * firmware that saves more (Elements' knob recordings, ~11.6 KB) sets
+     * MI_HOME_CAP before including this header: a payload over kCap is not
+     * saved at all. */
+#ifndef MI_HOME_CAP
+#define MI_HOME_CAP 1024u
+#endif
+    static constexpr size_t kCap = MI_HOME_CAP;
 
     const char* name;
     int         legacy_slot;

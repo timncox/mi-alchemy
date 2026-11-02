@@ -1,0 +1,57 @@
+# Elements knob recording (ParamLock). Run with the alchemy-lab emulator:
+#   make -C <alchemy-lab>/emu FW=elements FW_ROOT=<this worktree>
+#   <emu>/build/elements/emu --headless --flash none --card <emu>/build/elements/card \
+#       --script test/emu/elements_record.emu
+# Settings B1 = Record: B1 stops gating; hold it and move a knob and the
+# knob loops what it did; the J3 gate still plays.
+wait 3500
+expect booted
+# Settings: B2 + B3 held 2 s; P2 on the main page is "B1".
+press b2
+press b3
+wait 2300
+release b2
+release b3
+wait 300
+pot 2 0.0
+wait 150
+pot 2 0.95                 # B1 = Record
+wait 300
+tap b3                     # leave Settings
+wait 600
+# In Record mode B1 plays nothing.
+mark
+hold b1 400
+wait 300
+expect rms < 0.0005
+# Hold B1 and wave BRIGHTNESS (P4): that becomes a loop.
+pot 4 0.5
+wait 200
+press b1
+wait 100
+pot 4 0.1
+wait 150
+pot 4 0.9
+wait 150
+pot 4 0.1
+wait 150
+pot 4 0.9
+wait 150
+release b1
+wait 300
+# Nobody touches anything now: the ring keeps moving by itself.
+ringsave 4
+wait 350
+expect ringchanged 4
+ringsave 4
+wait 350
+expect ringchanged 4
+# The J3 gate still plays.
+mark
+cv 3 5
+wait 400
+cv 3 0
+wait 300
+expect rms > 0.002
+expect finite
+expect alive
