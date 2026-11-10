@@ -233,8 +233,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
       <div class="rd" id="roD">Hover or click any pot, button or jack. Audio in and out, the front USB-C and the
         light rings are fixed Alchemy Lab hardware. Everything else is what this firmware makes of them.</div>
       <div class="meta" id="roM"><div>plate <b>60.96 × 128.5 mm</b> · 12 HP</div><div>rings <b>16 LEDs</b>, 13 in the arc</div></div>
-      <div class="hint">The six CV jacks between IN and OUT are numbered here in reading order (J3 J4 J5 on top,
-        J6 J7 J8 below). The template does not say which is which: the numbers printed on your panel are the authority.</div>
+      <div class="hint">The jacks are numbered down each column from the left, as printed on the panel: J1 J3 J5 J7 J9 along the top, J2 J4 J6 J8 J10 beneath them.</div>
     </div>
   </div>
 
@@ -553,26 +552,26 @@ const PANEL = {
   },
   {
    "id": "J4",
-   "x": 30.286,
-   "y": 100.119,
-   "hole": 3.2
-  },
-  {
-   "id": "J5",
-   "x": 42.014,
-   "y": 100.119,
-   "hole": 3.2
-  },
-  {
-   "id": "J6",
    "x": 18.51,
    "y": 113.056,
    "hole": 3.2
   },
   {
-   "id": "J7",
+   "id": "J5",
+   "x": 30.286,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J6",
    "x": 30.286,
    "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J7",
+   "x": 42.014,
+   "y": 100.119,
    "hole": 3.2
   },
   {
@@ -594,7 +593,7 @@ const PANEL = {
    "hole": 3.2
   }
  ],
- "jack_order_assumed": "J3..J8 in reading order; the printed panel is the authority",
+ "jack_order": "down each column from the left, as printed on the panel",
  "labels": {
   "knob_dy": 14.0,
   "button_dy": 10.63,

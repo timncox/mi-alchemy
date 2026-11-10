@@ -270,9 +270,7 @@ ol.tests li{margin:.45em 0;max-width:74ch}
         <div>plate <b>60.96 × 128.5 mm</b> · 12 HP</div>
         <div>rings <b>16 LEDs</b>, 13 in the arc</div>
       </div>
-      <div class="hint">The six middle jacks are numbered in reading order (J3 J4 J5 above,
-        J6 J7 J8 below). The template doesn't state the order, so check against the numbers
-        printed on your panel.</div>
+      <div class="hint">The jacks are numbered down each column from the left, as printed on the panel: J1 J3 J5 J7 J9 along the top, J2 J4 J6 J8 J10 beneath them.</div>
     </div>
   </div>
 </div></section>
@@ -721,26 +719,26 @@ const PANEL = {
   },
   {
    "id": "J4",
-   "x": 30.286,
-   "y": 100.119,
-   "hole": 3.2
-  },
-  {
-   "id": "J5",
-   "x": 42.014,
-   "y": 100.119,
-   "hole": 3.2
-  },
-  {
-   "id": "J6",
    "x": 18.51,
    "y": 113.056,
    "hole": 3.2
   },
   {
-   "id": "J7",
+   "id": "J5",
+   "x": 30.286,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J6",
    "x": 30.286,
    "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J7",
+   "x": 42.014,
+   "y": 100.119,
    "hole": 3.2
   },
   {
@@ -762,7 +760,7 @@ const PANEL = {
    "hole": 3.2
   }
  ],
- "jack_order_assumed": "J3..J8 in reading order; the printed panel is the authority",
+ "jack_order": "down each column from the left, as printed on the panel",
  "labels": {
   "knob_dy": 14.0,
   "button_dy": 10.63,

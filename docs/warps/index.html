@@ -354,7 +354,7 @@ footer .sib a:hover{background:var(--ink);color:var(--bg)}
   <p><b>Warps</b> is by Emilie Gillet for Mutable Instruments, MIT licence. <b>Parasites</b> is by Matthias Puech, MIT licence, at <a href="https://github.com/mqtthiqs/parasites">mqtthiqs/parasites</a>. This port, its Alchemy Lab shim and this manual are in <a href="https://github.com/timncox/mi-alchemy">timncox/mi-alchemy</a>. The Alchemy Lab and its SDK are by <a href="https://hermeticmodular.com/modules/alchemy-lab">Hermetic Modular</a>.</p>
   <div class="sib" aria-label="The other ports"><a href="../">All seven</a><a href="../clouds/">Clouds</a><a href="../elements/">Elements</a><a href="../marbles/">Marbles</a><a href="../plaits/">Plaits</a></div>
   <p style="margin-top:14px"><a href="https://timncox.github.io/alchemy-lab/">All of Tim's Alchemy Lab instruments, on one page →</a></p>
-  <p class="mono" style="font-size:.72rem;color:var(--ink3)">Panel geometry generated from the SDK's KiCad front-panel template by tools/emit_panel_geometry.py. J3–J8 are numbered in reading order: top row J3 J4 J5, bottom row J6 J7 J8.</p>
+  <p class="mono" style="font-size:.72rem;color:var(--ink3)">Panel geometry generated from the SDK's KiCad front-panel template by tools/emit_panel_geometry.py. The jacks are numbered down each column, as printed on the panel: top row J1 J3 J5 J7 J9, bottom row J2 J4 J6 J8 J10.</p>
 </div></footer>
 
 <script>
@@ -497,26 +497,26 @@ const PANEL = {
   },
   {
    "id": "J4",
-   "x": 30.286,
-   "y": 100.119,
-   "hole": 3.2
-  },
-  {
-   "id": "J5",
-   "x": 42.014,
-   "y": 100.119,
-   "hole": 3.2
-  },
-  {
-   "id": "J6",
    "x": 18.51,
    "y": 113.056,
    "hole": 3.2
   },
   {
-   "id": "J7",
+   "id": "J5",
+   "x": 30.286,
+   "y": 100.119,
+   "hole": 3.2
+  },
+  {
+   "id": "J6",
    "x": 30.286,
    "y": 113.056,
+   "hole": 3.2
+  },
+  {
+   "id": "J7",
+   "x": 42.014,
+   "y": 100.119,
    "hole": 3.2
   },
   {
@@ -538,7 +538,7 @@ const PANEL = {
    "hole": 3.2
   }
  ],
- "jack_order_assumed": "J3..J8 in reading order; the printed panel is the authority",
+ "jack_order": "down each column from the left, as printed on the panel",
  "labels": {
   "knob_dy": 14.0,
   "button_dy": 10.63,
