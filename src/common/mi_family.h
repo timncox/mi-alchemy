@@ -300,9 +300,11 @@ struct Swallow
 {
     uint8_t mask = 0;
     void    All() { mask = 0x07u; }
-    bool    Live(AlchemyLab& hw, uint8_t b)
+    bool    Live(AlchemyLab& hw, uint8_t b) { return Live(hw.buttons[b], b); }
+    /* The same for a button the phone can press too (phone_kit.h). */
+    bool    Live(alchemy::IButton& btn, uint8_t b)
     {
-        const bool    down = hw.buttons[b].Pressed();
+        const bool    down = btn.Pressed();
         const uint8_t bit  = (uint8_t)(1u << b);
         if (mask & bit)
         {

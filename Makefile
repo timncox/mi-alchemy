@@ -45,7 +45,10 @@ override BUILD_DIR := build-$(FW)
 endif
 
 # ── Common sources ──────────────────────────────────────────────────────────
-CPP_SOURCES = src/$(FW)/$(FW)_alchemy.cpp src/common/picker.cpp
+CPP_SOURCES = src/$(FW)/$(FW)_alchemy.cpp src/common/picker.cpp \
+    src/common/phone_ext.cpp src/common/midi_usb_transport.cpp src/common/usb_shared.cpp
+# Phone mode only (no Phone+Audio): stand-ins for usb_audio.c's MIDI hooks.
+C_SOURCES += src/common/uac_none.c
 CPP_SOURCES += $(sort $(shell find $(ALCHEMY_DIR)/framework/src -name '*.cpp'))
 CPP_SOURCES += $(sort $(wildcard $(ALCHEMY_DIR)/hardware/alchemy-lab/v2/src/*.cpp))
 
@@ -107,6 +110,11 @@ vpath %.cc $(sort $(dir $(CC_SOURCES)))
 
 $(BUILD_DIR)/%.o: %.cc Makefile src/$(FW)/fw.mk | $(BUILD_DIR)
 	$(CXX) -c $(filter-out $(OPT),$(CPPFLAGS)) $(FW_CC_OPT) $(CPP_STANDARD) -w $< -o $@
+
+# The folder picker and the phone block are not on the audio path: built for
+# size, which keeps Meld inside the 480 KB SRAM image with them added.
+KIT_OBJECTS = $(addprefix $(BUILD_DIR)/,picker.o phone_ext.o midi_usb_transport.o usb_shared.o)
+$(KIT_OBJECTS): OPT = -Os
 
 $(BUILD_DIR)/$(TARGET).elf: $(CC_OBJECTS)
 

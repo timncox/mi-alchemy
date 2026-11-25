@@ -45,6 +45,8 @@
 
 #include "home_state.h"
 #include "mi_family.h"
+#include "led_mirror.h"
+#include "phone_kit.h"
 #include "picker.h"
 
 #include "marbles_engine.h"
@@ -68,7 +70,7 @@ using daisy::System;
 static constexpr uint32_t kBlockSize = marbles_port::kMaxBlock;
 
 enum : uint8_t { kPagePlay = 0, kPageSetup = 1, kNumAppPages = 2 };
-enum : uint8_t { kSettingsMain = 0, kSettingsFirmware = 1, kSettingsY = 2 };
+enum : uint8_t { kSettingsMain = 0, kSettingsFirmware = 1, kSettingsY = 2, kSettingsUsb = 3 };
 
 /* cv_jacks[] indices. */
 static constexpr uint8_t kJackX1 = 0u, kJackX2 = 1u, kJackX3 = 2u, kJackY = 3u;
@@ -236,8 +238,15 @@ static Manual manual = Manual()
 /* ---- surfaces ------------------------------------------------------------ */
 
 static ControlLoop loop(hw);
+/* The front USB-C (Mac or Phone) and the panel buttons with the phone's
+ * presses added (phone_kit.h). Declared before the pager, which holds the
+ * buttons. */
+static phonefront::Front              front;
+static phone::LedMirror<kLedTotal>    led_mirror;
+static phone::PhoneExtension          phone_ext;
+
 static Pager       pager = Pager(kNumAppPages, kNumPots)
-                               .Shift(hw.buttons[kButtonB3], kPageSetup);
+                               .Shift(front.Button(kButtonB3), kPageSetup);
 
 /* The panel autosaves to 0:/alchemy/state/marbles.st (home_state.h). Slot 10,
  * its QSPI home until 2026-10-13, is read once if the card has no file yet,
@@ -373,11 +382,11 @@ static void OnPoll(uint32_t now)
         swallow.All();
         return;
     }
-    const bool b3 = swallow.Live(hw, kButtonB3);
-    b_tdv.Poll(swallow.Live(hw, kButtonB1), now, dv.t, &g_dv_changed);
+    const bool b3 = swallow.Live(front.Button(kButtonB3), kButtonB3);
+    b_tdv.Poll(swallow.Live(front.Button(kButtonB1), kButtonB1), now, dv.t, &g_dv_changed);
     /* B2 stands down while B3 is held: B2+B3 is the Settings chord. */
     if (b3) b_xdv.Reset();
-    else b_xdv.Poll(swallow.Live(hw, kButtonB2), now, dv.x, &g_dv_changed);
+    else b_xdv.Poll(swallow.Live(front.Button(kButtonB2), kButtonB2), now, dv.x, &g_dv_changed);
 }
 
 /* ---- control frame (~60 Hz) ------------------------------------------------ */
@@ -429,6 +438,10 @@ static void OnFrame(void)
     const bool sact = settings.IsActive();
     if (prev_settings && !sact) home.Touch(now);
     prev_settings = sact;
+
+    /* A firmware switch the phone started; a changed USB port goes back to
+     * the card. */
+    if (front.Service(sd, sact, now)) home.Touch(now);
 
     if (home.Service(presets, hw, now, sact || picker::Busy()))
         g_saved_peak = extras.cpu_peak;
@@ -539,6 +552,10 @@ static void AudioCallback(daisy::AudioHandle::InputBuffer  in,
 int main(void)
 {
     hw.Init(daisy::SaiHandle::Config::SampleRate::SAI_32KHZ, kBlockSize);
+    /* Every frame the panel shows is copied for the phone. */
+    led_mirror.Wrap(hw.strip);
+    hw.leds.Init(led_mirror, hw.Layout());
+    front.BindButtons(hw);
     cpu.Init(hw.SampleRate(), (int)hw.BlockSize());
     if (hw.BlockSize() != kBlockSize) mi::fault_forever(hw);
     daisy::Random::Init();
@@ -560,6 +577,10 @@ int main(void)
 
     sd.Init();
     picker::Install(settings, kSettingsFirmware, sd, hw);
+    /* Every pot on the first three Settings pages is taken: the USB port
+     * gets a fourth page of its own (B1 in Settings steps to it), P1. */
+    settings.Page(kSettingsUsb).Name("USB");
+    front.Install(settings, kSettingsUsb, 0);
     settings.UseBrightness();
     settings.UsePresets(presets);
 
@@ -618,11 +639,15 @@ int main(void)
                jk_t1, jk_t2)
         .Buttons(bt_tdv, bt_xdv, bt_setup)
         .Attach(manual)
-        .Extend(fs_ext);
+        .Extend(fs_ext)
+        .Extend(phone_ext);
 #ifdef MI_BENCH_USB
     bench_cdc.Init(bench_usb, daisy::UsbHandle::FS_INTERNAL, "Marbles (bench)");
     host.Transport(bench_cdc);
+#else
+    host.Transport(front.Link());
 #endif
+    front.Wire(phone_ext, led_mirror);
 
     presets.Manage(pager);
     presets.Manage(settings);
@@ -658,6 +683,12 @@ int main(void)
     extras.cpu_peak = 0.0f;
     extras.cpu_avg  = 0.0f;
     g_readout_until = System::GetNow() + 2500u;
+#ifndef MI_BENCH_USB
+    /* The front port: the card's USB setting (one for every firmware), Mac
+     * or Phone. B1 held through power-up is Mac mode this boot. */
+    front.Start(sd, hw.buttons[kButtonB1], "Marbles");
+#endif
+
 
     hw.StartAudio(AudioCallback);
     cpu.Reset();
