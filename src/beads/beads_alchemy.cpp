@@ -48,6 +48,8 @@
 
 #include "home_state.h"
 #include "mi_family.h"
+#include "led_mirror.h"
+#include "phone_kit.h"
 #include "picker.h"
 
 #include "beads/dsp/processor.h"
@@ -321,9 +323,16 @@ static Manual manual = Manual()
 static ControlLoop loop(hw);
 /* B1 reaches SETUP only from MOD (B3 held), so from PLAY it stays FREEZE;
  * B2+B3 stays free for the Settings chord. */
+/* The front USB-C (Mac or Phone) and the panel buttons with the phone's
+ * presses added (phone_kit.h). Declared before the pager, which holds the
+ * buttons. */
+static phonefront::Front              front;
+static phone::LedMirror<kLedTotal>    led_mirror;
+static phone::PhoneExtension          phone_ext;
+
 static Pager pager = Pager(kNumAppPages, kNumPots)
-                         .Shift(hw.buttons[kButtonB3], kPageMod)
-                         .Shift(hw.buttons[kButtonB1], kPageSetup).From(kPageMod);
+                         .Shift(front.Button(kButtonB3), kPageMod)
+                         .Shift(front.Button(kButtonB1), kPageSetup).From(kPageMod);
 
 /* The panel autosaves to 0:/alchemy/state/beads.st (home_state.h), not to
  * a QSPI slot: all 16 were taken by the time Beads arrived. Beads never had
@@ -402,11 +411,11 @@ static void OnPoll(uint32_t now)
     /* While B3 holds the Mod page, B1 is the Setup shift, not FREEZE, and
      * B2 stands down (B2+B3 held 2 s is the Settings chord). Either one
      * held across B3 stays dead until it is released. */
-    const bool b3 = swallow.Live(hw, kButtonB3);
+    const bool b3 = swallow.Live(front.Button(kButtonB3), kButtonB3);
     if (b3)
     {
-        if (hw.buttons[kButtonB1].Pressed()) swallow.mask |= (uint8_t)(1u << kButtonB1);
-        if (hw.buttons[kButtonB2].Pressed())
+        if (front.Button(kButtonB1).Pressed()) swallow.mask |= (uint8_t)(1u << kButtonB1);
+        if (front.Button(kButtonB2).Pressed())
         {
             /* B2 was the start of the Settings chord (or of a trip to the
              * Mod page), not a seed: undo the unlock its press made, or
@@ -417,8 +426,8 @@ static void OnPoll(uint32_t now)
             swallow.mask |= (uint8_t)(1u << kButtonB2);
         }
     }
-    const bool b2 = swallow.Live(hw, kButtonB2);
-    const bool b1 = swallow.Live(hw, kButtonB1);
+    const bool b2 = swallow.Live(front.Button(kButtonB2), kButtonB2);
+    const bool b1 = swallow.Live(front.Button(kButtonB1), kButtonB1);
 
     /* B2 + B1 = seed lock (ui.cc: SEED held, FREEZE pressed). B1's press
      * is then not a freeze. */
@@ -491,6 +500,10 @@ static void OnFrame(void)
     const bool sact = settings.IsActive();
     if (prev_settings && !sact) home.Touch(now);   /* brightness etc. */
     prev_settings = sact;
+
+    /* A firmware switch the phone started; a changed USB port goes back to
+     * the card. */
+    if (front.Service(sd, sact, now)) home.Touch(now);
 
     if (home.Service(presets, hw, now, sact || picker::Busy()))
         g_saved_peak = extras.cpu_peak;
@@ -760,6 +773,10 @@ static void AudioCallback(daisy::AudioHandle::InputBuffer  in,
 int main(void)
 {
     hw.Init(daisy::SaiHandle::Config::SampleRate::SAI_48KHZ, kBlockSize);
+    /* Every frame the panel shows is copied for the phone. */
+    led_mirror.Wrap(hw.strip);
+    hw.leds.Init(led_mirror, hw.Layout());
+    front.BindButtons(hw);
     cpu.Init(hw.SampleRate(), (int)hw.BlockSize());
     if (hw.BlockSize() != kBlockSize) mi::fault_forever(hw);
 
@@ -781,6 +798,7 @@ int main(void)
 
     sd.Init();
     picker::Install(settings, kSettingsFirmware, sd, hw);
+    front.Install(settings, kSettingsFirmware, 5);
     settings.UseBrightness();
     settings.UsePresets(presets);
 
@@ -800,11 +818,15 @@ int main(void)
                jk_cv_size, jk_cv_dens, jk_out_l, jk_out_r)
         .Buttons(bt_freeze, bt_seed, bt_mod)
         .Attach(manual)
-        .Extend(fs_ext);
+        .Extend(fs_ext)
+        .Extend(phone_ext);
 #ifdef MI_BENCH_USB
     bench_cdc.Init(bench_usb, daisy::UsbHandle::FS_INTERNAL, "Beads (bench)");
     host.Transport(bench_cdc);
+#else
+    host.Transport(front.Link());
 #endif
+    front.Wire(phone_ext, led_mirror);
 
     presets.Manage(pager);
     presets.Manage(settings);
@@ -850,6 +872,12 @@ int main(void)
     extras.cpu_peak = 0.0f;
     extras.cpu_avg  = 0.0f;
     g_readout_until = System::GetNow() + 2500u;
+#ifndef MI_BENCH_USB
+    /* The front port: the card's USB setting (one for every firmware), Mac
+     * or Phone. B1 held through power-up is Mac mode this boot. */
+    front.Start(sd, hw.buttons[kButtonB1], "Beads");
+#endif
+
 
     hw.StartAudio(AudioCallback);
     cpu.Reset();

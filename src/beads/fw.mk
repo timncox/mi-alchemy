@@ -10,3 +10,8 @@ CC_SOURCES += \
     $(EURORACK)/beads/dsp/delay_clock.cc \
     $(EURORACK)/beads/dsp/mu_law.cc
 FW_CC_OPT := -Os
+
+# The folder picker and Phone mode push Beads past the 480 KB SRAM image at
+# -O3: the SDK's USB description, HostLink and settings code (none of it on
+# the audio path) builds for size instead.
+FW_OS_OBJECTS := descriptor.o describe.o host_link.o fs_extension.o presets.o settings.o
